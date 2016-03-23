@@ -1,0 +1,57 @@
+body {
+  font-size: 12px;
+}
+
+.container{
+	width: 1300px;
+}
+
+table {
+    
+}
+
+.menu {
+	margin-bottom: 10px;
+}
+
+.form-hide{
+	display: none;
+}
+
+.message{
+    padding: 15px 15px 0 15px;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+.alert{
+	margin-bottom: 0px;
+}
+
+.header-link {
+	margin-bottom: 15px;
+}
+
+.page-header-name{
+	margin-top: 0px;
+}
+/*sortable*/
+.ui-sortable tr {
+	cursor: pointer;
+}
+
+.ui-sortable tr:hover {
+	background:rgba(244,251,17,0.45);
+}
+
+#condition textarea {
+	margin-top: 5px;
+}
+
+.w-box{
+	padding: 20px;
+	margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
