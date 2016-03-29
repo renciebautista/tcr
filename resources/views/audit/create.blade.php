@@ -31,6 +31,18 @@
 		                    	{!! Form::text('end_date',null,['class' => 'form-control', 'id' => 'end_date']) !!}
 							</div>
 				  		</div>
+
+				  		<div class="row">
+				  			<div class="form-group col-xs-6 col-md-3">
+						   		<label>
+				                  	{!! Form::checkbox('active', 1) !!} Active
+				                  </label>
+							</div>
+
+
+				  		</div>
+
+				  		
 						
 				  	</div>
 

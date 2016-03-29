@@ -4,16 +4,7 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
+    @include('shared.audit_details')
       
     <div class="row">
 
@@ -38,11 +29,11 @@
                                     <table id="store_table" class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Customer Code</th>
-                                                <th>Region Code</th>
-                                                <th>Distributor Code</th>
-                                                <th>Store Code</th>
-                                                <th>Channel Code</th>
+                                                <th>Customer</th>
+                                                <th>Region</th>
+                                                <th>Distributor</th>
+                                                <th>Template</th>
+                                                <th>Store</th>
                                                 <th>Options</th>
                                             </tr>
                                         </thead>
@@ -50,12 +41,12 @@
                                             @if($osalookups->count() > 0)
                                             @foreach($osalookups as $lookup)
                                             <tr>
-                                                <td>{{ $lookup->customer_code }}</td>
-                                                <td>{{ $lookup->region_code }}</td>
-                                                <td>{{ $lookup->distributor_code }}</td>
-                                                <td>{{ $lookup->store_code }}</td>
-                                                <td>{{ $lookup->channel_code }}</td>
-                                                <td></td>
+                                                <td>{{ $lookup->customer() }}</td>
+                                                <td>{{ $lookup->region() }}</td>
+                                                <td>{{ $lookup->distributor() }}</td>
+                                                <td>{{ $lookup->channel() }}</td>
+                                                <td>{{ $lookup->store() }}</td>
+                                                <td>{!! link_to_route('audits.osatargets_details','View Details',array('audit' => $audit, 'id' => $lookup->id),['class' => 'btn btn-xs btn-primary']) !!}</td>
                                             </tr>
                                             @endforeach
                                             @else

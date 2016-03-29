@@ -4,16 +4,8 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
+   @include('shared.audit_details')
+
       
     <div class="row">
 
@@ -21,11 +13,6 @@
           <div class="nav-tabs-custom">
                @include('shared.audit_tab')
                 <div class="tab-content">
-                    <div class="row menu pull-right">
-                        <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadstores','Upload Stores',array($audit),['class' => 'btn btn-primary']) !!}
-                        </div>
-                    </div>
                     
                     <div class="tab-pane active" id="stores">
                         <div class="row">
@@ -35,15 +22,16 @@
                                     <h5 class="pull-right">{{ $groups->count() }} {{str_plural('record', $groups->count())}} found.</h5>
                                 </div>
                                 <div class="box-body table-responsive no-padding">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <table id="store_table" class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Group Description</th>
-                                                <th>SOS</th>
-                                                <th>Secondary Display</th>
-                                                <th>OSA</th>
-                                                <th>Custom</th>
-                                                <th>Perfect Store</th>
+                                                <th class="text-center">SOS</th>
+                                                <th class="text-center">Secondary Display</th>
+                                                <th class="text-center">OSA</th>
+                                                <th class="text-center">Custom</th>
+                                                <th class="text-center">Perfect Store</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -51,11 +39,21 @@
                                             @foreach($groups as $group)
                                             <tr>
                                                 <td>{{ $group->group_desc }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("sos[$group->id]", '1', $group->sos, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("second_display[$group->id]", '1', $group->second_display, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("osa[$group->id]", '1', $group->osa, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("custom[$group->id]", '1', $group->custom, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("perfect_store[$group->id]", '1', $group->perfect_store, ['class' => 'chk-update']) !!}
+                                                </td>
                                             </tr>
                                             @endforeach
                                             @else
@@ -74,4 +72,33 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('page-script')
+
+$(".chk-update").change(function () {
+    var value = 0;
+    var name = $(this).attr('name');
+    if($(this).is(":checked")){
+        var value = 1;
+    }
+        
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "PUT",
+        url: "{{ route('audits.groups_update', $audit->id) }}",
+        async: true,
+        data: {
+            method: "PUT",
+            name: name,
+            value: value
+        },
+        success: function (msg) {
+            
+        }
+    });
+});
+
 @endsection

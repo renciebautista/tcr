@@ -4,16 +4,7 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
+    @include('shared.audit_details')
       
     <div class="row">
 

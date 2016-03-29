@@ -30,8 +30,16 @@ class AuditSecondaryDisplay extends Model
 			        	}
 			        }elseif($cnt == 1){
 			        	for ($i=3; $i < count($row); $i++) { 
-			        		$category = FormCategory::firstOrCreate(['audit_id' => $audit->id,
-			        			'category' => $header_field[$i]]);
+			        		$category = FormCategory::where('audit_id', $audit->id)
+			        			->where('category', $header_field[$i])
+			        			->first();
+			        		if(!empty($category)){
+			        			$category->second_display = 1;
+			        			$category->update();
+			        		}else{
+			        			// $category = FormCategory::create(['audit_id' => $audit->id, 'category', $header_field[$i], 'second_display' => 1]);
+			        		}
+
 			        		if(!empty($category)){
 			        			$brand = self::create(['audit_id' => $audit->id, 'form_category_id' => $category->id, 'brand' => $row[$i]]);
 			        			$brand_ids[$i] = $brand->id;
@@ -53,9 +61,9 @@ class AuditSecondaryDisplay extends Model
 			        $cnt++;
 			    }
 			}
-		    
 		}
 
 		$reader->close();
     }
+
 }

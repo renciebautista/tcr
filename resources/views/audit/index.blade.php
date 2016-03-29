@@ -16,15 +16,8 @@
 			<div class="box">
 				<div class="box-header">
 					<h3 class="box-title">Audit Lists</h3>
-					<h2 class="pull-right">Total Record</h2>
-					<div class="box-tools">
-						<div class="input-group" style="width: 150px;">
-							<input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
-							<div class="input-group-btn">
-								<button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
-							</div>
-						</div>
-					</div>
+					<h5 class="pull-right">{{ $audits->count() }} {{str_plural('record', $audits->count())}} found.</h5>
+					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table class="table table-hover">
@@ -34,6 +27,7 @@
 								<th>Description</th>
 								<th>Start Date</th>
 								<th>End Date</th>
+								<th class="text-center">Active</th>
 								<th>Action</th>
 							</tr>
 							@foreach($audits as $audit)
@@ -42,6 +36,11 @@
 								<td>{{ $audit->description}}</td>
 								<td>{{ date_format(date_create($audit->start_date),'m/d/Y')  }}</td>
 								<td>{{ date_format(date_create($audit->end_date),'m/d/Y')  }}</td>
+								<td class="text-center">
+                                    @if($audit->active == 1)
+                                    <i class="fa fa-fw fa-check"></i>
+                                    @endif
+                                </td>
 								<td>
 									{!! link_to_route('audits.stores', 'Audit Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

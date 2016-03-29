@@ -4,16 +4,8 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
+   @include('shared.audit_details')
+
       
     <div class="row">
 
@@ -49,7 +41,7 @@
                                             <tr>
                                                 <td>{{ $store->store_code }}</td>
                                                 <td>{{ $store->store_name }}</td>
-                                                <td></td>
+                                                <td>{!! link_to_route('audits.secondarydisplay_details','View Details',array('audit' => $audit, 'id' => $store->audit_store_id),['class' => 'btn btn-xs btn-primary']) !!}</td>
                                             </tr>
                                             @endforeach
                                             @else

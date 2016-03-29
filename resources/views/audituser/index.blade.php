@@ -4,29 +4,14 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
-      
+    @include('shared.audit_details')
+ 
     <div class="row">
 
         <div class="col-md-12">
           <div class="nav-tabs-custom">
                @include('shared.audit_tab')
                 <div class="tab-content">
-                    <div class="row menu pull-right">
-                        <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadstores','Upload Stores',array($audit),['class' => 'btn btn-primary']) !!}
-                        </div>
-                    </div>
-                    
                     <div class="tab-pane active" id="stores">
                         <div class="row">
                             <div class="col-xs-12">

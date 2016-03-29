@@ -13,13 +13,32 @@
 			  	<ul class="nav navbar-nav">
 					<!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li> -->
 					<!-- <li><a href="#">Link</a></li> -->
+
+					<li class="dropdown">
+				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">File Maintenane <span class="caret"></span></a>
+				  		<ul class="dropdown-menu" role="menu">
+				  			<li>{!! link_to_route('audits.index','SOS Type') !!}</li>
+				  			<li>{!! link_to_route('audits.index','Enrollment Type') !!}</li>
+				  		</ul>
+				  		
+					</li>
+
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Audits <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
 				  			<li>{!! link_to_route('audits.index','Audit List') !!}</li>
 				  		</ul>
+
 					</li>
 
+					<li class="dropdown">
+				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
+				  		<ul class="dropdown-menu" role="menu">
+				  			<li>{!! link_to_route('audits.index','Audit Report') !!}</li>
+				  			<li>{!! link_to_route('audits.index','User Summary Report') !!}</li>
+				  		</ul>
+				  		
+					</li>
 					
 
 					

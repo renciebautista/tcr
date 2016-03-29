@@ -4,16 +4,7 @@
 
 @include('shared.notifications')
 <section class="content">
-    <div class="w-box">
-        <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">
-                    {{ $audit->description }}
-                    <small class="pull-right">Date Range: {{ $audit->start_date }} - {{ $audit->end_date }}</small>
-                </h2>
-            </div>
-          </div>
-    </div>
+   @include('shared.audit_details')
       
     <div class="row">
 
@@ -21,12 +12,6 @@
           <div class="nav-tabs-custom">
                @include('shared.audit_tab')
                 <div class="tab-content">
-                    <div class="row menu pull-right">
-                        <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadstores','Upload Stores',array($audit),['class' => 'btn btn-primary']) !!}
-                        </div>
-                    </div>
-                    
                     <div class="tab-pane active" id="stores">
                         <div class="row">
                             <div class="col-xs-12">
@@ -39,11 +24,11 @@
                                         <thead>
                                             <tr>
                                                 <th>Category Description</th>
-                                                <th>SOS</th>
-                                                <th>Secondary Display</th>
-                                                <th>OSA</th>
-                                                <th>Custom</th>
-                                                <th>Perfect Store</th>
+                                                <th class="text-center">Secondary Display</th>
+                                                <th class="text-center">OSA</th>
+                                                <th class="text-center">SOS</th>
+                                                <th class="text-center">Custom</th>
+                                                <th class="text-center">Perfect Store</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -51,11 +36,31 @@
                                             @foreach($categories as $category)
                                             <tr>
                                                 <td>{{ $category->category }}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td class="text-center">
+                                                    @if($category->second_display == 1)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($category->osa == 1)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($category->sos == 1)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($category->custome == 1)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($category->perfect_store == 1)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
                                             </tr>
                                             @endforeach
                                             @else

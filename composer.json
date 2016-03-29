@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "laravelcollective/html": "5.2.*",
         "maatwebsite/excel": "~2.1.0",
-        "box/spout": "^2.4"
+        "box/spout": "^2.4",
+        "felixkiss/uniquewith-validator": "2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

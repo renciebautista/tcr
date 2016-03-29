@@ -35,6 +35,7 @@ class AuditController extends Controller
         $audit->description = $request->description;
         $audit->start_date = date('Y-m-d',strtotime($request->start_date));
         $audit->end_date = date('Y-m-d',strtotime($request->end_date));
+        $audit->active = ($request->active) ? 1 : 0;
         $audit->save();
 
         Session::flash('flash_message', 'Audit successfully added!');
