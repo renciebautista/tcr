@@ -32,8 +32,8 @@ class CreateAuditStoresTable extends Migration
             $table->string('template');
             $table->string('agency_code')->nullable();
             $table->string('agency_description')->nullable();
-            $table->integer('audit_users_id')->unsigned();
-            $table->foreign('audit_users_id')->references('id')->on('audit_users');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

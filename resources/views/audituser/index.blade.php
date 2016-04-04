@@ -31,7 +31,7 @@
                                             @if($users->count() > 0)
                                             @foreach($users as $user)
                                             <tr>
-                                                <td>{{ $user->fullname }}</td>
+                                                <td>{{ $user->name }}</td>
                                                 <td>{{ $user->username }}</td>
                                             </tr>
                                             @endforeach

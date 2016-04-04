@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Audit;
-use App\AuditUser;
+use App\User;
 
 class AuditUserController extends Controller
 {
     public function index($id){
     	$audit = Audit::findOrFail($id);
-    	$users = AuditUser::where('audit_id',$audit->id)->get();
+    	$users = User::auditUsers($audit);
     	return view('audituser.index', compact('audit', 'users'));
     }
 }

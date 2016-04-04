@@ -51,7 +51,7 @@
                                                 <td>{{ $store->store_code }}</td>
                                                 <td>{{ $store->store_name }}</td>
                                                 <td>{{ $store->enrollment_type }}</td>
-                                                <td>{{ $store->fielduser->fullname }}</td>
+                                                <td>{{ $store->fielduser->name }}</td>
                                                 <td>{{ $store->template }}</td>
                                             </tr>
                                             @endforeach

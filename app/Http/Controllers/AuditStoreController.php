@@ -14,7 +14,7 @@ class AuditStoreController extends Controller
     public function index($id)
     {
         $audit = Audit::findOrFail($id);
-        $stores = AuditStore::where('audit_id',$id)->get();
+        $stores = AuditStore::with('fielduser')->where('audit_id',$id)->get();
         return view('auditstore.index',compact('audit', 'stores'));
     }
 

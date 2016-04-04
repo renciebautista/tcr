@@ -3,25 +3,44 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\AuditUser;
+use App\Audit;
+
 class AuditStore extends Model
 {
 	public function fielduser(){
-		return $this->belongsTo('App\AuditUser', 'audit_users_id');
+		return $this->belongsTo('App\User', 'user_id');
+	}
+
+	public function audit(){
+		return $this->belongsTo('App\Audit','audit_id');
+	}
+
+	public static function getUserStores(User $user){
+		$dt = date('Y-m-d');
+		$audit = Audit::where('start_date','<=',$dt)
+			->where('end_date','>=',$dt)
+			->first();
+
+		if(!empty($audit)){
+			return self::where('user_id',$user->id)
+				->where('audit_id',$audit->id)
+				->get();
+		}
+
+		return null;
+		
 	}
 
     public static function import($id,$records){
     	\DB::beginTransaction();
 			try {
 				self::where('audit_id',$id)->delete();
-				AuditUser::where('audit_id',$id)->delete();
-
 				$records->each(function($row) use ($id)  {
 					if(!is_null($row->account)){
-						$audituser = AuditUser::where('audit_id', $id)
-							->where('username',$row->username)->first();
-						if(empty($audituser)){
-							$audituser = AuditUser::create(['audit_id' => $id, 'username' => $row->username, 'password' => \Hash::make($row->username), 'fullname' => $row->fullname, 'email' => $row->email]);
+
+						$user = User::where('username',$row->username)->first();
+						if(empty($user)){
+							$user = User::create(['name' => $row->fullname, 'username' => $row->username, 'password' => \Hash::make($row->username)]);
 						}
 
 						$store = new AuditStore;
@@ -42,7 +61,7 @@ class AuditStore extends Model
 						$store->template = $row->template;
 						$store->agency_code = $row->agency_code;
 						$store->agency_description = $row->agency_description;
-						$store->audit_users_id = $audituser->id;
+						$store->user_id = $user->id;
 						$store->save();
 				}
 				

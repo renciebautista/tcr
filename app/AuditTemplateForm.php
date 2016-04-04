@@ -9,6 +9,9 @@ class AuditTemplateForm extends Model
     public $timestamps = false;
     protected $fillable = ['audit_template_id', 'audit_template_group_id', 'form_id', 'order'];
 
+    public function form(){
+		return $this->belongsTo('App\Form','form_id','id');
+	}
 
     public static function getLastOrder($group_id){
 		return self::where('audit_template_group_id',$group_id)

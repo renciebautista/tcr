@@ -75,6 +75,7 @@ Route::group(['middleware' => ['web']], function () {
 
 Route::group(array('prefix' => 'api'), function()
 {
-   Route::get('auth', 'Api\AuthController@auth');
+   	Route::get('auth', 'Api\AuthController@auth');
+    Route::get('download', 'Api\DownloadController@index');
 
 });//
