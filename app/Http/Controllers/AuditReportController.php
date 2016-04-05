@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\PostedAudit;
+
 class AuditReportController extends Controller
 {
     public function index(){
     	
-    	return view('auditreport.index');
+    	$audits = PostedAudit::orderBy('updated_at', 'desc')->get();
+    	return view('auditreport.index',compact('audits'));
     }
 }

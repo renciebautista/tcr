@@ -8,15 +8,15 @@
 
 	<div class="box box-default">
         <div class="box-header with-border">
-          	<h3 class="box-title">Posted Audit Report Filters</h3>
+          	<h3 class="box-title">User Summary Report Filters</h3>
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>User</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">Jeff Lim</option>
+	                  	<option selected="selected">All Users</option>
 	                  	<option>Alaska</option>
 	                  	<option>California</option>
 	                  	<option>Delaware</option>
@@ -26,21 +26,7 @@
 	                </select>
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Store Name</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">All Stores</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
-	              </div>
-	            </div>
-	            <div class="col-md-3">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>Audit Name</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -54,21 +40,8 @@
 	                </select>
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Perpect Store</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">All Status</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
-	              </div>
-	            </div>
           	</div>
+
         </div>
 
         <div class="box-footer">
@@ -85,30 +58,35 @@
 						<tbody>
 							<tr>
 								<th>User</th>
-								<th>Store Name</th>
 								<th>Audit Name</th>
-								<th>Perfect Store</th>
-								<th>OSA %</th>
-								<th>NPI %</th>
-								<th>Planogram %</th>
-								<th>Posting Date</th>
+								<th>Stores Mapped</th>
+								<th>Stores Visited</th>
+								<th>Perfect Stores</th>
+								<th>To be Visited</th>
 								<th>Action</th>
 							</tr>
-
-							@foreach($audits as $audit)
 							<tr>
-								<td>{{ $audit->user->name }}</td>
-								<td>{{ $audit->store_name }}</td>
-								<td>{{ $audit->audit->description }}</td>
-								<td>{{ $audit->isPerfectStore() }}</td>
-								<td>{{ $audit->osa }}%</td>
-								<td>{{ $audit->npi }}%</td>
-								<td>{{ $audit->planogram }}%</td>
-								<td>{{ $audit->updated_at }}</td>
+								<td>Jeff Lim</td>
+								<td>March 2016</td>
+								<td>20</td>
+								<td>4</td>
+								<td>1</td>
+								<td>16</td>
 								<td>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Store List</a>
 								</td>
 							</tr>
-							@endforeach
+							<tr>
+								<td>Pauey Silva</td>
+								<td>March 2016</td>
+								<td>20</td>
+								<td>4</td>
+								<td>1</td>
+								<td>16</td>
+								<td>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Store List</a>
+								</td>
+							</tr>
 							
 						</tbody>
 					</table>

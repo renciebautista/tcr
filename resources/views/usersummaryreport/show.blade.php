@@ -16,23 +16,23 @@
                 <tbody>
                 <tr>
                   	<td>User</td>
-                  	<td>Jeff Lim</td>
+                  	<td>{{ $detail->user_name }}</td>
                 </tr>
                 <tr>
                   	<td>Audit Name</td>
-                  	<td>March 2016</td>
+                  	<td>{{ $detail->audit_description }}</td>
                 </tr>
                 <tr>
                   	<td>Stores Mapped</td>
-                  	<td>20</td>
+                  	<td>{{ $detail->mapped_stores }}</td>
                 </tr>
                 <tr>
                   	<td>Stores Audited</td>
-                  	<td>4</td>
+                  	<td>{{ $detail->store_visited }}</td>
                 </tr>
                 <tr>
                   	<td>Perfect Stores</td>
-                  	<td>1</td>
+                  	<td>{{ $detail->perfect_stores }}</td>
                 </tr>
                 <tr>
                   	<td>% Achievement</td>
@@ -50,6 +50,9 @@
                 
               </tbody></table>
           	</div>
+          	 <div class="col-xs-12">
+	            {!! link_to_route('usersummaryreport.index','Back',array(),['class' => 'btn btn-default']) !!}
+	        </div>
         </div>
 
       </div>
@@ -71,46 +74,21 @@
 								<th>Posting Date</th>
 								<th>Action</th>
 							</tr>
+							@foreach($stores as $store)
 							<tr>
-								<td></td>
-								<td>SSM Fairview</td>
-								<td>March 2016</td>
-								<td>No</td>
-								<td>99%</td>
-								<td>96%</td>
-								<td>65%</td>
-								<td>Thursday, March 17, 2016</td>
+								<td>{{ $store->store_code }}</td>
+								<td>{{ $store->store_name }}</td>
+								<td>{{ $store->audit->description }}</td>
+								<td>{{ $store->isPerfectStore() }}</td>
+								<td>{{ $store->osa }}%</td>
+								<td>{{ $store->npi }}%</td>
+								<td>{{ $store->planogram }}%</td>
+								<td>{{ $store->updated_at }}</td>
 								<td>
 									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Audit Summary</a>
 								</td>
 							</tr>
-							<tr>
-								<td></td>
-								<td>SVI Fairview</td>
-								<td>March 2016</td>
-								<td>Yes</td>
-								<td>99%</td>
-								<td>96%</td>
-								<td>65%</td>
-								<td>Thursday, March 17, 2016</td>
-								<td>
-									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Audit Summary</a>
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>SMCO Zabarte</td>
-								<td>March 2016</td>
-								<td>No</td>
-								<td>99%</td>
-								<td>96%</td>
-								<td>65%</td>
-								<td>Thursday, March 17, 2016</td>
-								<td>
-									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Audit Summary</a>
-								</td>
-							</tr>
-							
+							@endforeach
 						</tbody>
 					</table>
 				</div><!-- /.box-body -->

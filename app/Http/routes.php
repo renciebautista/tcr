@@ -73,7 +73,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
-    Route::get('usersummaryreport/{id}/stores',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
+    Route::get('usersummaryreport/{audit_id}/store/{store_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
 
     Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
@@ -85,5 +85,7 @@ Route::group(array('prefix' => 'api'), function()
 {
    	Route::get('auth', 'Api\AuthController@auth');
     Route::get('download', 'Api\DownloadController@index');
+    Route::post('storeaudit', 'Api\UploadController@storeaudit');
+   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
 
 });//

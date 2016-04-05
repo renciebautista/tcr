@@ -12,7 +12,7 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>User</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -26,7 +26,7 @@
 	                </select>
 	              </div>
 	            </div>
-	            <div class="col-md-3">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>Store Name</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -40,7 +40,7 @@
 	                </select>
 	              </div>
 	            </div>
-	            <div class="col-md-3">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>Audit Name</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -54,7 +54,10 @@
 	                </select>
 	              </div>
 	            </div>
-	            <div class="col-md-3">
+          	</div>
+
+          	<div class="row">
+	            <div class="col-md-4">
 	              <div class="form-group">
 	                <label>Perpect Store</label>
 	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
@@ -94,21 +97,48 @@
 								<th>Posting Date</th>
 								<th>Action</th>
 							</tr>
-
-							@foreach($audits as $audit)
 							<tr>
-								<td>{{ $audit->user->name }}</td>
-								<td>{{ $audit->store_name }}</td>
-								<td>{{ $audit->audit->description }}</td>
-								<td>{{ $audit->isPerfectStore() }}</td>
-								<td>{{ $audit->osa }}%</td>
-								<td>{{ $audit->npi }}%</td>
-								<td>{{ $audit->planogram }}%</td>
-								<td>{{ $audit->updated_at }}</td>
+								<td>Jeff Lim</td>
+								<td>SSM Fairview</td>
+								<td>March 2016</td>
+								<td>No</td>
+								<td>99%</td>
+								<td>96%</td>
+								<td>65%</td>
+								<td>Thursday, March 17, 2016</td>
 								<td>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Summary</a>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Details</a>
 								</td>
 							</tr>
-							@endforeach
+							<tr>
+								<td>Jeff Lim</td>
+								<td>SVI Fairview</td>
+								<td>March 2016</td>
+								<td>Yes</td>
+								<td>99%</td>
+								<td>96%</td>
+								<td>65%</td>
+								<td>Thursday, March 17, 2016</td>
+								<td>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Summary</a>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Details</a>
+								</td>
+							</tr>
+							<tr>
+								<td>Jeff Lim</td>
+								<td>SMCO Zabarte</td>
+								<td>March 2016</td>
+								<td>No</td>
+								<td>99%</td>
+								<td>96%</td>
+								<td>65%</td>
+								<td>Thursday, March 17, 2016</td>
+								<td>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Summary</a>
+									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Download Details</a>
+								</td>
+							</tr>
 							
 						</tbody>
 					</table>

@@ -61,32 +61,24 @@
 								<th>Audit Name</th>
 								<th>Stores Mapped</th>
 								<th>Stores Visited</th>
-								<th>Perfect Stores</th>
 								<th>To be Visited</th>
+								<th>Perfect Stores</th>
 								<th>Action</th>
 							</tr>
+							@foreach($user_summaries as $summary)
 							<tr>
-								<td>Jeff Lim</td>
-								<td>March 2016</td>
-								<td>20</td>
-								<td>4</td>
-								<td>1</td>
-								<td>16</td>
+								<td>{{ $summary->user_name }}</td>
+								<td>{{ $summary->audit_description }}</td>
+								<td>{{ $summary->mapped_stores }}</td>
+								<td>{{ $summary->store_visited }}</td>
+								<td>{{ $summary->to_visited }}</td>
+								<td>{{ $summary->perfect_stores }}</td>
 								<td>
+									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Store List</a>
 								</td>
 							</tr>
-							<tr>
-								<td>Pauey Silva</td>
-								<td>March 2016</td>
-								<td>20</td>
-								<td>4</td>
-								<td>1</td>
-								<td>16</td>
-								<td>
-									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Store List</a>
-								</td>
-							</tr>
+							@endforeach
 							
 						</tbody>
 					</table>
