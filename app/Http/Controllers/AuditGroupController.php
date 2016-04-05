@@ -16,7 +16,7 @@ class AuditGroupController extends Controller
     	return view('auditgroup.index', compact('audit', 'groups'));
     }
 
-    public function update(Request $request){
+    public function store(Request $request,$id){
     	if($request->ajax()){
 	        $value = $request->value;
 	        $text = $request->name;

@@ -87,11 +87,11 @@ $(".chk-update").change(function () {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        method: "PUT",
+        method: "POST",
         url: "{{ route('audits.groups_update', $audit->id) }}",
         async: true,
         data: {
-            method: "PUT",
+            method: "POST",
             name: name,
             value: value
         },
