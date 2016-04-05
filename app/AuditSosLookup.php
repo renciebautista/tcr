@@ -178,4 +178,177 @@ class AuditSosLookup extends Model
 
 		$reader->close();
    	}
+
+
+    public static function getSosCategory($id){
+        $store = AuditStore::find($id);
+
+        // store level
+        $template = self::where('store_code',$store->store_code)->first(); 
+        if(!empty($template)){ 
+            return $template; //0001
+        }
+
+        $template = self::where('customer_code',$store->customer_code)->get();
+        if(count($template) > 0){
+
+            $template = self::where('customer_code',$store->customer_code)
+                ->where('region_code',$store->region_code)
+                ->get();
+            if(count($template) > 0){
+
+                $template = self::where('customer_code',$store->customer_code)
+                    ->where('region_code',$store->region_code)
+                    ->where('distributor_code',$store->distributor_code)
+                    ->get();
+                if(count($template) > 0){
+                    $template = self::where('customer_code',$store->customer_code)
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                    if(!empty($template)){ 
+                        return $template; //1111
+                    }else{
+                        return self::where('customer_code',$store->customer_code) //1110
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }else{
+                    $template = self::where('customer_code',$store->customer_code)
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                    if(!empty($template)){ 
+                        return $template; //1101
+                    }else{
+                        return self::where('customer_code',$store->customer_code) //1100
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }
+            }else{
+                $template = self::where('customer_code',$store->customer_code)
+                    ->where('region_code',0)
+                    ->where('distributor_code',$store->distributor_code)
+                    ->get();
+                if(count($template) > 0){
+                    $template = self::where('customer_code',$store->customer_code)
+                        ->where('region_code',0)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                    if(!empty($template)){ 
+                        return $template; //1011
+                    }else{
+                        return self::where('customer_code',$store->customer_code) //1010
+                        ->where('region_code',0)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }else{
+                    $template = self::where('customer_code',$store->customer_code)
+                        ->where('region_code',0)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                     if(!empty($template)){ 
+                        return $template; //1001
+                    }else{
+                        return self::where('customer_code',$store->customer_code) //1000
+                        ->where('region_code',0)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }
+            }
+        }else{
+            $template = self::where('customer_code',0)
+                ->where('region_code',$store->region_code)
+                ->get();
+            if(count($template) > 0){
+                $template = self::where('customer_code',0)
+                    ->where('region_code',$store->region_code)
+                    ->where('distributor_code',$store->distributor_code)
+                    ->get();
+                if(count($template) > 0){
+                    $template = self::where('customer_code',0) 
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                     if(!empty($template)){ 
+                        return $template; //0111
+                    }else{
+                        return self::where('customer_code',0) // 0110
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }else{
+                    $template = self::where('customer_code',0) 
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                    if(!empty($template)){ 
+                        return $template; //0101
+                    }else{
+                        return self::where('customer_code',0) // 0100
+                        ->where('region_code',$store->region_code)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }
+            }else{
+                $template = self::where('customer_code',0)
+                    ->where('region_code',0)
+                    ->where('distributor_code',$store->distributor_code)
+                    ->get();
+                if(count($template) > 0){
+                    $template = self::where('customer_code',0)
+                        ->where('region_code',0)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                     if(!empty($template)){ 
+                        return $template; // 0011
+                    }else{
+                        return self::where('customer_code',0) //0010
+                        ->where('region_code',0)
+                        ->where('distributor_code',$store->distributor_code)
+                        ->where('channel_code',0)
+                        ->first();
+                    }
+                }else{
+                    $template = self::where('customer_code',0)
+                        ->where('region_code',0)
+                        ->where('distributor_code',0)
+                        ->where('channel_code',$store->channel_code)
+                        ->first();
+                     if(!empty($template)){ 
+                        return $template; // 0001
+                    }else{
+                        return self::where('customer_code',0) // 0000
+                            ->where('region_code',0)
+                            ->where('distributor_code',0)
+                            ->where('channel_code',0)
+                            ->where('store_code',0)
+                            ->first();
+                    }
+                }
+            }
+            
+        }
+
+    }
 }
