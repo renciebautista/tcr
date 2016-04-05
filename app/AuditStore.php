@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Audit;
+use App\EnrollmentType;
 
 class AuditStore extends Model
 {
@@ -13,6 +14,10 @@ class AuditStore extends Model
 
 	public function audit(){
 		return $this->belongsTo('App\Audit','audit_id');
+	}
+
+	public function auditEnrollment(){
+		return $this->belongsTo('App\AuditEnrollmentTypeMapping','audit_enrollment_type_mapping_id');
 	}
 
 	public static function getUserStores(User $user){
@@ -34,13 +39,25 @@ class AuditStore extends Model
     public static function import($id,$records){
     	\DB::beginTransaction();
 			try {
+				AuditEnrollmentTypeMapping::where('audit_id',$id)->delete();
 				self::where('audit_id',$id)->delete();
+
 				$records->each(function($row) use ($id)  {
 					if(!is_null($row->account)){
 
 						$user = User::where('username',$row->username)->first();
 						if(empty($user)){
 							$user = User::create(['name' => $row->fullname, 'username' => $row->username, 'password' => \Hash::make($row->username)]);
+						}
+
+						$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
+						if(empty($enrollment_type)){
+							$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
+						}
+
+						$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$id)->where('enrollment_type_id',$enrollment_type->id)->first();
+						if(empty($audit_enrollment_mapping)){
+							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
 						}
 
 						$store = new AuditStore;
@@ -56,13 +73,15 @@ class AuditStore extends Model
 						$store->distributor = $row->distributor;
 						$store->store_code = $row->store_code;
 						$store->store_name = $row->store_name;
-						$store->enrollment_type = $row->enrollment_type;
+						$store->audit_enrollment_type_mapping_id = $audit_enrollment_mapping->id;
 						$store->channel_code = $row->channel_code;
 						$store->template = $row->template;
 						$store->agency_code = $row->agency_code;
 						$store->agency_description = $row->agency_description;
 						$store->user_id = $user->id;
 						$store->save();
+
+
 				}
 				
 			});

@@ -17,8 +17,8 @@
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">File Maintenane <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
-				  			<li>{!! link_to_route('audits.index','SOS Type') !!}</li>
-				  			<li>{!! link_to_route('audits.index','Enrollment Type') !!}</li>
+				  			<li>{!! link_to_route('sostypes.index','SOS Type') !!}</li>
+				  			<li>{!! link_to_route('enrollmenttypes.index','Enrollment Type') !!}</li>
 				  		</ul>
 				  		
 					</li>

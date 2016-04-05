@@ -13,9 +13,7 @@ class AuthController extends Controller
         $usernameinput = $request->email;
         $password = $request->pwd;
 
-        $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-
-        if (\Auth::attempt(array($field => $usernameinput, 'password' => $password), false))
+        if (\Auth::attempt(array('username' => $usernameinput, 'password' => $password), false))
         {
             $user = \Auth::user();
             return response()->json($user);

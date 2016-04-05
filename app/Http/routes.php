@@ -66,12 +66,17 @@ Route::group(['middleware' => ['web']], function () {
 	Route::put('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargetsupdate', 'uses' => 'AuditSosTargetController@update']);
 	Route::get('audits/{audit}/uploadsostargets',['as' => 'audits.uploadsostargets', 'uses' => 'AuditSosTargetController@create']);
 	Route::post('audits/{audit}/postuploadsostargets',['as' => 'audits.postuploadsostargets', 'uses' => 'AuditSosTargetController@store']);
+
+	Route::get('audits/{id}/enrollments',['as' => 'audits.enrollments', 'uses' => 'AuditEnrollmentController@index']);
 	
     Route::resource('audits', 'AuditController');
 
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
     Route::get('usersummaryreport/{id}/stores',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
+
+    Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
+    Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
 
 });
 

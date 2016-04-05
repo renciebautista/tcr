@@ -59,11 +59,8 @@ class DownloadController extends Controller
                     $store_ids[] = $store->id;
                     $data[0] = $store->id;
                     $data[1] = $store->store_name;
-                    // $data[2] = $store->gradematrix->passing;
-                    $data[2] = 0;
-                    // $data[3] = $store->audit_template_id;
+                    $data[2] = $store->auditEnrollment->value;
                     $data[3] = $audit_template->id;
-                    // $data[4] = $store->audittemplate->template;
                     $data[4] = $store->template;
                     $data[5] = 0;
                     $data[6] = 0;
@@ -80,7 +77,6 @@ class DownloadController extends Controller
                     $data[16] = $store->region;
                     $data[17] = $store->distributor_code;
                     $data[18] = $store->distributor;
-                    // $data[19] = $store->audittemplate->template_code;
                     $data[19] = $store->channel_code;
                     $writer->addRow($data); 
                 }

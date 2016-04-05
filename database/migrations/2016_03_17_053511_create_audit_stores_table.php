@@ -27,7 +27,8 @@ class CreateAuditStoresTable extends Migration
             $table->string('distributor');
             $table->string('store_code');
             $table->string('store_name');
-            $table->string('enrollment_type')->nullable();
+            $table->integer('audit_enrollment_type_mapping_id')->unsigned();
+            $table->foreign('audit_enrollment_type_mapping_id')->references('id')->on('audit_enrollment_type_mappings');
             $table->string('channel_code')->nullable();
             $table->string('template');
             $table->string('agency_code')->nullable();
