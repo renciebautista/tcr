@@ -34,8 +34,8 @@
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
-				  			<li>{!! link_to_route('audits.index','Audit Report') !!}</li>
-				  			<li>{!! link_to_route('audits.index','User Summary Report') !!}</li>
+				  			<li>{!! link_to_route('auditreport.index','Posted Audit Report') !!}</li>
+				  			<li>{!! link_to_route('usersummaryreport.index','User Summary Report') !!}</li>
 				  		</ul>
 				  		
 					</li>

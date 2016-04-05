@@ -69,6 +69,9 @@ Route::group(['middleware' => ['web']], function () {
 	
     Route::resource('audits', 'AuditController');
 
+    Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
+    Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
+    Route::get('usersummaryreport/{id}/stores',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
 
 });
 
