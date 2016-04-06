@@ -39,49 +39,50 @@ class AuditStore extends Model
     public static function import($id,$records){
     	\DB::beginTransaction();
 			try {
-				AuditEnrollmentTypeMapping::where('audit_id',$id)->delete();
+				
 				self::where('audit_id',$id)->delete();
+				AuditEnrollmentTypeMapping::where('audit_id',$id)->delete();
 
 				$records->each(function($row) use ($id)  {
 					if(!is_null($row->account)){
 
-						$user = User::where('username',$row->username)->first();
-						if(empty($user)){
-							$user = User::create(['name' => $row->fullname, 'username' => $row->username, 'password' => \Hash::make($row->username)]);
+						if(!empty($row->username)){
+							$user = User::where('username',$row->username)->first();
+							if(empty($user)){
+								$user = User::create(['name' => $row->fullname, 'username' => $row->username, 'password' => \Hash::make($row->username)]);
+							}
+
+							$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
+							if(empty($enrollment_type)){
+								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
+							}
+
+							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$id)->where('enrollment_type_id',$enrollment_type->id)->first();
+							if(empty($audit_enrollment_mapping)){
+								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
+							}
+
+							$store = new AuditStore;
+							$store->audit_id = $id;
+							$store->account = $row->account;
+							$store->customer_code = $row->customer_code;
+							$store->customer = $row->customer;
+							$store->area = $row->area;
+							$store->region_code = $row->region_code;
+							$store->region = $row->region;
+							$store->remarks = $row->remarks;
+							$store->distributor_code = $row->distributor_code;
+							$store->distributor = $row->distributor;
+							$store->store_code = $row->store_code;
+							$store->store_name = $row->store_name;
+							$store->audit_enrollment_type_mapping_id = $audit_enrollment_mapping->id;
+							$store->channel_code = $row->channel_code;
+							$store->template = $row->template;
+							$store->agency_code = $row->agency_code;
+							$store->agency_description = $row->agency_description;
+							$store->user_id = $user->id;
+							$store->save();
 						}
-
-						$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
-						if(empty($enrollment_type)){
-							$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
-						}
-
-						$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$id)->where('enrollment_type_id',$enrollment_type->id)->first();
-						if(empty($audit_enrollment_mapping)){
-							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
-						}
-
-						$store = new AuditStore;
-						$store->audit_id = $id;
-						$store->account = $row->account;
-						$store->customer_code = $row->customer_code;
-						$store->customer = $row->customer;
-						$store->area = $row->area;
-						$store->region_code = $row->region_code;
-						$store->region = $row->region;
-						$store->remarks = $row->remarks;
-						$store->distributor_code = $row->distributor_code;
-						$store->distributor = $row->distributor;
-						$store->store_code = $row->store_code;
-						$store->store_name = $row->store_name;
-						$store->audit_enrollment_type_mapping_id = $audit_enrollment_mapping->id;
-						$store->channel_code = $row->channel_code;
-						$store->template = $row->template;
-						$store->agency_code = $row->agency_code;
-						$store->agency_description = $row->agency_description;
-						$store->user_id = $user->id;
-						$store->save();
-
-
 				}
 				
 			});

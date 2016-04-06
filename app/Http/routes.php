@@ -86,6 +86,7 @@ Route::group(array('prefix' => 'api'), function()
    	Route::get('auth', 'Api\AuthController@auth');
     Route::get('download', 'Api\DownloadController@index');
     Route::post('storeaudit', 'Api\UploadController@storeaudit');
+    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
    	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
 
 });//
