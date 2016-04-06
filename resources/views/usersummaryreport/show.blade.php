@@ -61,19 +61,22 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th>Store Code</th>
+                <th>Store Name</th>
+                <th>Audit Name</th>
+                <th>Perfect Store</th>
+                <th>OSA %</th>
+                <th>NPI %</th>
+                <th>Planogram %</th>
+                <th>Posting Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 						<tbody>
-							<tr>
-								<th>Store Code</th>
-								<th>Store Name</th>
-								<th>Audit Name</th>
-								<th>Perfect Store</th>
-								<th>OSA %</th>
-								<th>NPI %</th>
-								<th>Planogram %</th>
-								<th>Posting Date</th>
-								<th>Action</th>
-							</tr>
+							
 							@foreach($stores as $store)
 							<tr>
 								<td>{{ $store->store_code }}</td>
@@ -85,7 +88,7 @@
 								<td>{{ $store->planogram }}%</td>
 								<td>{{ $store->updated_at }}</td>
 								<td>
-									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Audit Summary</a>
+                  {!! link_to_action('StoreSummaryReportController@show', 'Store Summary', $store->id,  ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
 							</tr>
 							@endforeach

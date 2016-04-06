@@ -15,13 +15,16 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
-						<tbody>
+					<table class="table table-hover table-striped">
+						<thead>
 							<tr>
 								<td>ID</td>
 								<th>SOS Type</th>
 								<th>Action</th>
 							</tr>
+						</thead>
+						<tbody>
+							
 							@foreach($sostypes as $sostype)
 							<tr>
 								<td>{{ $sostype->id }}</td>

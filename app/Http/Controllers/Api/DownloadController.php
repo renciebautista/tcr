@@ -81,6 +81,7 @@ class DownloadController extends Controller
                     $data[17] = $store->distributor_code;
                     $data[18] = $store->distributor;
                     $data[19] = $store->channel_code;
+                    $data[20] = $store->audit_id;
                     $writer->addRow($data); 
                 }
                 

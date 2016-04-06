@@ -74,6 +74,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
     Route::get('usersummaryreport/{audit_id}/store/{store_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
+    Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 
     Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);

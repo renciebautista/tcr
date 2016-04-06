@@ -54,8 +54,8 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
-						<tbody>
+					<table class="table table-hover table-striped">
+						<thead>
 							<tr>
 								<th>User</th>
 								<th>Audit Name</th>
@@ -65,6 +65,9 @@
 								<th>Perfect Stores</th>
 								<th>Action</th>
 							</tr>
+						</thead>
+						<tbody>
+							
 							@foreach($user_summaries as $summary)
 							<tr>
 								<td>{{ $summary->user_name }}</td>
@@ -75,7 +78,6 @@
 								<td>{{ $summary->perfect_stores }}</td>
 								<td>
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
-									<a href="http://www.tcr.chasetech.com/auditreport/64/summary" class="btn btn-xs btn btn-primary">Store List</a>
 								</td>
 							</tr>
 							@endforeach

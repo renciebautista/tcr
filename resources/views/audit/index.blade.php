@@ -20,8 +20,8 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
-						<tbody>
+					<table class="table table-hover table-striped">
+						<thead>
 							<tr>
 								<th>ID</th>
 								<th>Description</th>
@@ -30,6 +30,9 @@
 								<th class="text-center">Active</th>
 								<th>Action</th>
 							</tr>
+						</thead>
+						<tbody>
+							
 							@foreach($audits as $audit)
 							<tr>
 								<td>{{ $audit->id }}</td>

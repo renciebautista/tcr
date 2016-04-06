@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="box-body table-responsive no-padding">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <table id="store_table" class="table table-hover">
+                                    <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Group Description</th>

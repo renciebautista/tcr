@@ -27,7 +27,7 @@
                                     <h5 class="pull-right">{{ $soslookups->count() }} {{str_plural('record', $soslookups->count())}} found.</h5>
                                 </div>
                                 <div class="box-body table-responsive no-padding">
-                                    <table id="store_table" class="table table-hover">
+                                    <table class="table table-hover table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Customer</th>

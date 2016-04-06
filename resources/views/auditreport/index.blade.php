@@ -81,8 +81,8 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
-						<tbody>
+					<table class="table table-hover table-striped">
+						<thead>
 							<tr>
 								<th>User</th>
 								<th>Store Name</th>
@@ -94,6 +94,9 @@
 								<th>Posting Date</th>
 								<th>Action</th>
 							</tr>
+						</thead>
+						<tbody>
+							
 
 							@foreach($audits as $audit)
 							<tr>

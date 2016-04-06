@@ -15,14 +15,17 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover">
-						<tbody>
+					<table class="table table-hover table-striped">
+						<thead>
 							<tr>
 								<td>ID</td>
 								<th>Enrollment Type</th>
 								<th>Target Default Value</th>
 								<th>Action</th>
 							</tr>
+						</thead>
+						<tbody>
+							
 							@foreach($enrollmenttypes as $enrollmenttype)
 							<tr>
 								<td>{{ $enrollmenttype->id }}</td>
