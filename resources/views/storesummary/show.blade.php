@@ -25,9 +25,14 @@
                         <td>{{ $store->audit->description }}</td>
                     </tr>
                     <tr>
+                        <td>Audit Template</td>
+                        <td>{{ $store->template }}</td>
+                    </tr>
+                    <tr>
                         <td>User Name</td>
                         <td>{{ $store->user->name }}</td>
                     </tr>
+                    
                     <tr>
                         <td>Perfect Store</td>
                         <td>{{ $store->isPerfectStore() }}</td>
@@ -60,6 +65,7 @@
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th></th>
                                 @foreach($categories as $category)
                                 <th class="center">{{ $category->category }}</th>
                                 @endforeach
@@ -70,7 +76,12 @@
                             <tr>
                                 <th class="row-header">{{ $group->group_desc }}</th>
                                 @foreach($categories as $category)
-                                <td class="center" > <i class="fa fa-fw fa-check"></i></td>
+                                <td class="center">
+
+                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 1))
+                                    <i class="fa fa-fw fa-check"></i>
+                                    @endif
+                                </td>
                                 @endforeach
                             </tr>
                           @endforeach
