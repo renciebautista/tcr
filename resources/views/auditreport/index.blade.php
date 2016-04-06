@@ -87,11 +87,11 @@
 								<th>User</th>
 								<th>Store Name</th>
 								<th>Audit Name</th>
-								<th>Perfect Store</th>
-								<th>OSA %</th>
-								<th>NPI %</th>
-								<th>Planogram %</th>
-								<th>Posting Date</th>
+								<th class="center" >Perfect Store</th>
+								<th class="right">OSA %</th>
+								<th class="right">NPI %</th>
+								<th class="right">Planogram %</th>
+								<th >Posting Date</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -103,12 +103,13 @@
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
 								<td>{{ $audit->audit->description }}</td>
-								<td>{{ $audit->isPerfectStore() }}</td>
-								<td>{{ $audit->osa }}%</td>
-								<td>{{ $audit->npi }}%</td>
-								<td>{{ $audit->planogram }}%</td>
+								<td class="center">{{ $audit->isPerfectStore() }}</td>
+								<td class="right">{{ $audit->osa }}%</td>
+								<td class="right">{{ $audit->npi }}%</td>
+								<td class="right">{{ $audit->planogram }}%</td>
 								<td>{{ $audit->updated_at }}</td>
 								<td>
+									{!! link_to_route('auditreport.download', 'Download Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
 							</tr>
 							@endforeach
