@@ -80,15 +80,17 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
 
+    Route::get('auditimage/{folder}/{filename}', 'Api\DownloadController@auditimage');
+    Route::group(array('prefix' => 'api'), function()
+	{
+	   	Route::get('auth', 'Api\AuthController@auth');
+	    Route::get('download', 'Api\DownloadController@index');
+	    Route::post('storeaudit', 'Api\UploadController@storeaudit');
+	    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
+	   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
+
+	});
 });
 
 
-Route::group(array('prefix' => 'api'), function()
-{
-   	Route::get('auth', 'Api\AuthController@auth');
-    Route::get('download', 'Api\DownloadController@index');
-    Route::post('storeaudit', 'Api\UploadController@storeaudit');
-    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
-   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
 
-});//

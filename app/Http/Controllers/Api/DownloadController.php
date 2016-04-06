@@ -488,4 +488,29 @@ class DownloadController extends Controller
         }
    
     }
+
+    public function image(Request $request){
+        $filename = $request->name;
+        $myfile = storage_path().'/surveyimages/'.$filename;
+
+        if (!\File::exists($myfile))
+        {
+            echo "File not exists.";
+        }else{
+            return \Response::download($myfile, $filename);
+        }
+    }
+
+    public function auditimage($folder,$filename){
+        
+        $myfile = storage_path().'/uploads/image/'.$folder."/".$filename;
+
+        if (!\File::exists($myfile))
+        {
+            echo "File not exists.";
+        }else{
+            return \Response::download($myfile, $filename);
+        }
+        
+    }
 }
