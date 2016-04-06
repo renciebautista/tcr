@@ -12,8 +12,22 @@ use App\PostedAuditDetail;
 class AuditReportController extends Controller
 {
     public function index(){
-    	$audits = PostedAudit::orderBy('updated_at', 'desc')->get();
-    	return view('auditreport.index',compact('audits'));
+        $users = PostedAudit::getUsers()->lists('name','user_id');
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');
+        $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
+        $status = ['0' => 'NO','1' => 'YES'];
+    	$posted_audits = PostedAudit::orderBy('updated_at', 'desc')->get();
+    	return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores'));
+    }
+
+    public function create(Request $request){
+        $request->flash();
+        $users = PostedAudit::getUsers()->lists('name','user_id');
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');
+        $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
+        $status = ['0' => 'NO','1' => 'YES'];
+        $posted_audits = PostedAudit::search($request);
+        return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores'));
     }
 
     public function download($id){

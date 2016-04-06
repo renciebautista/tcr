@@ -67,10 +67,10 @@
                 <th>Store Code</th>
                 <th>Store Name</th>
                 <th>Audit Name</th>
-                <th>Perfect Store</th>
-                <th>OSA %</th>
-                <th>NPI %</th>
-                <th>Planogram %</th>
+                <th class="center">Perfect Store</th>
+                <th class="right">OSA %</th>
+                <th class="right">NPI %</th>
+                <th class="right">Planogram %</th>
                 <th>Posting Date</th>
                 <th>Action</th>
               </tr>
@@ -82,10 +82,10 @@
 								<td>{{ $store->store_code }}</td>
 								<td>{{ $store->store_name }}</td>
 								<td>{{ $store->audit->description }}</td>
-								<td>{{ $store->isPerfectStore() }}</td>
-								<td>{{ $store->osa }}%</td>
-								<td>{{ $store->npi }}%</td>
-								<td>{{ $store->planogram }}%</td>
+								<td class="center">{{ $store->isPerfectStore() }}</td>
+								<td class="right">{{ $store->osa }}%</td>
+								<td class="right">{{ $store->npi }}%</td>
+								<td class="right">{{ $store->planogram }}%</td>
 								<td>{{ $store->updated_at }}</td>
 								<td>
                   {!! link_to_action('StoreSummaryReportController@show', 'Store Summary', $store->id,  ['class' => 'btn btn-xs btn btn-primary']) !!}

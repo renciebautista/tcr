@@ -72,8 +72,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('audits', 'AuditController');
 
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
+    Route::post('auditreport',['as' => 'auditreport.create', 'uses' => 'AuditReportController@create']);
     Route::get('auditreport/{id}/download',['as' => 'auditreport.download', 'uses' => 'AuditReportController@download']);
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
+    Route::post('usersummaryreport',['as' => 'usersummaryreport.create', 'uses' => 'UserSummaryReportController@create']);
     Route::get('usersummaryreport/{audit_id}/store/{store_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
     Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 

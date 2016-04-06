@@ -7,6 +7,8 @@
 <section class="content">
 
 	<div class="box box-default">
+		{!! Form::open(array('route' => array('auditreport.create'), 'method' => 'POST')) !!}
+
         <div class="box-header with-border">
           	<h3 class="box-title">Posted Audit Report Filters</h3>
         </div>
@@ -15,57 +17,25 @@
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>User</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">Jeff Lim</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
+	                {!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Store Name</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">All Stores</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
+	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Name</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">March 2016</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Perpect Store</label>
-	                <select class="form-control" style="width: 100%;" tabindex="-1" aria-hidden="true">
-	                  	<option selected="selected">All Status</option>
-	                  	<option>Alaska</option>
-	                  	<option>California</option>
-	                  	<option>Delaware</option>
-	                  	<option>Tennessee</option>
-	                  	<option>Texas</option>
-	                  <option>Washington</option>
-	                </select>
+	               	{!! Form::select('status[]', $status, null, array('class' => 'form-control select_form', 'id' => 'status', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
           	</div>
@@ -75,7 +45,9 @@
             <button type="submit" class="btn btn-primary">Process</button>
             <button type="submit" class="btn btn-success">Downlod</button>
         </div>
-      </div>
+        {{  Form::close() }}
+
+     </div>
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -92,13 +64,13 @@
 								<th class="right">NPI %</th>
 								<th class="right">Planogram %</th>
 								<th >Posting Date</th>
-								<th>Action</th>
+								<th class="center">Action</th>
 							</tr>
 						</thead>
 						<tbody>
 							
 
-							@foreach($audits as $audit)
+							@foreach($posted_audits as $audit)
 							<tr>
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
@@ -108,8 +80,10 @@
 								<td class="right">{{ $audit->npi }}%</td>
 								<td class="right">{{ $audit->planogram }}%</td>
 								<td>{{ $audit->updated_at }}</td>
-								<td>
+								<td class="right">
 									{!! link_to_route('auditreport.download', 'Download Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
+									{!! link_to_route('storesummaryreport.show', 'Store Summary', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
+
 								</td>
 							</tr>
 							@endforeach
@@ -122,4 +96,16 @@
 	</div>
 </section>
 
+@endsection
+
+@section('page-script')
+$('#users,#audits,#stores,#status').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+ });
 @endsection
