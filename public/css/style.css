@@ -62,3 +62,9 @@ table {
 .right {
 	text-align: right;
 }
+.green{
+	color: #00a65a;
+}
+.red {
+	color: #dd4b39;
+}

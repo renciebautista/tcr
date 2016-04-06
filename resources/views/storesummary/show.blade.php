@@ -79,7 +79,11 @@
                                 <td class="center">
 
                                     @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 1))
-                                    <i class="fa fa-fw fa-check"></i>
+                                    <i class="fa fa-fw fa-check green"></i>
+                                    @endif
+
+                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 0))
+                                    <i class="fa fa-fw fa-close red"></i>
                                     @endif
                                 </td>
                                 @endforeach
