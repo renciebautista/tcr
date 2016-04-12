@@ -81,102 +81,109 @@ class AuditSosLookup extends Model
    	}
 
    	public static function createSosLookup($audit,$file_path){
-        AuditStoreSos::where('audit_id',$audit->id)->delete();
-        AuditSosLookupDetail::where('audit_id',$audit->id)->delete();
-    	self::where('audit_id',$audit->id)->delete();
+        // AuditStoreSos::where('audit_id',$audit->id)->delete();
+        // AuditSosLookupDetail::where('audit_id',$audit->id)->delete();
+    	// self::where('audit_id',$audit->id)->delete();
 
-    	$reader = ReaderFactory::create(Type::XLSX); // for XLSX files
-		$reader->open($file_path);
-		$header_field = [];
-		$brand_ids = [];
-		foreach ($reader->getSheetIterator() as $sheet) {
-			if($sheet->getName() == 'Sheet1'){
-				$cnt = 0;
-				foreach ($sheet->getRowIterator() as $row) {
+        \DB::beginTransaction();
+        try {
+        	$reader = ReaderFactory::create(Type::XLSX); // for XLSX files
+    		$reader->open($file_path);
+    		$header_field = [];
+    		$brand_ids = [];
+    		foreach ($reader->getSheetIterator() as $sheet) {
+    			if($sheet->getName() == 'Sheet1'){
+    				$cnt = 0;
+    				foreach ($sheet->getRowIterator() as $row) {
 
-					if($cnt > 0){
-                        if($row[0] != ''){
-                            $customer_code = 0;
-                            $region_code = 0;
-                            $distributor_code = 0;
-                            $store_code = 0;
-                            $channel_code = 0;
-                            if(strtoupper($row[0]) != "ALL"){
-                                $customer_code = $row[0];
-                            }
-                            if(strtoupper($row[1]) != "ALL"){
-                                $region_code = $row[1];
-                            }
-                            if(strtoupper($row[2]) != "ALL"){
-                                $distributor_code = $row[2];
-                            }
-                            if(strtoupper($row[3]) != "ALL"){
-                                $store_code = $row[3];
-                            }
-                            if(strtoupper($row[4]) != "ALL"){
-                                $channel_code = $row[4];
-                            }
+    					if($cnt > 0){
+                            if($row[0] != ''){
+                                $customer_code = 0;
+                                $region_code = 0;
+                                $distributor_code = 0;
+                                $store_code = 0;
+                                $channel_code = 0;
+                                if(strtoupper($row[0]) != "ALL"){
+                                    $customer_code = $row[0];
+                                }
+                                if(strtoupper($row[1]) != "ALL"){
+                                    $region_code = $row[1];
+                                }
+                                if(strtoupper($row[2]) != "ALL"){
+                                    $distributor_code = $row[2];
+                                }
+                                if(strtoupper($row[3]) != "ALL"){
+                                    $store_code = $row[3];
+                                }
+                                if(strtoupper($row[4]) != "ALL"){
+                                    $channel_code = $row[4];
+                                }
 
-                            $sos_lookup = self::firstOrCreate(['audit_id' => $audit->id, 
-                                'customer_code' => $customer_code, 
-                                'region_code' => $region_code, 
-                                'distributor_code' => $distributor_code, 
-                                'store_code' => $store_code, 
-                                'channel_code' => $channel_code]);
+                                $sos_lookup = self::firstOrCreate(['audit_id' => $audit->id, 
+                                    'customer_code' => $customer_code, 
+                                    'region_code' => $region_code, 
+                                    'distributor_code' => $distributor_code, 
+                                    'store_code' => $store_code, 
+                                    'channel_code' => $channel_code]);
 
-                            $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[5])->first();
-                            if(!empty($form_category)){
-                                $form_category->sos = 1;
-                                $form_category->update();
+                                $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[5])->first();
+                                if(!empty($form_category)){
+                                    $form_category->sos = 1;
+                                    $form_category->update();
 
-                                AuditSosLookupDetail::create(array('audit_id' => $audit->id, 
-                                    'audit_sos_lookup_id' =>  $sos_lookup->id, 
-                                    'form_category_id' =>  $form_category->id, 
-                                    'sos_type_id' => 1, 
-                                    'less' => 0.015, 
-                                    'value' => $row[9])
-                                );
-                                AuditSosLookupDetail::create(array('audit_id' => $audit->id, 
-                                    'audit_sos_lookup_id' =>  $sos_lookup->id, 
-                                    'form_category_id' =>  $form_category->id, 
-                                    'sos_type_id' => 2, 
-                                    'less' => 0.015, 
-                                    'value' => $row[10])
-                                );
+                                    AuditSosLookupDetail::firstOrCreate(array('audit_id' => $audit->id, 
+                                        'audit_sos_lookup_id' =>  $sos_lookup->id, 
+                                        'form_category_id' =>  $form_category->id, 
+                                        'sos_type_id' => 1, 
+                                        'less' => 0.015, 
+                                        'value' => $row[9])
+                                    );
+                                    AuditSosLookupDetail::firstOrCreate(array('audit_id' => $audit->id, 
+                                        'audit_sos_lookup_id' =>  $sos_lookup->id, 
+                                        'form_category_id' =>  $form_category->id, 
+                                        'sos_type_id' => 2, 
+                                        'less' => 0.015, 
+                                        'value' => $row[10])
+                                    );
+                                }
                             }
+                            
+    					}
+    					$cnt++;
+    			    }
+    			}
+
+                if($sheet->getName() == 'Sheet2'){
+                    $cnt = 0;
+                    foreach ($sheet->getRowIterator() as $row) {
+
+                        if($cnt > 0){
+                            if($row[0] != ''){
+                                $store = AuditStore::where('audit_id',$audit->id)->where('store_code',$row[0])->first();
+                                $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
+                                $sos = SosType::where('sos',strtoupper($row[3]))->first();
+                                if((!empty($store)) && (!empty($form_category))){
+                                    AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
+                                        'audit_store_id' => $store->id,
+                                        'form_category_id' => $form_category->id,
+                                        'sos_type_id' => $sos->id]);
+                                }
+                            }
+                            
                         }
-                        
-					}
-					$cnt++;
-			    }
-			}
-
-            if($sheet->getName() == 'Sheet2'){
-                $cnt = 0;
-                foreach ($sheet->getRowIterator() as $row) {
-
-                    if($cnt > 0){
-                        if($row[0] != ''){
-                            $store = AuditStore::where('audit_id',$audit->id)->where('store_code',$row[0])->first();
-                            $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
-                            $sos = SosType::where('sos',strtoupper($row[3]))->first();
-                            if((!empty($store)) && (!empty($form_category))){
-                                AuditStoreSos::create(['audit_id' => $audit->id,
-                                    'audit_store_id' => $store->id,
-                                    'form_category_id' => $form_category->id,
-                                    'sos_type_id' => $sos->id]);
-                            }
-                        }
-                        
+                        $cnt++;
                     }
-                    $cnt++;
                 }
-            }
 
-		    
-		}
+    		    
+    		}
 
-		$reader->close();
+    		$reader->close();
+            \DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            \DB::rollback();
+        }
    	}
 
 
