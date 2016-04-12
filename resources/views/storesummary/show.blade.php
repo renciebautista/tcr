@@ -59,7 +59,6 @@
         </div>
     </div>
     <div class="row">
-        <h2>Perfect Store</h2>
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-body table-responsive no-padding">
@@ -73,19 +72,24 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                 <td class="row-header bold">PERFECT STORE</td>
+                            </tr>
                             @foreach($groups as $group)
                             <tr>
-                                <th class="row-header">{{ $group->group_desc }}</th>
+                                <td class="row-header bold">{{ $group->group_desc }}</td>
                                 @foreach($categories as $category)
                                 <td class="center">
 
-                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 1))
+                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == '1'))
                                     <i class="fa fa-fw fa-check green"></i>
                                     @endif
 
-                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 0))
+                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == '0'))
                                     <i class="fa fa-fw fa-close red"></i>
                                     @endif
+
+                                    
                                 </td>
                                 @endforeach
                             </tr>
@@ -97,43 +101,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <h2>Perfect Store</h2>
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                @foreach($categories as $category)
-                                <th class="center">{{ $category->category }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($groups as $group)
-                            <tr>
-                                <th class="row-header">{{ $group->group_desc }}</th>
-                                @foreach($categories as $category)
-                                <td class="center">
-
-                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 1))
-                                    <i class="fa fa-fw fa-check green"></i>
-                                    @endif
-
-                                    @if((isset($data[$category->category][$group->group_desc])) && ($data[$category->category][$group->group_desc] == 0))
-                                    <i class="fa fa-fw fa-close red"></i>
-                                    @endif
-                                </td>
-                                @endforeach
-                            </tr>
-                          @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </section>
 @endsection

@@ -440,11 +440,11 @@ class DownloadController extends Controller
             foreach ($storelist as $store) {
                 $lookup = AuditSosLookup::getSosCategory($store->id);
 
-                $results = DB::select(DB::raw("select audit_store_id,audit_store_sos.form_category_id,audit_store_sos.sos_type_id,less, value,audit_sos_lookup_id
+                $results = DB::select(DB::raw("select audit_store_id,audit_store_sos.form_category_id,audit_store_sos.sos_type_id,less, value,audit_store_sos.audit_sos_lookup_id
                     from audit_store_sos
                     join audit_sos_lookup_details on audit_sos_lookup_details.form_category_id = audit_store_sos.form_category_id
                     where audit_store_id = :store_id
-                    and audit_sos_lookup_id = :lookup_id
+                    and audit_store_sos.audit_sos_lookup_id = :lookup_id
                     and audit_store_sos.sos_type_id = audit_sos_lookup_details.sos_type_id"),array(
                    'store_id' => $store->id, 'lookup_id' => $lookup->id));
                 foreach ($results as $result) {

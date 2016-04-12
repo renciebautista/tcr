@@ -12,7 +12,9 @@ class AuditGroupController extends Controller
 {
     public function index($id){
     	$audit = Audit::findOrFail($id);
-    	$groups = FormGroup::where('audit_id',$audit->id)->get();
+    	$groups = FormGroup::where('audit_id',$audit->id)
+            // ->orderBy('group_desc')
+            ->get();
     	return view('auditgroup.index', compact('audit', 'groups'));
     }
 
