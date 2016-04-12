@@ -19,17 +19,20 @@ class StoreSummaryReportController extends Controller
     	$template = AuditTemplate::where('audit_id',$store->audit_id)
     		->where('description',$store->template)
     		->first();
-    	$categories =  FormCategory::getTemplateCategory($template->id,$store->audit_id,1);
-    	$groups = FormGroup::getTemplateGroup($template->id,$store->audit_id, 1);
+    	$categories =  FormCategory::getTemplateCategory($template->id,$store->audit_id);
+    	$groups = FormGroup::getTemplateGroup($template->id,$store->audit_id);
 
-    	foreach ($groups as $group) {
-    		foreach ($categories as $category) {
-    			$pstore[] = 1;
+    	foreach ($categories as $category) {
+    		$lastvalue = 1;
+    		foreach ($groups as $group) {
+    			if(isset($data[$category->category][$group->group_desc])){
+    				$lastvalue = $data[$category->category][$group->group_desc] && $lastvalue;
+    			}
     		}
-    	}
-
-    	$data = array('PERFECT STORE' => []) + $data;
-    	// dd($data);
+    		
+			$data[$category->category]['PERFECT STORE']  = $lastvalue;
+		}
+    	// dd($categories);
     	return view('storesummary.show',compact('store', 'categories', 'groups', 'data'));
     }
 }

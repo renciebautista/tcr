@@ -15,4 +15,16 @@ class AuditCategoryController extends Controller
     	$categories = FormCategory::where('audit_id',$audit->id)->get();
     	return view('auditcategory.index', compact('audit', 'categories'));
     }
+
+    public function store(Request $request,$id){
+    	if($request->ajax()){
+	        $value = $request->value;
+	        $text = $request->name;
+			preg_match('#\[(.*?)\]#', $text, $match);
+			$id = $match[1];
+			$field = explode("[", $text, 2);
+
+			FormCategory::where('id',$id)->update([$field[0] => $value]);
+	    }
+    }
 }

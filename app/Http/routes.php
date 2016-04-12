@@ -45,6 +45,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('audits/{id}/users',['as' => 'audits.users', 'uses' => 'AuditUserController@index']);
 
 	Route::get('audits/{id}/categories',['as' => 'audits.categories', 'uses' => 'AuditCategoryController@index']);
+	Route::post('audits/{id}/categories',['as' => 'audits.categories_update', 'uses' => 'AuditCategoryController@store']);
 
 	Route::get('audits/{id}/groups',['as' => 'audits.groups', 'uses' => 'AuditGroupController@index']);
 	Route::post('audits/{id}/groups',['as' => 'audits.groups_update', 'uses' => 'AuditGroupController@store']);

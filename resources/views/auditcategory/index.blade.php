@@ -57,9 +57,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    @if($category->perfect_store == 1)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
+                                                    {!! Form::checkbox("perfect_store[$category->id]", '1', $category->perfect_store, ['class' => 'chk-update']) !!}
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -79,4 +77,33 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('page-script')
+
+$(".chk-update").change(function () {
+    var value = 0;
+    var name = $(this).attr('name');
+    if($(this).is(":checked")){
+        var value = 1;
+    }
+        
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "{{ route('audits.categories_update', $audit->id) }}",
+        async: true,
+        data: {
+            method: "POST",
+            name: name,
+            value: value
+        },
+        success: function (msg) {
+            
+        }
+    });
+});
+
 @endsection
