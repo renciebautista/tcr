@@ -105,7 +105,9 @@ class PostedAudit extends Model
 
     public static function getUserSummaryDetails($audit_id,$user_id){
         $query = sprintf('
-            select table_visited.user_id, table_visited.audit_id, users.name as user_name,audits.description as audit_description, mapped_stores,store_visited, (mapped_stores - store_visited) as to_visited, coalesce(perfect_stores,0) as perfect_stores
+            select table_visited.user_id, table_visited.audit_id, users.name as user_name,audits.description as audit_description, mapped_stores,store_visited,
+             (mapped_stores - store_visited) as to_visited, coalesce(perfect_stores,0) as perfect_stores,
+             ((perfect_stores / store_visited) * 100) as perfect_stores_achievement
             from (
                 select user_id,audit_id,count(*) as store_visited from `posted_audits`
                 group by user_id, audit_id

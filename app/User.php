@@ -32,6 +32,8 @@ class User extends Authenticatable
             $store_ids[] = $store->user_id;
         }
 
-        return self::whereIn('users.id', $store_ids)->get();
+        return self::whereIn('users.id', $store_ids)
+            ->orderBy('name')
+            ->get();
     }
 }

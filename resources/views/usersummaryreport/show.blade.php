@@ -35,15 +35,15 @@
                   	<td>{{ $detail->perfect_stores }}</td>
                 </tr>
                 <tr>
-                  	<td>% Achievement</td>
-                  	<td>25%</td>
+                  	<td>% Achievement -  Perfect Stores</td>
+                  	<td>{{ number_format($detail->perfect_stores_achievement,2) }}%</td>
                 </tr>
                 <tr>
                   	<td>Category Doors</td>
                   	<td>40</td>
                 </tr>
                 <tr>
-                  	<td>% Achievement</td>
+                  	<td>% Achievement – Category Doors</td>
                   	<td>58%</td>
                 </tr>
 

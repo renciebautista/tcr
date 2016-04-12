@@ -8,6 +8,10 @@ use App\EnrollmentType;
 
 class AuditStore extends Model
 {
+	public $fillable = ['audit_id', 'account', 'customer_code', 'customer', 'area', 'region_code', 'region',
+		'remarks', 'distributor_code', 'distributor', 'store_code', 'store_name', 'audit_enrollment_type_mapping_id', 
+		'channel_code', 'template', 'agency_code', 'agency_description', 'user_id'];
+		
 	public function fielduser(){
 		return $this->belongsTo('App\User', 'user_id');
 	}
@@ -39,18 +43,27 @@ class AuditStore extends Model
     public static function import($id,$records){
     	\DB::beginTransaction();
 			try {
-				
-				self::where('audit_id',$id)->delete();
-				AuditEnrollmentTypeMapping::where('audit_id',$id)->delete();
-
 				$records->each(function($row) use ($id)  {
 					if(!is_null($row->account)){
 
-						if(!empty($row->username)){
-							$user = User::where('username',$row->username)->first();
-							if(empty($user)){
-								$user = User::create(['name' => $row->fullname, 'username' => $row->username, 'password' => \Hash::make($row->username)]);
+						if(!empty($row->fullname)){
+							if(empty($row->username)){
+								$user = User::where('name',$row->fullname)->first();
+								if(empty($user)){
+									$last_user = User::orderBy('id', 'desc')->first();
+									$last_id =  (int)substr($last_user->username, 4);
+									$last_id++;
+									$username = 'User'.$last_id;
+									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
+								}
+							}else{
+								$user = User::where('name',$row->fullname)->first();
+								if(empty($user)){
+									$username = $row->username;
+									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
+								}
 							}
+							
 
 							$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
 							if(empty($enrollment_type)){
@@ -62,26 +75,26 @@ class AuditStore extends Model
 								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
 							}
 
-							$store = new AuditStore;
-							$store->audit_id = $id;
-							$store->account = $row->account;
-							$store->customer_code = $row->customer_code;
-							$store->customer = $row->customer;
-							$store->area = $row->area;
-							$store->region_code = $row->region_code;
-							$store->region = $row->region;
-							$store->remarks = $row->remarks;
-							$store->distributor_code = $row->distributor_code;
-							$store->distributor = $row->distributor;
-							$store->store_code = $row->store_code;
-							$store->store_name = $row->store_name;
-							$store->audit_enrollment_type_mapping_id = $audit_enrollment_mapping->id;
-							$store->channel_code = $row->channel_code;
-							$store->template = $row->template;
-							$store->agency_code = $row->agency_code;
-							$store->agency_description = $row->agency_description;
-							$store->user_id = $user->id;
-							$store->save();
+							$store = self::firstOrCreate([
+								'audit_id' => $id,
+								'account' => $row->account,
+								'customer_code' => $row->customer_code,
+								'customer' => $row->customer,
+								'area' => $row->area,
+								'region_code' => $row->region_code,
+								'region' => $row->region,
+								'remarks' => $row->remarks,
+								'distributor_code' => $row->distributor_code,
+								'distributor' => $row->distributor,
+								'store_code' => $row->store_code,
+								'store_name' => $row->store_name,
+								'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
+								'channel_code' => $row->channel_code,
+								'template' => $row->template,
+								'agency_code' => $row->agency_code,
+								'agency_description' => $row->agency_description,
+								'user_id' => $user->id
+								]);
 						}
 				}
 				
