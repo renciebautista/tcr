@@ -91,6 +91,7 @@ class AuditSosLookup extends Model
     		$reader->open($file_path);
     		$header_field = [];
     		$brand_ids = [];
+            $sos_id = 0;
     		foreach ($reader->getSheetIterator() as $sheet) {
     			if($sheet->getName() == 'Sheet1'){
     				$cnt = 0;
@@ -126,6 +127,8 @@ class AuditSosLookup extends Model
                                     'store_code' => $store_code, 
                                     'channel_code' => $channel_code]);
 
+                                $sos_id = $sos_lookup->id;
+
                                 $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[5])->first();
                                 if(!empty($form_category)){
                                     $form_category->sos = 1;
@@ -155,6 +158,7 @@ class AuditSosLookup extends Model
 
                 if($sheet->getName() == 'Sheet2'){
                     $cnt = 0;
+                    AuditStoreSos::where('audit_sos_lookup_id',$sos_id)->delete();
                     foreach ($sheet->getRowIterator() as $row) {
 
                         if($cnt > 0){
@@ -166,6 +170,7 @@ class AuditSosLookup extends Model
                                     AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
                                         'audit_store_id' => $store->id,
                                         'form_category_id' => $form_category->id,
+                                        'audit_sos_lookup_id' => $sos_id,
                                         'sos_type_id' => $sos->id]);
                                 }
                             }
