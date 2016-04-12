@@ -79,8 +79,8 @@ class AuditOsaLookup extends Model
    	}
 
    	public static function createOsaLookup($audit,$file_path){
-   		AuditOsaLookupDetail::where('audit_id',$audit->id)->delete();
-    	self::where('audit_id',$audit->id)->delete();
+   		// AuditOsaLookupDetail::where('audit_id',$audit->id)->delete();
+    	// self::where('audit_id',$audit->id)->delete();
     	
     	$reader = ReaderFactory::create(Type::XLSX); // for XLSX files
 		$reader->open($file_path);
@@ -90,44 +90,50 @@ class AuditOsaLookup extends Model
 			if($sheet->getName() == 'Sheet1'){
 				$cnt = 0;
 				foreach ($sheet->getRowIterator() as $row) {
-					if($cnt > 0){
-						$customer_code = 0;
-						$region_code = 0;
-						$distributor_code = 0;
-						$store_code = 0;
-						$channel_code = 0;
-						if(strtoupper($row[0]) != "ALL"){
-							$customer_code = $row[0];
-						}
-						if(strtoupper($row[1]) != "ALL"){
-							$region_code = $row[1];
-						}
-						if(strtoupper($row[2]) != "ALL"){
-							$distributor_code = $row[2];
-						}
-						if(strtoupper($row[3]) != "ALL"){
-							$store_code = $row[3];
-						}
-						if(strtoupper($row[4]) != "ALL"){
-							$channel_code = $row[4];
-						}
-						$osa_lookup = self::firstOrCreate(['audit_id' => $audit->id, 
-							'customer_code' => $customer_code, 
-							'region_code' => $region_code, 
-							'distributor_code' => $distributor_code, 
-							'store_code' => $store_code, 
-							'channel_code' => $channel_code
-							]);
-						$form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[5])->first();
-						if(!empty($form_category)){
-							$form_category->osa = 1;
-							$form_category->update();
-							AuditOsaLookupDetail::create(['audit_id' => $audit->id,
-								'audit_osa_lookup_id' => $osa_lookup->id,
-							 	'form_category_id' => $form_category->id, 'target' => $row[8]]);
-						}
-					}
-					$cnt++;
+                    if(!empty($row[0])){
+                        if($cnt > 0){
+                            $customer_code = 0;
+                            $region_code = 0;
+                            $distributor_code = 0;
+                            $store_code = 0;
+                            $channel_code = 0;
+                            if(strtoupper($row[0]) != "ALL"){
+                                $customer_code = $row[0];
+                            }
+                            if(strtoupper($row[1]) != "ALL"){
+                                $region_code = $row[1];
+                            }
+                            if(strtoupper($row[2]) != "ALL"){
+                                $distributor_code = $row[2];
+                            }
+                            if(strtoupper($row[3]) != "ALL"){
+                                $store_code = $row[3];
+                            }
+                            if(strtoupper($row[4]) != "ALL"){
+                                $channel_code = $row[4];
+                            }
+                            $osa_lookup = self::firstOrCreate(['audit_id' => $audit->id, 
+                                'customer_code' => $customer_code, 
+                                'region_code' => $region_code, 
+                                'distributor_code' => $distributor_code, 
+                                'store_code' => $store_code, 
+                                'channel_code' => $channel_code
+                                ]);
+
+                            AuditOsaLookupDetail::where('audit_osa_lookup_id',$osa_lookup->id)->delete();
+                            
+                            $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[5])->first();
+                            if(!empty($form_category)){
+                                $form_category->osa = 1;
+                                $form_category->update();
+                                AuditOsaLookupDetail::create(['audit_id' => $audit->id,
+                                    'audit_osa_lookup_id' => $osa_lookup->id,
+                                    'form_category_id' => $form_category->id, 'target' => $row[8]]);
+                            }
+                        }
+                        $cnt++;
+                    }
+					
 			    }
 			}
 		    
