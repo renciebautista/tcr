@@ -26,9 +26,9 @@ class AuditStoreController extends Controller
     public function store(Request $request, $id){
     	if ($request->hasFile('file')){
             $file_path = $request->file('file')->move(storage_path().'/uploads/temp/',$request->file('file')->getClientOriginalName());
-            \Excel::selectSheets('Sheet1')->load($file_path, function($reader) use ($id) {
-                AuditStore::import($id,$reader->get());
-            });
+            
+            $audit = Audit::findOrFail($id);
+            AuditStore::createStore($audit,$file_path);
 
             if (\File::exists($file_path))
             {

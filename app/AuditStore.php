@@ -106,6 +106,86 @@ class AuditStore extends Model
 		}
     }
 
+    public static function createStore($audit,$file_path){
+    	 \DB::beginTransaction();
+    	 try {
+    	 	$sheetNames = \Excel::load($file_path)->getSheetNames();
+    	 	\Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use ($sheetNames,$audit) {
+    	 		$stores = AuditStore::where('customer',$sheetNames[0])->get();
+    	 		$store_ids = [];
+    	 		foreach ($stores as $store) {
+    	 			$store_ids[] = $store->id;
+    	 		}
+
+    	 		AuditSecondaryDisplayLookup::whereIn('audit_store_id',$store_ids)->delete();
+    	 		AuditStoreSos::whereIn('audit_store_id',$store_ids)->delete();
+    	 		AuditStore::where('customer',$sheetNames[0])->delete();
+
+    	 		// dd($store_ids);
+
+    	 		$results = $reader->get();
+                foreach ($results as $key => $row) {
+                	if(!is_null($row->account)){
+
+						if(!empty($row->fullname)){
+							if(empty($row->username)){
+								$user = User::where('name',$row->fullname)->first();
+								if(empty($user)){
+									$last_user = User::orderBy('id', 'desc')->first();
+									$last_id =  (int)substr($last_user->username, 4);
+									$last_id++;
+									$username = 'User'.$last_id;
+									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
+								}
+							}else{
+								$user = User::where('name',$row->fullname)->first();
+								if(empty($user)){
+									$username = $row->username;
+									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
+								}
+							}
+							
+
+							$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
+							if(empty($enrollment_type)){
+								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
+							}
+
+							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$audit->id)->where('enrollment_type_id',$enrollment_type->id)->first();
+							if(empty($audit_enrollment_mapping)){
+								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $audit->id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
+							}
+
+							$store = self::firstOrCreate([
+								'audit_id' => $audit->id,
+								'account' => $row->account,
+								'customer_code' => $row->customer_code,
+								'customer' => $row->customer,
+								'area' => $row->area,
+								'region_code' => $row->region_code,
+								'region' => $row->region,
+								'remarks' => $row->remarks,
+								'distributor_code' => $row->distributor_code,
+								'distributor' => $row->distributor,
+								'store_code' => $row->store_code,
+								'store_name' => $row->store_name,
+								'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
+								'channel_code' => $row->channel_code,
+								'template' => $row->template,
+								'agency_code' => $row->agency_code,
+								'agency_description' => $row->agency_description,
+								'user_id' => $user->id
+								]);
+						}
+					}
+                }
+    	 	});
+    	 	 \DB::commit();
+    	 } catch (Exception $e) {
+    	 	dd($e);
+            \DB::rollback();
+    	 }
+    }
     public static function getCustomerLists($audit){
     	return self::orderBy('customer')
     		->where('audit_id', $audit->id)
