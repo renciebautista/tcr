@@ -403,13 +403,15 @@ class DownloadController extends Controller
             $writer->addRow(['id', 'form_category_id', 'target', 'total', 'lookup_id']); 
             foreach ($storelist as $store) {
                 $lookup = AuditOsaLookup::getOsaCategory($store->id);
-                foreach ($lookup->categories as $category) {
-                    $data[0] = $store->id;
-                    $data[1] = $category->form_category_id;
-                    $data[2] = $category->target;
-                    $data[3] = $category->total;
-                    $data[4] = $lookup->id;
-                    $writer->addRow($data); 
+                if(!empty($lookup)){
+                    foreach ($lookup->categories as $category) {
+                        $data[0] = $store->id;
+                        $data[1] = $category->form_category_id;
+                        $data[2] = $category->target;
+                        $data[3] = $category->total;
+                        $data[4] = $lookup->id;
+                        $writer->addRow($data); 
+                    }
                 }
             }
             $writer->close();
