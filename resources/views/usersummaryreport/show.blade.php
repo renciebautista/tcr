@@ -40,11 +40,11 @@
                 </tr>
                 <tr>
                   	<td>Category Doors</td>
-                  	<td>40</td>
+                  	<td>{{ $category_doors }}</td>
                 </tr>
                 <tr>
                   	<td>% Achievement – Category Doors</td>
-                  	<td>58%</td>
+                  	<td>{{ number_format($category_door_per,2) }}%</td>
                 </tr>
 
                 

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PostedAudit;
 use App\PostedAuditCategorySummary;
+use App\Audit;
+use App\User;
 
 class UserSummaryReportController extends Controller
 {
@@ -26,22 +28,16 @@ class UserSummaryReportController extends Controller
     }
 
     public function show($audit_id,$user_id){
+        $audit = Audit::findOrFail($audit_id);
+        $user = User::findOrFail($user_id);
     	$detail = PostedAudit::getUserSummaryDetails($audit_id,$user_id);
     	$stores = PostedAudit::getStores($audit_id,$user_id);
-
-        $posted_audit_ids = [];
-        foreach ($stores as $store) {
-           $posted_audit_ids[] = $store->id;
-        }
-
-
-        // $passed_groups = PostedAuditCategorySummary::where('passed',1)
-        //     ->whereIn('posted_audit_id',$posted_audit_ids)
-        //     ->get();
-
-        // dd($passed_groups);
-
         
-    	return view('usersummaryreport.show', compact('detail', 'stores'));
+        $doors = PostedAuditCategorySummary::getCategoryDoorsCount($audit,$user);
+        
+        $category_doors = $stores->count() * $doors['perfect_count'];
+        $category_door_per = ($category_doors / ( $stores->count() * $doors['total']) * 100 );
+
+    	return view('usersummaryreport.show', compact('detail', 'stores', 'category_doors', 'category_door_per'));
     }
 }
