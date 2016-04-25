@@ -124,6 +124,7 @@ class AuditStore extends Model
     	 		// dd($store_ids);
 
     	 		$results = $reader->get();
+    	 		// dd($results);
                 foreach ($results as $key => $row) {
                 	if(!is_null($row->account)){
 

@@ -43,7 +43,7 @@
 
         <div class="box-footer">
             <button type="submit" class="btn btn-primary">Process</button>
-            <button type="submit" class="btn btn-success">Downlod</button>
+            <button type="submit" class="btn btn-success">Download</button>
         </div>
         {{  Form::close() }}
 

@@ -112,4 +112,27 @@ class AuditOsaTargetController extends Controller
             return redirect()->back();
         }
     }
+
+    public function destroy(Request $request, $id){
+        $lookup = AuditOsaLookup::findOrFail($id);
+        \DB::beginTransaction();
+
+        try {
+            AuditOsaLookupDetail::where('audit_osa_lookup_id',$lookup->id)->delete();
+
+            $lookup->delete();
+
+            \DB::commit();
+
+            Session::flash('flash_message', 'OSA Lookup successfully deleted!');
+            Session::flash('flash_class', 'alert-success');
+           return redirect()->back();
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Session::flash('flash_message', 'Error occured while deleting OSA Lookups');
+            Session::flash('flash_class', 'alert-danger');
+            return redirect()->back();
+        }
+    }
 }

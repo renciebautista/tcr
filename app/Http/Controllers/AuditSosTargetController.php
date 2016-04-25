@@ -12,6 +12,7 @@ use App\AuditStore;
 use App\FormCategory;
 use App\SosType;
 use App\AuditSosLookupDetail;
+use App\AuditStoreSos;
 
 class AuditSosTargetController extends Controller
 {
@@ -115,6 +116,30 @@ class AuditSosTargetController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             Session::flash('flash_message', 'Error occured while updating SOS Lookups');
+            Session::flash('flash_class', 'alert-danger');
+            return redirect()->back();
+        }
+    }
+
+    public function destroy(Request $request, $id){
+        $lookup = AuditSosLookup::findOrFail($id);
+        \DB::beginTransaction();
+
+        try {
+            AuditStoreSos::where('audit_sos_lookup_id',$lookup->id)->delete();
+            AuditSosLookupDetail::where('audit_sos_lookup_id',$lookup->id)->delete();
+
+            $lookup->delete();
+
+            \DB::commit();
+
+            Session::flash('flash_message', 'SOS Lookup successfully deleted!');
+            Session::flash('flash_class', 'alert-success');
+           return redirect()->back();
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Session::flash('flash_message', 'Error occured while deleting SOS Lookups');
             Session::flash('flash_class', 'alert-danger');
             return redirect()->back();
         }

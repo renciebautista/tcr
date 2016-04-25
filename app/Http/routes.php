@@ -59,12 +59,14 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('audits/{audit}/osatargets',['as' => 'audits.osatargets', 'uses' => 'AuditOsaTargetController@index']);
 	Route::get('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargets_details', 'uses' => 'AuditOsaTargetController@edit']);
 	Route::put('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargetsupdate', 'uses' => 'AuditOsaTargetController@update']);
+	Route::delete('osatargets/{id}',['as' => 'audits.osadestroy', 'uses' => 'AuditOsaTargetController@destroy']);
 	Route::get('audits/{audit}/uploadosatargets',['as' => 'audits.uploadosatargets', 'uses' => 'AuditOsaTargetController@create']);
 	Route::post('audits/{audit}/postuploadosatargets',['as' => 'audits.postuploadosatargets', 'uses' => 'AuditOsaTargetController@store']);
 
 	Route::get('audits/{audit}/sostargets',['as' => 'audits.sostargets', 'uses' => 'AuditSosTargetController@index']);
 	Route::get('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargets_details', 'uses' => 'AuditSosTargetController@edit']);
 	Route::put('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargetsupdate', 'uses' => 'AuditSosTargetController@update']);
+	Route::delete('sostargets/{id}',['as' => 'audits.sosdestroy', 'uses' => 'AuditSosTargetController@destroy']);
 	Route::get('audits/{audit}/uploadsostargets',['as' => 'audits.uploadsostargets', 'uses' => 'AuditSosTargetController@create']);
 	Route::post('audits/{audit}/postuploadsostargets',['as' => 'audits.postuploadsostargets', 'uses' => 'AuditSosTargetController@store']);
 

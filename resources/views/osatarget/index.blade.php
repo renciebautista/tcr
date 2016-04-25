@@ -34,7 +34,7 @@
                                                 <th>Distributor</th>
                                                 <th>Template</th>
                                                 <th>Store</th>
-                                                <th>Options</th>
+                                                <th colspan="2">Options</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -46,12 +46,19 @@
                                                 <td>{{ $lookup->distributor() }}</td>
                                                 <td>{{ $lookup->channel() }}</td>
                                                 <td>{{ $lookup->store() }}</td>
-                                                <td>{!! link_to_route('audits.osatargets_details','View Details',array('audit' => $audit, 'id' => $lookup->id),['class' => 'btn btn-xs btn-primary']) !!}</td>
+                                                <td>
+                                                    {!! link_to_route('audits.osatargets_details','View Details',array('audit' => $audit, 'id' => $lookup->id),['class' => 'btn btn-xs btn-primary']) !!}
+                                                </td>
+                                                <td>
+                                                    {!! Form::open(array('method' => 'DELETE', 'action' => array('AuditOsaTargetController@destroy', $lookup->id), 'class' => 'disable-button')) !!}                       
+                                                    {!! Form::submit('Delete', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to delete this record?')){return false;};")) !!}
+                                                    {!! Form::close() !!}
+                                                </td>
                                             </tr>
                                             @endforeach
                                             @else
                                             <tr>
-                                                <td colspan="6">No record found.</td>
+                                                <td colspan="7">No record found.</td>
                                             </tr>
                                             @endif
                                         </tbody>
