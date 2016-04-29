@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use App\PostedAuditCategorySummary;
 
 class PostedAudit extends Model
 {
@@ -130,9 +131,16 @@ class PostedAudit extends Model
     }
 
     public static function getStores($audit_id,$user_id){
-        return self::where('audit_id',$audit_id)
+        $data = self::where('audit_id',$audit_id)
             ->where('user_id',$user_id)
             ->get();
-        ;
+
+        foreach ($data as $key => $value) {
+            $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+            $data[$key]->total_category =  $perfect_store['total'];
+            $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+        }
+        return $data;
     }
 }

@@ -55,6 +55,15 @@ class FixUserMapping extends Migration
                 $user->delete();  
             }
 
+            if($user->name == 'ANJ CASTILLO'){
+                $new_user = User::where('name', 'ANGELA CASTILLO')->first();
+                AuditStore::where('user_id', $user->id)
+                    ->update(['user_id' => $new_user->id]);
+                PostedAudit::where('user_id', $user->id)
+                    ->update(['user_id' => $new_user->id]);
+                $user->delete();  
+            }
+
         }
     }
 

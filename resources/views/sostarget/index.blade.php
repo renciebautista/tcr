@@ -45,8 +45,8 @@
                                                 <td>{{ $lookup->customer() }}</td>
                                                 <td>{{ $lookup->region() }}</td>
                                                 <td>{{ $lookup->distributor() }}</td>
-                                                <td>{{ $lookup->store() }}</td>
                                                 <td>{{ $lookup->channel() }}</td>
+                                                <td>{{ $lookup->store() }}</td>
                                                 <td>{!! link_to_route('audits.sostargets_details','View Details',array('audit' => $audit, 'id' => $lookup->id),['class' => 'btn btn-xs btn-primary']) !!}</td>
                                                 <td>
                                                     {!! Form::open(array('method' => 'DELETE', 'action' => array('AuditSosTargetController@destroy', $lookup->id), 'class' => 'disable-button')) !!}                       

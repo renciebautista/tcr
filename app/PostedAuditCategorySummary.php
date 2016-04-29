@@ -50,9 +50,39 @@ class PostedAuditCategorySummary extends Model
     	$data['total'] = $total;
 
     	return $data;
-    	// dd($all_stores);
 
-    	
+    }
+
+    public static function getPerfectCategory($posted_store){
+        $cnt = 0;
+        $total = 0;
+
+        $template = AuditTemplate::where('audit_id',$posted_store->audit_id)
+            ->where('description',$posted_store->template)
+            ->first();
+
+        $categories =  FormCategory::getTemplateCategory($template->id,$posted_store->audit_id,1);
+        $groups = FormGroup::getTemplateGroup($template->id,$posted_store->audit_id,1);
+
+        $posted_categories = PostedAuditCategorySummary::getCategorySummary($posted_store->id);
+        foreach ($categories as $category) {
+            $lastvalue = 1;
+            foreach ($groups as $group) {
+                if(isset($posted_categories[$category->category][$group->group_desc])){
+                    $lastvalue = $posted_categories[$category->category][$group->group_desc] && $lastvalue;
+                }
+            }
+            if($lastvalue == 1){
+                $cnt++;
+            }
+            $total++;
+            $all_stores[$posted_store->id][$category->category] = $lastvalue;
+        }
+
+        $data['perfect_count'] = $cnt;
+        $data['total'] = $total;
+
+        return $data;
 
     }
 }

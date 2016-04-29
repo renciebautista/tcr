@@ -82,7 +82,7 @@
 								<td>{{ $store->store_code }}</td>
 								<td>{{ $store->store_name }}</td>
 								<td>{{ $store->audit->description }}</td>
-								<td class="center">{{ $store->isPerfectStore() }}</td>
+								<td class="center">{{ $store->perfect_percentage }}%</td>
 								<td class="right">{{ $store->osa }}%</td>
 								<td class="right">{{ $store->npi }}%</td>
 								<td class="right">{{ $store->planogram }}%</td>
