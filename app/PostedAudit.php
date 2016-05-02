@@ -134,8 +134,8 @@ class PostedAudit extends Model
         $data = self::where('audit_id',$audit_id)
             ->where('user_id',$user_id)
             ->get();
-
         foreach ($data as $key => $value) {
+
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
             $data[$key]->total_category =  $perfect_store['total'];

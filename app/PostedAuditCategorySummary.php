@@ -32,17 +32,23 @@ class PostedAuditCategorySummary extends Model
     		$posted_categories = PostedAuditCategorySummary::getCategorySummary($posted_store->id);
     		$perfect_store = 0;
     		foreach ($categories as $category) {
-	    		$lastvalue = 1;
-	    		foreach ($groups as $group) {
-	    			if(isset($posted_categories[$category->category][$group->group_desc])){
-	    				$lastvalue = $posted_categories[$category->category][$group->group_desc] && $lastvalue;
-	    			}
-	    		}
-	    		if($lastvalue == 1){
-	    			$cnt++;
-	    		}
-	    		$total++;
-	    		$all_stores[$posted_store->id][$category->category] = $lastvalue;
+                if($category->perfect_store){
+                    $lastvalue = 1;
+                    foreach ($groups as $group) {
+                        if($group->perfect_store){
+                            if(isset($posted_categories[$category->category][$group->group_desc])){
+                                $lastvalue = $posted_categories[$category->category][$group->group_desc] && $lastvalue;
+                            }
+                        }
+                        
+                    }
+                    if($lastvalue == 1){
+                        $cnt++;
+                    }
+                    $total++;
+                    $all_stores[$posted_store->id][$category->category] = $lastvalue;
+                }
+	    		
 			}
 	    	
     	}
@@ -61,26 +67,35 @@ class PostedAuditCategorySummary extends Model
             ->where('description',$posted_store->template)
             ->first();
 
+        // dd($template);
+
         $categories =  FormCategory::getTemplateCategory($template->id,$posted_store->audit_id,1);
         $groups = FormGroup::getTemplateGroup($template->id,$posted_store->audit_id,1);
 
         $posted_categories = PostedAuditCategorySummary::getCategorySummary($posted_store->id);
         foreach ($categories as $category) {
-            $lastvalue = 1;
-            foreach ($groups as $group) {
-                if(isset($posted_categories[$category->category][$group->group_desc])){
-                    $lastvalue = $posted_categories[$category->category][$group->group_desc] && $lastvalue;
+            if($category->perfect_store){
+                $lastvalue = 1;
+                foreach ($groups as $group) {
+                    if($group->perfect_store){
+                        if(isset($posted_categories[$category->category][$group->group_desc])){
+                            $lastvalue = $posted_categories[$category->category][$group->group_desc] && $lastvalue;
+                        }
+                    }
+                    
                 }
+                if($lastvalue == 1){
+                    $cnt++;
+                }
+                $total++;
+                $all_stores[$posted_store->id][$category->category] = $lastvalue;
             }
-            if($lastvalue == 1){
-                $cnt++;
-            }
-            $total++;
-            $all_stores[$posted_store->id][$category->category] = $lastvalue;
+            
         }
 
         $data['perfect_count'] = $cnt;
         $data['total'] = $total;
+
 
         return $data;
 

@@ -23,16 +23,23 @@ class StoreSummaryReportController extends Controller
     		->first();
 
     	$categories =  FormCategory::getTemplateCategory($template->id,$store->audit_id);
+
     	$groups = FormGroup::getTemplateGroup($template->id,$store->audit_id);
 
     	foreach ($categories as $category) {
-    		$lastvalue = 1;
-    		foreach ($groups as $group) {
-    			if(isset($data[$category->category][$group->group_desc])){
-    				$lastvalue = $data[$category->category][$group->group_desc] && $lastvalue;
-    			}
-    		}
-			$data[$category->category]['PERFECT STORE']  = $lastvalue;
+            if($category->perfect_store){
+                $lastvalue = 1;
+                foreach ($groups as $group) {
+                    if($group->perfect_store){
+                       if(isset($data[$category->category][$group->group_desc])){
+                            $lastvalue = $data[$category->category][$group->group_desc] && $lastvalue;
+                        } 
+                    }
+                    
+                }
+                $data[$category->category]['PERFECT STORE']  = $lastvalue;
+            }
+    		
 		}
 
     	return view('storesummary.show',compact('store', 'categories', 'groups', 'data'));
