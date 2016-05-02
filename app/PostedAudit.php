@@ -49,7 +49,7 @@ class PostedAudit extends Model
     }
 
     public static function search($request){
-        return self::where(function($query) use ($request){
+        $data = self::where(function($query) use ($request){
             if(!empty($request->users)){
                     $query->whereIn('user_id',$request->users);
                 }
@@ -69,7 +69,17 @@ class PostedAudit extends Model
                     $query->whereIn('perfect_store',$request->status);
                 }
             })
+            ->orderBy('updated_at','desc')
             ->get();
+
+        foreach ($data as $key => $value) {
+
+            $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+            $data[$key]->total_category =  $perfect_store['total'];
+            $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+        }
+        return $data;
     }
 
     public static function getUserSummary($request = null){

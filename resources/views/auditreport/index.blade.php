@@ -32,12 +32,6 @@
 	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Perpect Store</label>
-	               	{!! Form::select('status[]', $status, null, array('class' => 'form-control select_form', 'id' => 'status', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
           	</div>
         </div>
 
@@ -75,7 +69,7 @@
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
 								<td>{{ $audit->audit->description }}</td>
-								<td class="center">{{ $audit->isPerfectStore() }}</td>
+								<td class="center">{{ $audit->perfect_percentage }} %</td>
 								<td class="right">{{ $audit->osa }}%</td>
 								<td class="right">{{ $audit->npi }}%</td>
 								<td class="right">{{ $audit->planogram }}%</td>
