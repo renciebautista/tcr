@@ -58,12 +58,12 @@
 							
 							@foreach($user_summaries as $summary)
 							<tr>
-								<td>{{ $summary->user_name }}</td>
-								<td>{{ $summary->audit_description }}</td>
+								<td>{{ $summary->name }}</td>
+								<td>{{ $summary->description }}</td>
 								<td class="center">{{ $summary->mapped_stores }}</td>
 								<td class="center">{{ $summary->store_visited }}</td>
-								<td class="center">{{ $summary->to_visited }}</td>
-								<td class="center">{{ $summary->perfect_stores }}</td>
+								<td class="center">{{ $summary->mapped_stores -  $summary->store_visited}}</td>
+								<td class="center"></td>
 								<td>
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

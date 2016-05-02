@@ -16,6 +16,7 @@ class UserSummaryReportController extends Controller
     	$users = PostedAudit::getUsers()->lists('name','user_id');
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$user_summaries = PostedAudit::getUserSummary();
+        // dd($user_summaries);
     	return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 

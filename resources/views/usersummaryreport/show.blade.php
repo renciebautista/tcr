@@ -16,11 +16,11 @@
                 <tbody>
                 <tr>
                   	<td>User</td>
-                  	<td>{{ $detail->user_name }}</td>
+                  	<td>{{ $detail->name }}</td>
                 </tr>
                 <tr>
                   	<td>Audit Name</td>
-                  	<td>{{ $detail->audit_description }}</td>
+                  	<td>{{ $detail->description }}</td>
                 </tr>
                 <tr>
                   	<td>Stores Mapped</td>
@@ -32,11 +32,11 @@
                 </tr>
                 <tr>
                   	<td>Perfect Stores</td>
-                  	<td>{{ $detail->perfect_stores }}</td>
+                  	<td></td>
                 </tr>
                 <tr>
                   	<td>% Achievement -  Perfect Stores</td>
-                  	<td>{{ number_format($detail->perfect_stores_achievement,2) }}%</td>
+                  	<td>%</td>
                 </tr>
                 <tr>
                   	<td>Category Doors</td>

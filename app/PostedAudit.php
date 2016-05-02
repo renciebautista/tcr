@@ -92,50 +92,43 @@ class PostedAudit extends Model
             $users = "and table_visited.audit_id in (". implode(',', $request->get('audits')) .')';
         }
         $query = sprintf('
-            select table_visited.user_id, table_visited.audit_id, users.name as user_name,audits.description as audit_description, mapped_stores,store_visited, (mapped_stores - store_visited) as to_visited, coalesce(perfect_stores,0) as perfect_stores
-            from (
+            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
+            tbl_mapped.mapped_stores, tbl_posted.store_visited
+            from posted_audits
+            inner join users on users.id = posted_audits.user_id
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                group by user_id, audit_id
+            ) as tbl_mapped using(user_id,audit_id)
+            left join (
                 select user_id,audit_id,count(*) as store_visited from `posted_audits`
                 group by user_id, audit_id
-            ) as table_visited
-            join (
-                select user_id, audit_id, count(*) as mapped_stores from audit_stores
-                group by user_id, audit_id 
-            )as mapped_stores on mapped_stores.user_id = table_visited.user_id and mapped_stores.audit_id = table_visited.audit_id
-            join users on users.id = table_visited.user_id
-            join audits on audits.id = table_visited.audit_id
-            left join(
-                select user_id,audit_id,count(*) as perfect_stores from `posted_audits`
-                where perfect_store = 1
-                group by user_id, audit_id
-            ) as perfect_stores on perfect_stores.user_id = table_visited.user_id and perfect_stores.audit_id = table_visited.audit_id
-            where mapped_stores > 0
+            ) as tbl_posted using(user_id,audit_id)
+            where tbl_posted.store_visited > 0
             %s %s
-            order by audits.description, users.name ',$users,$audits);
+            group by posted_audits.user_id, posted_audits.audit_id
+            order by audits.description, users.name',$users,$audits);
         return DB::select(DB::raw($query));
     }
 
     public static function getUserSummaryDetails($audit_id,$user_id){
         $query = sprintf('
-            select table_visited.user_id, table_visited.audit_id, users.name as user_name,audits.description as audit_description, mapped_stores,store_visited,
-             (mapped_stores - store_visited) as to_visited, coalesce(perfect_stores,0) as perfect_stores,
-             ((perfect_stores / store_visited) * 100) as perfect_stores_achievement
-            from (
+            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
+            tbl_mapped.mapped_stores, tbl_posted.store_visited
+            from posted_audits
+            inner join users on users.id = posted_audits.user_id
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                group by user_id, audit_id
+            ) as tbl_mapped using(user_id,audit_id)
+            left join (
                 select user_id,audit_id,count(*) as store_visited from `posted_audits`
                 group by user_id, audit_id
-            ) as table_visited
-            join (
-                select user_id, audit_id, count(*) as mapped_stores from audit_stores
-                group by user_id, audit_id 
-            )as mapped_stores on mapped_stores.user_id = table_visited.user_id and mapped_stores.audit_id = table_visited.audit_id
-            join users on users.id = table_visited.user_id
-            join audits on audits.id = table_visited.audit_id
-            left join(
-                select user_id,audit_id,count(*) as perfect_stores from `posted_audits`
-                where perfect_store = 1
-                group by user_id, audit_id
-            ) as perfect_stores on perfect_stores.user_id = table_visited.user_id and perfect_stores.audit_id = table_visited.audit_id
-            where table_visited.user_id = %d 
-            and table_visited.audit_id = %d
+            ) as tbl_posted using(user_id,audit_id)
+            where posted_audits.user_id = %d 
+            and posted_audits.audit_id = %d
             order by audits.description, users.name',$user_id,$audit_id );
         return DB::select(DB::raw($query))[0];
     }

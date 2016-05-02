@@ -111,7 +111,9 @@ class AuditStore extends Model
     	 try {
     	 	$sheetNames = \Excel::load($file_path)->getSheetNames();
     	 	\Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use ($sheetNames,$audit) {
-    	 		$stores = AuditStore::where('customer',$sheetNames[0])->get();
+    	 		$stores = AuditStore::where('customer',$sheetNames[0])
+    	 			->where('audit_id',$audit->id)
+    	 			->get();
     	 		$store_ids = [];
     	 		foreach ($stores as $store) {
     	 			$store_ids[] = $store->id;
@@ -119,7 +121,9 @@ class AuditStore extends Model
 
     	 		AuditSecondaryDisplayLookup::whereIn('audit_store_id',$store_ids)->delete();
     	 		AuditStoreSos::whereIn('audit_store_id',$store_ids)->delete();
-    	 		AuditStore::where('customer',$sheetNames[0])->delete();
+    	 		AuditStore::where('customer',$sheetNames[0])
+    	 			->where('audit_id',$audit->id)
+    	 			->delete();
 
     	 		// dd($store_ids);
 
