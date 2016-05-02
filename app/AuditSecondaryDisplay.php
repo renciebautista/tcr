@@ -9,61 +9,81 @@ use Box\Spout\Common\Type;
 
 class AuditSecondaryDisplay extends Model
 {	
-	protected $fillable = ['audit_id','form_category_id', 'brand'];
+	protected $fillable = ['audit_id','form_category_id', 'brand', 'customer'];
     public $timestamps = false;
 
     public static function createSecondaryDisplay($audit, $file_path){
-    	AuditSecondaryDisplayLookup::where('audit_id',$audit->id)->delete();
-    	self::where('audit_id',$audit->id)->delete();
+    	 \DB::beginTransaction();
+        try {
 
-    	$reader = ReaderFactory::create(Type::XLSX); // for XLSX files
-		$reader->open($file_path);
-		$header_field = [];
-		$brand_ids = [];
-		foreach ($reader->getSheetIterator() as $sheet) {
-			if($sheet->getName() == 'Sheet1'){
-				$cnt = 0;
-				foreach ($sheet->getRowIterator() as $row) {
-			        if($cnt == 0){
-			        	foreach ($row as $value) {
-				        	$header_field[] = $value;
-			        	}
-			        }elseif($cnt == 1){
-			        	for ($i=3; $i < count($row); $i++) { 
-			        		$category = FormCategory::where('audit_id', $audit->id)
-			        			->where('category', $header_field[$i])
-			        			->first();
-			        		if(!empty($category)){
-			        			$category->second_display = 1;
-			        			$category->update();
-			        		}else{
-			        			// $category = FormCategory::create(['audit_id' => $audit->id, 'category', $header_field[$i], 'second_display' => 1]);
-			        		}
+	    	$reader = ReaderFactory::create(Type::XLSX); // for XLSX files
+			$reader->open($file_path);
+			$header_field = [];
+			$brand_ids = [];
+			foreach ($reader->getSheetIterator() as $sheet) {
+				if($sheet->getIndex() == '0'){
+					$customer_name = $sheet->getName();
 
-			        		if(!empty($category)){
-			        			$brand = self::create(['audit_id' => $audit->id, 'form_category_id' => $category->id, 'brand' => $row[$i]]);
-			        			$brand_ids[$i] = $brand->id;
-			        		}
-			        	}
-			        }else{
-			        	$store = AuditStore::where('audit_id',$audit->id)
-			        		->where('store_code',trim($row[1]))->first();
+					AuditSecondaryDisplayLookup::where('audit_id',$audit->id)
+						->where('customer', $customer_name)
+						->delete();
+	    			self::where('audit_id',$audit->id)
+	    				->where('customer', $customer_name)
+	    				->delete();
 
-			        	if(!empty($store)){
-			        		for ($i=3; $i < count($row); $i++) { 
-			        			if(($row[$i] == 1) || ($row == "1.0")){
-			        				AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 'audit_store_id' => $store->id, 'secondary_display_id' => $brand_ids[$i]]);
-			        			}
-				        		
+					$cnt = 0;
+					foreach ($sheet->getRowIterator() as $row) {
+				        if($cnt == 0){
+				        	foreach ($row as $value) {
+					        	$header_field[] = $value;
 				        	}
-			        	}
-			        }
-			        $cnt++;
-			    }
-			}
-		}
+				        }elseif($cnt == 1){
+				        	for ($i=3; $i < count($row); $i++) { 
+				        		$category = FormCategory::where('audit_id', $audit->id)
+				        			->where('category', $header_field[$i])
+				        			->first();
+				        		if(!empty($category)){
+				        			$category->second_display = 1;
+				        			$category->update();
+				        		}else{
+				        			$category = FormCategory::firstOrCreate(['audit_id' => $audit->id, 'category' => $header_field[$i], 'second_display' => 1]);
+				        		}
 
-		$reader->close();
+				        		if(!empty($category)){
+				        			$brand = self::create(['audit_id' => $audit->id, 
+				        				'form_category_id' => $category->id, 
+				        				'customer' => $customer_name,
+				        				'brand' => $row[$i]]);
+				        			$brand_ids[$i] = $brand->id;
+				        		}
+				        	}
+				        }else{
+				        	$store = AuditStore::where('audit_id',$audit->id)
+				        		->where('store_code',trim($row[1]))->first();
+
+				        	if(!empty($store)){
+				        		for ($i=3; $i < count($row); $i++) { 
+				        			if(($row[$i] == 1) || ($row == "1.0")){
+				        				AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 
+				        					'customer' => $customer_name,
+				        					'audit_store_id' => $store->id, 
+				        					'secondary_display_id' => $brand_ids[$i]]);
+				        			}
+					        		
+					        	}
+				        	}
+				        }
+				        $cnt++;
+				    }
+				}
+			}
+
+			$reader->close();
+            \DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            \DB::rollback();
+        }
     }
 
 }

@@ -86,6 +86,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
 
     Route::get('auditimage/{folder}/{filename}', 'Api\DownloadController@auditimage');
+
+
+    Route::get('templates/{id}/categories', ['as' => 'templates.categories', 'uses' => 'AuditTemplateController@categories']);
     Route::group(array('prefix' => 'api'), function()
 	{
 	   	Route::get('auth', 'Api\AuthController@auth');

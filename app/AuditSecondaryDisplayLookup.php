@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AuditSecondaryDisplayLookup extends Model
 {
-    protected $fillable = ['audit_id','audit_store_id', 'secondary_display_id'];
+    protected $fillable = ['audit_id','customer', 'audit_store_id', 'secondary_display_id'];
     public $timestamps = false;
 
     public static function getStoresByAudit($audit){

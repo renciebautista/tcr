@@ -48,7 +48,10 @@ class AuditTemplateController extends Controller
             Session::flash('flash_class', 'alert-danger');
             return redirect()->route("audits.uploadtemplates",$id);
         }
-				
-		
+    }
+
+    public function categories($id){
+        $categories = [];
+        return view('audittemplate.categories',compact('categories'));
     }
 }

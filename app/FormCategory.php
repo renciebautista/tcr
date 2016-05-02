@@ -7,7 +7,7 @@ use App\AuditTemplateCategory;
 
 class FormCategory extends Model
 {
-    protected $fillable = ['audit_id','audit_template_id', 'category'];
+    protected $fillable = ['audit_id','category', 'sos', 'second_display', 'osa', 'custom', 'perfect_store'];
     public $timestamps = false;
 
     public function secondarybrand(){
