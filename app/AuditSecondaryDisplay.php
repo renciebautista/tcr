@@ -20,23 +20,28 @@ class AuditSecondaryDisplay extends Model
 			$reader->open($file_path);
 			$header_field = [];
 			$brand_ids = [];
+			// dd($reader->getSheetIterator());
 			foreach ($reader->getSheetIterator() as $sheet) {
+				dd($sheet);
 				if($sheet->getIndex() == '0'){
 					$customer_name = $sheet->getName();
 
 					AuditSecondaryDisplayLookup::where('audit_id',$audit->id)
 						->where('customer', $customer_name)
 						->delete();
+						
 	    			self::where('audit_id',$audit->id)
 	    				->where('customer', $customer_name)
 	    				->delete();
 
 					$cnt = 0;
 					foreach ($sheet->getRowIterator() as $row) {
+						// dd($row);
 				        if($cnt == 0){
 				        	foreach ($row as $value) {
 					        	$header_field[] = $value;
 				        	}
+				        	// dd($header_field);
 				        }elseif($cnt == 1){
 				        	for ($i=3; $i < count($row); $i++) { 
 				        		$category = FormCategory::where('audit_id', $audit->id)
@@ -69,7 +74,6 @@ class AuditSecondaryDisplay extends Model
 				        					'audit_store_id' => $store->id, 
 				        					'secondary_display_id' => $brand_ids[$i]]);
 				        			}
-					        		
 					        	}
 				        	}
 				        }

@@ -193,30 +193,33 @@ class AuditOsaLookup extends Model
 
     public static function getOsaCategory($id){
         $store = AuditStore::find($id);
-
+        // dd($store);
         // store level
-        $template = self::where('store_code',$store->store_code)->first(); 
+        $template = self::where('store_code',$store->store_code)->where('audit_id', $store->audit_id)->first(); 
         if(!empty($template)){ 
             return $template; //0001
         }
 
-        $template = self::where('customer_code',$store->customer_code)->get();
+        $template = self::where('customer_code',$store->customer_code)->where('audit_id', $store->audit_id)->get();
         if(count($template) > 0){
 
             $template = self::where('customer_code',$store->customer_code)
                 ->where('region_code',$store->region_code)
+                ->where('audit_id', $store->audit_id)
                 ->get();
             if(count($template) > 0){
 
                 $template = self::where('customer_code',$store->customer_code)
                     ->where('region_code',$store->region_code)
                     ->where('distributor_code',$store->distributor_code)
+                    ->where('audit_id', $store->audit_id)
                     ->get();
                 if(count($template) > 0){
                     $template = self::where('customer_code',$store->customer_code)
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     if(!empty($template)){ 
                         return $template; //1111
@@ -225,6 +228,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }else{
@@ -232,6 +236,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',0)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     if(!empty($template)){ 
                         return $template; //1101
@@ -240,6 +245,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',0)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }
@@ -247,12 +253,14 @@ class AuditOsaLookup extends Model
                 $template = self::where('customer_code',$store->customer_code)
                     ->where('region_code',0)
                     ->where('distributor_code',$store->distributor_code)
+                    ->where('audit_id', $store->audit_id)
                     ->get();
                 if(count($template) > 0){
                     $template = self::where('customer_code',$store->customer_code)
                         ->where('region_code',0)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     if(!empty($template)){ 
                         return $template; //1011
@@ -261,6 +269,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',0)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }else{
@@ -268,6 +277,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',0)
                         ->where('distributor_code',0)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                      if(!empty($template)){ 
                         return $template; //1001
@@ -276,6 +286,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',0)
                         ->where('distributor_code',0)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }
@@ -283,17 +294,20 @@ class AuditOsaLookup extends Model
         }else{
             $template = self::where('customer_code',0)
                 ->where('region_code',$store->region_code)
+                ->where('audit_id', $store->audit_id)
                 ->get();
             if(count($template) > 0){
                 $template = self::where('customer_code',0)
                     ->where('region_code',$store->region_code)
                     ->where('distributor_code',$store->distributor_code)
+                    ->where('audit_id', $store->audit_id)
                     ->get();
                 if(count($template) > 0){
                     $template = self::where('customer_code',0) 
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                      if(!empty($template)){ 
                         return $template; //0111
@@ -302,6 +316,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }else{
@@ -309,6 +324,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',0)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     if(!empty($template)){ 
                         return $template; //0101
@@ -317,6 +333,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',$store->region_code)
                         ->where('distributor_code',0)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }
@@ -324,12 +341,14 @@ class AuditOsaLookup extends Model
                 $template = self::where('customer_code',0)
                     ->where('region_code',0)
                     ->where('distributor_code',$store->distributor_code)
+                    ->where('audit_id', $store->audit_id)
                     ->get();
                 if(count($template) > 0){
                     $template = self::where('customer_code',0)
                         ->where('region_code',0)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                      if(!empty($template)){ 
                         return $template; // 0011
@@ -338,6 +357,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',0)
                         ->where('distributor_code',$store->distributor_code)
                         ->where('channel_code',0)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                     }
                 }else{
@@ -345,6 +365,7 @@ class AuditOsaLookup extends Model
                         ->where('region_code',0)
                         ->where('distributor_code',0)
                         ->where('channel_code',$store->channel_code)
+                        ->where('audit_id', $store->audit_id)
                         ->first();
                      if(!empty($template)){ 
                         return $template; // 0001
@@ -354,6 +375,7 @@ class AuditOsaLookup extends Model
                             ->where('distributor_code',0)
                             ->where('channel_code',0)
                             ->where('store_code',0)
+                            ->where('audit_id', $store->audit_id)
                             ->first();
                     }
                 }

@@ -385,6 +385,7 @@ class DownloadController extends Controller
             $keylist = FormGroup::where('osa', 1)
                 ->whereIn('audit_id',$audit_list)
                 ->get();
+            // dd($keylist);
 
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('osa_keylist.txt');
@@ -401,9 +402,15 @@ class DownloadController extends Controller
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('osa_lookups.txt');
             $writer->addRow(['id', 'form_category_id', 'target', 'total', 'lookup_id']); 
+
+            // dd($storelist);
             foreach ($storelist as $store) {
+                // dd($store->id);
                 $lookup = AuditOsaLookup::getOsaCategory($store->id);
+                // dd($lookup);
+
                 if(!empty($lookup)){
+
                     foreach ($lookup->categories as $category) {
                         $data[0] = $store->id;
                         $data[1] = $category->form_category_id;

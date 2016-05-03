@@ -121,6 +121,7 @@ class AuditStore extends Model
 
     	 		AuditSecondaryDisplayLookup::whereIn('audit_store_id',$store_ids)->delete();
     	 		AuditStoreSos::whereIn('audit_store_id',$store_ids)->delete();
+    	 		
     	 		AuditStore::where('customer',$sheetNames[0])
     	 			->where('audit_id',$audit->id)
     	 			->delete();
