@@ -27,8 +27,7 @@
 */
 
 Route::get('test', function(){
-	$attr = new App\MyClasses\SurveyQuestion();
-	dd($attr);
+	echo bcrypt('test');
 });
 
 Route::group(['middleware' => ['web']], function () {
