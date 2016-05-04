@@ -20,7 +20,10 @@ class AuditUserController extends Controller
     public function mappedstores($audit_id,$id){
     	$audit = Audit::findOrFail($audit_id);
     	$user = User::findOrFail($id);
-    	$stores = AuditStore::where('audit_id', $audit->id)->where('user_id', $user->id)->get();
+    	$stores = AuditStore::where('audit_id', $audit->id)->where('user_id', $user->id)
+    		->orderBy('customer')
+    		->orderBy('store_name')
+    		->get();
     	return view('audituser.mappedstores', compact('audit', 'stores', 'user'));
     }
 }
