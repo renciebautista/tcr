@@ -31,6 +31,7 @@ class UserSummaryReportController extends Controller
     public function show($audit_id,$user_id){
         $audit = Audit::findOrFail($audit_id);
         $user = User::findOrFail($user_id);
+        
     	$detail = PostedAudit::getUserSummaryDetails($audit_id,$user_id);
     	$stores = PostedAudit::getStores($audit_id,$user_id);
         

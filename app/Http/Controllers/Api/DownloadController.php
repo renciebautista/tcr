@@ -447,15 +447,15 @@ class DownloadController extends Controller
             $writer->openToBrowser('sos_lookups.txt');
             $writer->addRow(['store_id', 'category_id', 'sos_id', 'less', 'value', 'sos_lookup_id']); 
             foreach ($storelist as $store) {
-                $lookup = AuditSosLookup::getSosCategory($store->id);
+                // $lookup = AuditSosLookup::getSosCategory($store->id);
                 if(!empty($lookup)){
-                    $results = DB::select(DB::raw("select audit_store_id,audit_store_sos.form_category_id,audit_store_sos.sos_type_id,less, value,audit_store_sos.audit_sos_lookup_id
+                    $results = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
+                        audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
+                        audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
                         from audit_store_sos
-                        join audit_sos_lookup_details on audit_sos_lookup_details.form_category_id = audit_store_sos.form_category_id
-                        where audit_store_id = :store_id
-                        and audit_store_sos.audit_sos_lookup_id = :lookup_id
-                        and audit_store_sos.sos_type_id = audit_sos_lookup_details.sos_type_id"),array(
-                       'store_id' => $store->id, 'lookup_id' => $lookup->id));
+                        left join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id) 
+                        where audit_store_sos.audit_store_id = :store_id"),array(
+                       'store_id' => $store->id));
                     foreach ($results as $result) {
                         $data[0] = $result->audit_store_id;
                         $data[1] = $result->form_category_id;
