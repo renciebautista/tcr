@@ -22,7 +22,7 @@ class AuditSecondaryDisplay extends Model
 			$brand_ids = [];
 			// dd($reader->getSheetIterator());
 			foreach ($reader->getSheetIterator() as $sheet) {
-				dd($sheet);
+				// dd($sheet);
 				if($sheet->getIndex() == '0'){
 					$customer_name = $sheet->getName();
 
