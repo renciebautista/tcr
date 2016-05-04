@@ -27,7 +27,7 @@
 */
 
 Route::get('test', function(){
-	echo bcrypt('test');
+	echo bcrypt('monsterinc');
 });
 
 Route::group(['middleware' => ['web']], function () {
