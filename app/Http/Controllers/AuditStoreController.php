@@ -15,8 +15,9 @@ class AuditStoreController extends Controller
     {
         $audit = Audit::findOrFail($id);
         $stores = AuditStore::with('fielduser')
-            ->orderBy('id')
+            ->orderBy('id','desc')
             ->where('audit_id',$id)
+            // ->paginate(100);
             ->get();
         return view('auditstore.index',compact('audit', 'stores'));
     }

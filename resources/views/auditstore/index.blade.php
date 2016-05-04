@@ -23,7 +23,11 @@
                             <div class="col-xs-12">
                                 <div class="box-header">
                                     <h3 class="box-title">Store Lists</h3>
+
+
+
                                     <h5 class="pull-right">{{ $stores->count() }} {{str_plural('record', $stores->count())}} found.</h5>
+
                                 </div>
                                 <div class="box-body table-responsive no-padding">
                                     <table id="store_table" class="table table-hover table-striped">

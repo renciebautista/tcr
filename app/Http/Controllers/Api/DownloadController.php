@@ -451,7 +451,7 @@ class DownloadController extends Controller
                     audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
                     audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
                     from audit_store_sos
-                    left join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id, sos_type_id) 
+                    join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id, sos_type_id) 
                     where audit_store_sos.audit_store_id = :store_id"),array(
                    'store_id' => $store->id));
                 foreach ($results as $result) {
