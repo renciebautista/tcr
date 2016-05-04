@@ -33,6 +33,8 @@ class AuditStoreController extends Controller
             $audit = Audit::findOrFail($id);
             AuditStore::createStore($audit,$file_path);
 
+            \Artisan::call('db:seed', ['--class' => 'RemapUserSeeder']);
+
             if (\File::exists($file_path))
             {
                 \File::delete($file_path);
