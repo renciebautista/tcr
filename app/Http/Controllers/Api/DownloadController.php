@@ -447,26 +447,22 @@ class DownloadController extends Controller
             $writer->openToBrowser('sos_lookups.txt');
             $writer->addRow(['store_id', 'category_id', 'sos_id', 'less', 'value', 'sos_lookup_id']); 
             foreach ($storelist as $store) {
-                // $lookup = AuditSosLookup::getSosCategory($store->id);
-                if(!empty($lookup)){
-                    $results = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
-                        audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
-                        audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
-                        from audit_store_sos
-                        left join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id, sos_type_id) 
-                        where audit_store_sos.audit_store_id = :store_id"),array(
-                       'store_id' => $store->id));
-                    foreach ($results as $result) {
-                        $data[0] = $result->audit_store_id;
-                        $data[1] = $result->form_category_id;
-                        $data[2] = $result->sos_type_id;
-                        $data[3] = $result->less;
-                        $data[4] = $result->value;
-                        $data[5] = $result->audit_sos_lookup_id;
-                        $writer->addRow($data); 
-                    }
+                $results = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
+                    audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
+                    audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
+                    from audit_store_sos
+                    left join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id, sos_type_id) 
+                    where audit_store_sos.audit_store_id = :store_id"),array(
+                   'store_id' => $store->id));
+                foreach ($results as $result) {
+                    $data[0] = $result->audit_store_id;
+                    $data[1] = $result->form_category_id;
+                    $data[2] = $result->sos_type_id;
+                    $data[3] = $result->less;
+                    $data[4] = $result->value;
+                    $data[5] = $result->audit_sos_lookup_id;
+                    $writer->addRow($data); 
                 }
-                
             }
             $writer->close();
         }
