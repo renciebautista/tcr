@@ -19,7 +19,7 @@ class AuditSecondaryDisplay extends Model
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
     	 	\Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use($sheetNames,$audit) {
     	 		$customer_name = $sheetNames[0];
-    	 		
+    	 		// dd($customer_name);
     	 		AuditSecondaryDisplayLookup::where('audit_id',$audit->id)
 						->where('customer', $customer_name)
 						->delete();
