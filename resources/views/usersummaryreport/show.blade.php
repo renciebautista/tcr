@@ -32,19 +32,19 @@
                 </tr>
                 <tr>
                   	<td>Perfect Stores</td>
-                  	<td></td>
+                  	<td>{{ $detail->perfect_store_count }}</td>
                 </tr>
                 <tr>
                   	<td>% Achievement -  Perfect Stores</td>
-                  	<td>%</td>
+                  	<td>{{ $detail->perfect_store_achivement }}%</td>
                 </tr>
                 <tr>
                   	<td>Category Doors</td>
-                  	<td>{{ $category_doors }}</td>
+                  	<td>{{ $detail->category_doors }}</td>
                 </tr>
                 <tr>
                   	<td>% Achievement – Category Doors</td>
-                  	<td>{{ number_format($category_door_per,2) }}%</td>
+                  	<td>{{ $detail->category_door_per }}%</td>
                 </tr>
 
                 

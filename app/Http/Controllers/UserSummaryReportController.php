@@ -9,6 +9,7 @@ use App\PostedAudit;
 use App\PostedAuditCategorySummary;
 use App\Audit;
 use App\User;
+use App\UserSummary;
 
 class UserSummaryReportController extends Controller
 {
@@ -31,15 +32,11 @@ class UserSummaryReportController extends Controller
     public function show($audit_id,$user_id){
         $audit = Audit::findOrFail($audit_id);
         $user = User::findOrFail($user_id);
-        
-    	$detail = PostedAudit::getUserSummaryDetails($audit_id,$user_id);
-    	$stores = PostedAudit::getStores($audit_id,$user_id);
-        
-        $doors = PostedAuditCategorySummary::getCategoryDoorsCount($audit,$user);
-        
-        $category_doors = $stores->count() * $doors['perfect_count'];
-        $category_door_per = ($category_doors / ( $stores->count() * $doors['total']) * 100 );
+        $usersummary = UserSummary::getSummary($audit,$user);
 
-    	return view('usersummaryreport.show', compact('detail', 'stores', 'category_doors', 'category_door_per'));
+    	$detail = $usersummary->detail;
+    	$stores = $usersummary->stores;
+
+    	return view('usersummaryreport.show', compact('detail', 'stores'));
     }
 }

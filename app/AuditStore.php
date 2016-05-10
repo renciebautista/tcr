@@ -126,29 +126,18 @@ class AuditStore extends Model
     	 			->where('audit_id',$audit->id)
     	 			->delete();
 
-    	 		// dd($store_ids);
-
     	 		$results = $reader->get();
-    	 		// dd($results);
                 foreach ($results as $key => $row) {
                 	if(!is_null($row->account)){
 
 						if(!empty($row->fullname)){
-							if(empty($row->username)){
-								$user = User::where('name',$row->fullname)->first();
-								if(empty($user)){
-									$last_user = User::orderBy('id', 'desc')->first();
-									$last_id =  (int)substr($last_user->username, 4);
-									$last_id++;
-									$username = 'User'.$last_id;
-									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
-								}
-							}else{
-								$user = User::where('name',$row->fullname)->first();
-								if(empty($user)){
-									$username = $row->username;
-									$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
-								}
+							$user = User::where('name',$row->fullname)->first();
+							if(empty($user)){
+								$last_user = User::orderBy('id', 'desc')->first();
+								$last_id =  (int)substr($last_user->username, 4);
+								$last_id++;
+								$username = 'User'.$last_id;
+								$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
 							}
 							
 

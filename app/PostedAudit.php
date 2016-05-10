@@ -86,10 +86,10 @@ class PostedAudit extends Model
         $users = '';
         $audits = '';
         if(!empty($request->users)){
-            $users = "and table_visited.user_id in (". implode(',', $request->get('users')) .')';
+            $users = "and users.id in (". implode(',', $request->get('users')) .')';
         }
         if(!empty($request->audits)){
-            $users = "and table_visited.audit_id in (". implode(',', $request->get('audits')) .')';
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
         }
         $query = sprintf('
             select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
