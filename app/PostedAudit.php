@@ -146,10 +146,12 @@ class PostedAudit extends Model
 
     public static function getStores($audit_id,$user_id){
         $data = self::where('audit_id',$audit_id)
+            // ->join('audits', 'audits.id', '=', 'posted_audits.audit_id')
             ->where('user_id',$user_id)
             ->get();
         foreach ($data as $key => $value) {
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->audit_name = $value->audit->description;
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
             $data[$key]->total_category =  $perfect_store['total'];
             $data[$key]->perfect_percentage =  $perfect_store['perfect_percentage'];
