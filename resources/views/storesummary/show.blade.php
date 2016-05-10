@@ -35,7 +35,7 @@
                     
                     <tr>
                         <td>Perfect Store</td>
-                        <td>{{ $store->isPerfectStore() }}</td>
+                        <td>{{ $store->perfect_percentage }}%</td>
                     </tr>
                     <tr>
                         <td>OSA %</td>

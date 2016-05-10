@@ -109,7 +109,18 @@ class PostedAudit extends Model
             %s %s
             group by posted_audits.user_id, posted_audits.audit_id
             order by audits.description, users.name',$users,$audits);
-        return DB::select(DB::raw($query));
+
+        $data = DB::select(DB::raw($query));
+
+        foreach ($data as $key => $value) {
+            $audit = Audit::findOrFail($value->audit_id);
+            $user = User::findOrFail($value->user_id);
+            $summary = UserSummary::getSummary($audit,$user);
+
+            $data[$key]->perfect_store = $summary->detail->perfect_store_count;
+        }
+
+        return $data;
     }
 
     public static function getUserSummaryDetails($audit_id,$user_id){
@@ -138,11 +149,10 @@ class PostedAudit extends Model
             ->where('user_id',$user_id)
             ->get();
         foreach ($data as $key => $value) {
-
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
             $data[$key]->total_category =  $perfect_store['total'];
-            $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+            $data[$key]->perfect_percentage =  $perfect_store['perfect_percentage'];
         }
         return $data;
     }

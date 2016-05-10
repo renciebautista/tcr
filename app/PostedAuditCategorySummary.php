@@ -95,6 +95,8 @@ class PostedAuditCategorySummary extends Model
 
         $data['perfect_count'] = $cnt;
         $data['total'] = $total;
+        $data['perfect_percentage'] = number_format(($cnt / $total ) * 100,2) ;
+
 
 
         return $data;

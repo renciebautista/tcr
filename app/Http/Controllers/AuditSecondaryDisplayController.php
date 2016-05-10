@@ -50,7 +50,7 @@ class AuditSecondaryDisplayController extends Controller
     public function edit($audit_id,$id){
         $audit = Audit::findOrFail($audit_id);
         $store = AuditStore::findOrFail($id);
-        $categories = FormCategory::secondaryCategories($audit);
+        $categories = FormCategory::secondaryCategories($audit,$store);
         $selected = AuditSecondaryDisplayLookup::getSelected($audit,$store);
         return view('auditsecondary.edit',compact('audit', 'store', 'categories', 'selected'));
     }

@@ -21,7 +21,7 @@
                 @foreach($categories as $category)
                 <div class="form-group">
                     {!! Form::label(strtolower($category->category), $category->category); !!}
-                    @foreach($category->secondarybrand as $brand)
+                    @foreach($category->brands as $brand)
                     <div class="checkbox">
                         <label>
                             {!! Form::checkbox('brands[]', $brand->id, (in_array($brand->id,$selected) ? true : false)); !!} {{ $brand->brand }}

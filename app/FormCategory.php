@@ -14,8 +14,17 @@ class FormCategory extends Model
         return $this->hasMany('App\AuditSecondaryDisplay', 'form_category_id', 'id');
     }
 
-    public static function secondaryCategories($audit){
-    	return self::with('secondarybrand')->where('audit_id', $audit->id)->where('second_display', 1)->get();
+    public static function secondaryCategories($audit,$store){
+    	$data = self::where('audit_id', $audit->id)->where('second_display', 1)->get();
+
+        foreach ($data as $key => $value) {
+            $data[$key]->brands = AuditSecondaryDisplay::where('audit_id',$audit->id)
+                ->where('customer',$store->customer)
+                ->where('form_category_id',$value->id)
+                ->get();
+        }
+
+        return $data;
     }
 
     public static function osaCategories($audit){

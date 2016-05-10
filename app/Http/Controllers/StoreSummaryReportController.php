@@ -10,12 +10,16 @@ use App\FormGroup;
 use App\PostedAudit;
 use App\PostedAuditCategorySummary;
 use App\AuditTemplate;
+use App\Audit;
+use App\User;
+use App\UserSummary;
 
 class StoreSummaryReportController extends Controller
 {
     public function show($id){
 
     	$store = PostedAudit::findOrFail($id);
+
     	$data = PostedAuditCategorySummary::getCategorySummary($store->id);
 
     	$template = AuditTemplate::where('audit_id',$store->audit_id)
@@ -40,7 +44,10 @@ class StoreSummaryReportController extends Controller
                 $data[$category->category]['PERFECT STORE']  = $lastvalue;
             }
     		
-		}
+		} 
+        $perfect_store = PostedAuditCategorySummary::getPerfectCategory($store);
+        $store->perfect_percentage = $perfect_store['perfect_percentage'];
+
 
     	return view('storesummary.show',compact('store', 'categories', 'groups', 'data'));
     }
