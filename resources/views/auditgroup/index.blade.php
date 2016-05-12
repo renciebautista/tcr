@@ -27,9 +27,12 @@
                                         <thead>
                                             <tr>
                                                 <th>Group Description</th>
-                                                <th class="text-center">SOS</th>
                                                 <th class="text-center">Secondary Display</th>
+                                                <th class="text-center">SOS</th>
                                                 <th class="text-center">OSA</th>
+                                                <th class="text-center">NPI</th>
+                                                <th class="text-center">Planogram</th>
+                                                
                                                 <th class="text-center">Custom</th>
                                                 <th class="text-center">Perfect Store</th>
                                             </tr>
@@ -40,14 +43,26 @@
                                             <tr>
                                                 <td>{{ $group->group_desc }}</td>
                                                 <td class="text-center">
-                                                    {!! Form::checkbox("sos[$group->id]", '1', $group->sos, ['class' => 'chk-update']) !!}
-                                                </td>
-                                                <td class="text-center">
                                                     {!! Form::checkbox("second_display[$group->id]", '1', $group->second_display, ['class' => 'chk-update']) !!}
                                                 </td>
+
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("sos[$group->id]", '1', $group->sos, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                
                                                 <td class="text-center">
                                                     {!! Form::checkbox("osa[$group->id]", '1', $group->osa, ['class' => 'chk-update']) !!}
                                                 </td>
+                                                
+
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("npi[$group->id]", '1', $group->npi, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("plano[$group->id]", '1', $group->plano, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                
+                                                
                                                 <td class="text-center">
                                                     {!! Form::checkbox("custom[$group->id]", '1', $group->custom, ['class' => 'chk-update']) !!}
                                                 </td>

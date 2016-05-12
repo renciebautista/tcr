@@ -25,8 +25,10 @@
                                             <tr>
                                                 <th>Category Description</th>
                                                 <th class="text-center">Secondary Display</th>
-                                                <th class="text-center">OSA</th>
                                                 <th class="text-center">SOS</th>
+                                                <th class="text-center">OSA</th>
+                                                <th class="text-center">NPI</th>
+                                                <th class="text-center">Planogram</th>
                                                 <th class="text-center">Custom</th>
                                                 <th class="text-center">Perfect Store</th>
                                             </tr>
@@ -37,24 +39,25 @@
                                             <tr>
                                                 <td>{{ $category->category }}</td>
                                                 <td class="text-center">
-                                                    @if($category->second_display == 1)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
+                                                    {!! Form::checkbox("second_display[$category->id]", '1', $category->second_display, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("sos[$category->id]", '1', $category->sos, ['class' => 'chk-update']) !!}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("osa[$category->id]", '1', $category->osa, ['class' => 'chk-update']) !!}
+                                                </td>
+                                                
+                                                <td class="text-center">
+                                                    {!! Form::checkbox("npi[$category->id]", '1', $category->npi, ['class' => 'chk-update']) !!}
                                                 </td>
                                                 <td class="text-center">
-                                                    @if($category->osa == 1)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
+                                                    {!! Form::checkbox("plano[$category->id]", '1', $category->plano, ['class' => 'chk-update']) !!}
                                                 </td>
                                                 <td class="text-center">
-                                                    @if($category->sos == 1)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    @if($category->custome == 1)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
+                                                    {!! Form::checkbox("custom[$category->id]", '1', $category->custom, ['class' => 'chk-update']) !!}
                                                 </td>
                                                 <td class="text-center">
                                                     {!! Form::checkbox("perfect_store[$category->id]", '1', $category->perfect_store, ['class' => 'chk-update']) !!}

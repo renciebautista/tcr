@@ -81,9 +81,6 @@ class AuditSosLookup extends Model
    	}
 
    	public static function createSosLookup($audit,$file_path){
-        // AuditStoreSos::where('audit_id',$audit->id)->delete();
-        // AuditSosLookupDetail::where('audit_id',$audit->id)->delete();
-    	// self::where('audit_id',$audit->id)->delete();
 
         \DB::beginTransaction();
         try {
@@ -160,17 +157,17 @@ class AuditSosLookup extends Model
                     $cnt = 0;
                     AuditStoreSos::where('audit_sos_lookup_id',$sos_id)->delete();
                     foreach ($sheet->getRowIterator() as $row) {
-
                         if($cnt > 0){
                             if($row[0] != ''){
                                 $store = AuditStore::where('audit_id',$audit->id)->where('store_code',$row[0])->first();
                                 $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
                                 $sos = SosType::where('sos',strtoupper($row[3]))->first();
+                                $sos_target_template = self::getSosCategory($store->id);
                                 if((!empty($store)) && (!empty($form_category))){
                                     AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
                                         'audit_store_id' => $store->id,
                                         'form_category_id' => $form_category->id,
-                                        'audit_sos_lookup_id' => $sos_id,
+                                        'audit_sos_lookup_id' => $sos_target_template->id,
                                         'sos_type_id' => $sos->id]);
                                 }
                             }

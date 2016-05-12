@@ -33,6 +33,13 @@ class PostedAudit extends Model
             ->get();
     }
 
+    public static function getCustomers(){
+        return self::select('customer_code', 'customer')
+            ->groupBy('customer')
+            ->orderBy('customer')
+            ->get();
+    }
+
     public static function getAudits(){
         return self::select('audit_id', 'audits.description')
             ->join('audits','audits.id', '=', 'posted_audits.audit_id')

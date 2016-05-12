@@ -467,6 +467,40 @@ class DownloadController extends Controller
             $writer->close();
         }
 
+        // npi list
+        if($type == "npi_lists"){
+            $keylist = FormGroup::where('npi', 1)
+                ->whereIn('audit_id',$audit_list)
+                ->get();
+
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('npi_keylist.txt');
+            $writer->addRow(['id']); 
+            foreach ($keylist as $list) {
+                $data[0] = $list->id;
+                $writer->addRow($data); 
+            }
+
+            $writer->close();
+        }
+
+        if($type == "plano_lists"){
+            $keylist = FormGroup::where('plano', 1)
+                ->whereIn('audit_id',$audit_list)
+                ->get();
+
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('plano_keylist.txt');
+            $writer->addRow(['id']); 
+            foreach ($keylist as $list) {
+                $data[0] = $list->id;
+                $writer->addRow($data); 
+            }
+
+            $writer->close();
+        }
+
+
         if($type == "form_types"){
             $form_types = FormType::all();
             $writer = WriterFactory::create(Type::CSV); 

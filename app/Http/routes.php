@@ -83,6 +83,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('usersummaryreport/{audit_id}/user/{user_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
     Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 
+    Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
+    Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);
+    Route::get('customerreport/{id}/download',['as' => 'customerreport.download', 'uses' => 'CustomerReportController@download']);
+
     Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
 
@@ -90,6 +94,7 @@ Route::group(['middleware' => ['web']], function () {
 
 
     Route::get('templates/{id}/categories', ['as' => 'templates.categories', 'uses' => 'AuditTemplateController@categories']);
+    
     Route::group(array('prefix' => 'api'), function()
 	{
 	   	Route::get('auth', 'Api\AuthController@auth');
