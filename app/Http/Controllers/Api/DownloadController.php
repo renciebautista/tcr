@@ -35,6 +35,7 @@ class DownloadController extends Controller
         $type = $request->type;
 
         $user = User::find($user);
+        
         $storelist = AuditStore::getUserStores($user);
 
         $result = array();
@@ -56,6 +57,7 @@ class DownloadController extends Controller
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('stores.txt');
             $writer->addRow(['id', 'store', 'grade_matrix_id', 'audit_template_id', 'template', 'start_date', 'end_date','store_code']); 
+
             foreach ($storelist as $store) {
                 $audit_template = AuditTemplate::where('audit_id', $store->audit_id)->where('channel_code', $store->channel_code)->first();
                 if(!empty($audit_template)){
