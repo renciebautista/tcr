@@ -163,6 +163,7 @@ class AuditSosLookup extends Model
                                 $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
                                 $sos = SosType::where('sos',strtoupper($row[3]))->first();
                                 $sos_target_template = self::getSosCategory($store->id);
+                                // dd($sos_target_template);
                                 if((!empty($store)) && (!empty($form_category))){
                                     AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
                                         'audit_store_id' => $store->id,
@@ -191,7 +192,7 @@ class AuditSosLookup extends Model
 
     public static function getSosCategory($id){
         $store = AuditStore::find($id);
-
+        // dd($store);
         // store level
         $template = self::where('store_code',$store->store_code)
             ->where('audit_id', $store->audit_id)

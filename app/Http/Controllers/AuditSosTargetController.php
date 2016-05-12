@@ -31,7 +31,7 @@ class AuditSosTargetController extends Controller
     	if ($request->hasFile('file')){
             $file_path = $request->file('file')->move(storage_path().'/uploads/temp/',$request->file('file')->getClientOriginalName());
            	$audit = Audit::findOrFail($id);
-           	
+           	set_time_limit(0);
            	AuditSosLookup::createSosLookup($audit,$file_path);
            
             if (\File::exists($file_path))
