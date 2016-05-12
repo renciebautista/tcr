@@ -48,6 +48,20 @@ class PostedAudit extends Model
             ->get();
     }
 
+    public static function getRegions(){
+        return self::select('region_code', 'region')
+            ->groupBy('region_code')
+            ->orderBy('region')
+            ->get();
+    }
+
+    public static function getTemplates(){
+        return self::select('channel_code', 'template')
+            ->groupBy('channel_code')
+            ->orderBy('template')
+            ->get();
+    }
+
     public static function getPostedStores(){
         return self::select('store_code', 'store_name')
             ->groupBy('store_code')
@@ -164,5 +178,41 @@ class PostedAudit extends Model
             $data[$key]->perfect_percentage =  $perfect_store['perfect_percentage'];
         }
         return $data;
+    }
+
+    public static function getCustomerSummary($request = null){
+        $customers = '';
+        $regions = '';
+        $templates = '';
+        $audits = '';
+        if(!empty($request->customers)){
+            $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
+        }
+        if(!empty($request->regions)){
+            $regions = "and region_code in ('". implode("','", $request->regions) ."')";
+        }
+        if(!empty($request->templates)){
+            $templates = "and channel_code in ('". implode("','", $request->templates) ."')";
+        }
+        if(!empty($request->audits)){
+            $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
+        }
+
+        $query = sprintf('select customer,region,audit_tempalte, audits.description as audit_group,
+            mapped_stores, count(*) as visited_stores
+            from posted_audits
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select audit_id, channel_code, template as audit_tempalte, count(*) as mapped_stores from
+                audit_stores
+                group by audit_id, channel_code
+            ) as tbl_mapped using(channel_code,audit_id)
+             where mapped_stores > 0
+             %s %s %s %s
+            group by audit_id, channel_code, region_code
+            
+            ',$customers,$regions,$templates,$audits);
+
+        return DB::select(DB::raw($query));
     }
 }

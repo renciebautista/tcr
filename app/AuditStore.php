@@ -30,8 +30,6 @@ class AuditStore extends Model
 			->where('end_date','>=',$dt)
 			->first();
 
-		
-
 		if(!empty($audit)){
 			return self::where('user_id',$user->id)
 				->where('audit_id',$audit->id)
