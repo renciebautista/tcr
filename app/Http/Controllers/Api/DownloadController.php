@@ -22,6 +22,7 @@ use App\FormGroup;
 use App\FormType;
 use App\AuditOsaLookup;
 use App\AuditSosLookup;
+use App\FormCategory;
 use DB;
 
 use Box\Spout\Reader\ReaderFactory;
@@ -493,6 +494,38 @@ class DownloadController extends Controller
 
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('plano_keylist.txt');
+            $writer->addRow(['id']); 
+            foreach ($keylist as $list) {
+                $data[0] = $list->id;
+                $writer->addRow($data); 
+            }
+
+            $writer->close();
+        }
+
+        if($type == "perfect_category_lists"){
+            $keylist = FormCategory::where('perfect_store', 1)
+                ->whereIn('audit_id',$audit_list)
+                ->get();
+
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('perfect_category_lists.txt');
+            $writer->addRow(['id']); 
+            foreach ($keylist as $list) {
+                $data[0] = $list->id;
+                $writer->addRow($data); 
+            }
+
+            $writer->close();
+        }
+
+        if($type == "perfect_group_lists"){
+            $keylist = FormGroup::where('perfect_store', 1)
+                ->whereIn('audit_id',$audit_list)
+                ->get();
+
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('perfect_group_lists.txt');
             $writer->addRow(['id']); 
             foreach ($keylist as $list) {
                 $data[0] = $list->id;

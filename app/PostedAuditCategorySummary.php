@@ -18,7 +18,7 @@ class PostedAuditCategorySummary extends Model
     public static function getCategoryDoorsCount($audit,$user){
     	$cnt = 0;
     	$total = 0;
-    	$posted_stores = PostedAudit::getStores($audit->id,$user->id);
+    	$posted_stores = PostedAudit::getStoresByUser($audit->id,$user->id);
 
     	$all_stores = [];
     	foreach ($posted_stores as $posted_store) {

@@ -10,7 +10,7 @@ class UserSummary
     	$data = new \stdClass();
 
     	$data->detail = PostedAudit::getUserSummaryDetails($audit->id,$user->id);
-    	$data->stores = PostedAudit::getStores($audit->id,$user->id);
+    	$data->stores = PostedAudit::getStoresByUser($audit->id,$user->id);
 
     	$cnt = 0;
     	foreach ($data->stores as $store) {

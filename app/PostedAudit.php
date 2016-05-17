@@ -165,10 +165,25 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query))[0];
     }
 
-    public static function getStores($audit_id,$user_id){
+    public static function getStoresByUser($audit_id,$user_id){
         $data = self::where('audit_id',$audit_id)
-            // ->join('audits', 'audits.id', '=', 'posted_audits.audit_id')
             ->where('user_id',$user_id)
+            ->get();
+        foreach ($data as $key => $value) {
+            $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->audit_name = $value->audit->description;
+            $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+            $data[$key]->total_category =  $perfect_store['total'];
+            $data[$key]->perfect_percentage =  $perfect_store['perfect_percentage'];
+        }
+        return $data;
+    }
+
+    public static function getCustomerStores($audit_id,$channel_code,$region_code,$customer_code){
+        $data = self::where('audit_id',$audit_id)
+            ->where('channel_code',$channel_code)
+            ->where('region_code',$region_code)
+            ->where('customer_code',$customer_code)
             ->get();
         foreach ($data as $key => $value) {
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
@@ -198,7 +213,7 @@ class PostedAudit extends Model
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
 
-        $query = sprintf('select customer,region,audit_tempalte, audits.description as audit_group,
+        $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte, audits.description as audit_group,
             mapped_stores, count(*) as visited_stores
             from posted_audits
             inner join audits on audits.id = posted_audits.audit_id
@@ -213,6 +228,22 @@ class PostedAudit extends Model
             
             ',$customers,$regions,$templates,$audits);
 
-        return DB::select(DB::raw($query));
+        $data = DB::select(DB::raw($query));
+
+        // dd($data);
+
+        foreach ($data as $key => $value) {
+            $stores = self::getCustomerStores($value->audit_id,$value->channel_code,$value->region_code,$value->customer_code);
+            $perfect_stores = 0;
+            foreach ($stores as $store) {
+                if($store->perfect_percentage == '100.00'){
+                    $perfect_stores++;
+                }
+            }
+            $data[$key]->perfect_stores = $perfect_stores;
+        }
+
+        return $data;
+
     }
 }

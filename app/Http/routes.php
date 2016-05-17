@@ -86,6 +86,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
     Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);
     Route::get('customerreport/{id}/download',['as' => 'customerreport.download', 'uses' => 'CustomerReportController@download']);
+    Route::get('customerreport/{customer_code}/region/{region_code}/template/{channel_code}/audit/{audit_id}',['as' => 'customerreport.show', 'uses' => 'CustomerReportController@show']);
 
     Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
     Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);

@@ -84,11 +84,12 @@
 								<td>{{ $summary->audit_group }}</td>
 								<td class="center">{{ $summary->mapped_stores }}</td>
 								<td class="center">{{ $summary->visited_stores }}</td>
-								<td class="center"></td>
+								<td class="center">{{ $summary->perfect_stores }}</td>
 								<td class="center"></td>
 								<td class="center"></td>
 								<td class="center"></td>
 								<td>
+									{!! link_to_action('CustomerReportController@show', 'View Stores', ['customer_code' => $summary->customer_code, 'region_code' => $summary->region_code,'channel_code' => $summary->channel_code, 'audit_id' => $summary->audit_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
 							</tr>
 							@endforeach
