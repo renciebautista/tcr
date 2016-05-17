@@ -15,7 +15,7 @@
                 <div class="tab-content">
                     <div class="row menu pull-right">
                         <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadsecondarydisplay','Upload Secondary Display',array($audit),['class' => 'btn btn-primary']) !!}
+                            {!! link_to_route('audits.uploadsecondarydisplay','Upload Secondary Display',array($audit),['class' => 'btn btn-success']) !!}
                         </div>
                     </div>
                     

@@ -15,7 +15,7 @@
                 <div class="tab-content">
                     <div class="row menu pull-right">
                         <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadsostargets','Upload SOS Targets',array($audit),['class' => 'btn btn-primary']) !!}
+                            {!! link_to_route('audits.uploadsostargets','Upload SOS Targets',array($audit),['class' => 'btn btn-success']) !!}
                         </div>
                     </div>
                     

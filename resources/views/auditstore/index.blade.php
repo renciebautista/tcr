@@ -5,6 +5,9 @@
 @include('shared.notifications')
 <section class="content">
     @include('shared.audit_details')
+
+    
+    
       
     <div class="row">
 
@@ -12,9 +15,25 @@
           <div class="nav-tabs-custom">
                 @include('shared.audit_tab')
                 <div class="tab-content">
+
+                    <div>
+                        {!! Form::open(array('method' => 'get','class' => 'bs-component')) !!}
+                        <div class="form-group">
+                            <label>Search</label>
+                          {!! Form::text('search',null,['class' => 'form-control', 'placeholder' => 'Keywords']) !!}
+                        </div>
+
+
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                        {!!  Form::close() !!}
+                    </div>
+
+                    {!! $stores->render() !!}
                     <div class="row menu pull-right">
                         <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadstores','Upload Stores',array($audit),['class' => 'btn btn-primary']) !!}
+                            {!! link_to_route('audits.uploadstores','Upload Stores',array($audit),['class' => 'btn btn-success']) !!}
                         </div>
                     </div>
                     
@@ -25,8 +44,8 @@
                                     <h3 class="box-title">Store Lists</h3>
 
 
-
-                                    <h5 class="pull-right">{{ $stores->count() }} {{str_plural('record', $stores->count())}} found.</h5>
+                                    {!! Paginate::show($stores) !!}
+                                    
 
                                 </div>
                                 <div class="box-body table-responsive no-padding">

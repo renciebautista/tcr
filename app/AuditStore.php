@@ -221,4 +221,22 @@ class AuditStore extends Model
     		->lists('store_name','store_code')
     		->all();
     }
+
+    public static function search($request,$id){
+    	return self::join('users', 'users.id', '=', 'audit_stores.user_id')
+    		->where('audit_id',$id)
+    		->where(function($query) use ($request){
+                $query->where('customer', 'LIKE', "%$request->search%");
+	            $query->orWhere('area', 'LIKE', "%$request->search%");
+	            $query->orWhere('region', 'LIKE', "%$request->search%");
+	            $query->orWhere('distributor', 'LIKE', "%$request->search%");
+	            $query->orWhere('store_code', 'LIKE', "%$request->search%");
+	            $query->orWhere('store_name', 'LIKE', "%$request->search%");
+	            $query->orWhere('users.name', 'LIKE', "%$request->search%");
+	            $query->orWhere('template', 'LIKE', "%$request->search%");
+            })
+            ->orderBy('audit_stores.id','desc')
+            ->paginate(100)
+            ->appends(['search' => $request->search]);
+    }
 }

@@ -12,14 +12,11 @@ use App\UpdatedHash;
 
 class AuditStoreController extends Controller
 {
-    public function index($id)
+    public function index(Request $request, $id)
     {
+        $request->flash();
         $audit = Audit::findOrFail($id);
-        $stores = AuditStore::with('fielduser')
-            ->orderBy('id','desc')
-            ->where('audit_id',$id)
-            // ->paginate(100);
-            ->get();
+        $stores = AuditStore::search($request,$id);
         return view('auditstore.index',compact('audit', 'stores'));
     }
 
