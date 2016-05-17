@@ -11,6 +11,7 @@ use App\AuditSecondaryDisplay;
 use App\AuditSecondaryDisplayLookup;
 use App\AuditStore;
 use App\FormCategory;
+use App\UpdatedHash;
 
 
 class AuditSecondaryDisplayController extends Controller
@@ -37,6 +38,15 @@ class AuditSecondaryDisplayController extends Controller
             {
                 \File::delete($file_path);
             }
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
             Session::flash('flash_message', 'Secondary Display successfully uploaded.');
             Session::flash('flash_class', 'alert-success');
             return redirect()->route("audits.secondarydisplay",$audit);  		   	

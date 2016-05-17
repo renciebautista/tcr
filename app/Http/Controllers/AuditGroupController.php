@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Audit;
 use App\FormGroup;
+use App\UpdatedHash;
 
 class AuditGroupController extends Controller
 {
@@ -27,6 +28,14 @@ class AuditGroupController extends Controller
 			$field = explode("[", $text, 2);
 
 			FormGroup::where('id',$id)->update([$field[0] => $value]);
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
 	    }
     }
 }

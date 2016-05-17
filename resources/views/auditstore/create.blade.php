@@ -20,7 +20,7 @@
 
 				 	<div class="box-footer">
 						<button type="submit" class="btn btn-success">Submit</button>
-						{!! link_to_route('audits.index','Back',array(),['class' => 'btn btn-default']) !!}
+						{!! link_to_route('audits.stores','Back',array('id' => $audit->id),['class' => 'btn btn-default']) !!}
 				  	</div>
 
 				{!! Form::close() !!}

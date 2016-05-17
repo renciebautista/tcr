@@ -11,6 +11,7 @@ use App\AuditOsaLookup;
 use App\AuditStore;
 use App\FormCategory;
 use App\AuditOsaLookupDetail;
+use App\UpdatedHash;
 
 class AuditOsaTargetController extends Controller
 {
@@ -37,6 +38,14 @@ class AuditOsaTargetController extends Controller
             {
                 \File::delete($file_path);
             }
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
             Session::flash('flash_message', 'OSA Targets successfully uploaded.');
             Session::flash('flash_class', 'alert-success');
             return redirect()->route("audits.osatargets",$audit_id);  		   	
@@ -101,6 +110,15 @@ class AuditOsaTargetController extends Controller
 
             \DB::commit();
 
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
+
             Session::flash('flash_message', 'OSA Lookup successfully updated!');
             Session::flash('flash_class', 'alert-success');
             return redirect()->route("audits.osatargets_details",['audit_id' => $audit->id, 'id' => $lookup->id]);
@@ -123,6 +141,15 @@ class AuditOsaTargetController extends Controller
             $lookup->delete();
 
             \DB::commit();
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
 
             Session::flash('flash_message', 'OSA Lookup successfully deleted!');
             Session::flash('flash_class', 'alert-success');

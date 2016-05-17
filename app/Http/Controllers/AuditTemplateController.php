@@ -8,6 +8,7 @@ use Session;
 use App\Http\Requests;
 use App\Audit;
 use App\AuditTemplate;
+use App\UpdatedHash;
 
 class AuditTemplateController extends Controller
 {
@@ -33,6 +34,14 @@ class AuditTemplateController extends Controller
                 \File::delete($file_path);
             }
             if($reply['status'] == 1){
+                $hash = UpdatedHash::find(1);
+                if(empty($hash)){
+                    UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+                }else{
+                    $hash->hash = md5(date('Y-m-d H:i:s'));
+                    $hash->update();
+                }
+
                 Session::flash('flash_message', 'Audit Template successfully uploaded.');
                 Session::flash('flash_class', 'alert-success');
                 return redirect()->route("audits.templates",$id);    

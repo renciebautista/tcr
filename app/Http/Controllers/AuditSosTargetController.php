@@ -13,6 +13,7 @@ use App\FormCategory;
 use App\SosType;
 use App\AuditSosLookupDetail;
 use App\AuditStoreSos;
+use App\UpdatedHash;
 
 class AuditSosTargetController extends Controller
 {
@@ -38,6 +39,15 @@ class AuditSosTargetController extends Controller
             {
                 \File::delete($file_path);
             }
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
             Session::flash('flash_message', 'SOS Targets successfully uploaded.');
             Session::flash('flash_class', 'alert-success');
             return redirect()->route("audits.sostargets",$id);  		   	
@@ -109,6 +119,14 @@ class AuditSosTargetController extends Controller
 
             \DB::commit();
 
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+
             Session::flash('flash_message', 'SOS Lookup successfully updated!');
             Session::flash('flash_class', 'alert-success');
             return redirect()->route("audits.sostargets_details",['audit_id' => $audit->id, 'id' => $lookup->id]);
@@ -132,6 +150,14 @@ class AuditSosTargetController extends Controller
             $lookup->delete();
 
             \DB::commit();
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
 
             Session::flash('flash_message', 'SOS Lookup successfully deleted!');
             Session::flash('flash_class', 'alert-success');

@@ -8,6 +8,7 @@ use Session;
 use App\Http\Requests;
 use App\Audit;
 use App\AuditStore;
+use App\UpdatedHash;
 
 class AuditStoreController extends Controller
 {
@@ -39,6 +40,14 @@ class AuditStoreController extends Controller
             if (\File::exists($file_path))
             {
                 \File::delete($file_path);
+            }
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
             }
 
 		   	Session::flash('flash_message', 'Store Masterfile successfully uploaded.');
