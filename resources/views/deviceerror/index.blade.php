@@ -27,8 +27,7 @@
 							@foreach($devices as $device)
 							<tr>
 								<td>
-									{{ $device->filename }}
-									{!! link_to_route('deviceerror.getfile', 'Audit Details', $device->filename, ['class' => 'btn btn-xs btn btn-primary']) !!}
+									{!! link_to_route('deviceerror.getfile', $device->filename, $device->filename) !!}
 
 								</td>
 								<td>{{ $device->updated_at}}</td>

@@ -15,7 +15,6 @@ class DeviceErrorController extends Controller
     }
 
     public function getfile($filename){
-    	$filename = $request->name;
         $myfile = storage_path().'/uploads/traces/'.$filename;
 
         if (!\File::exists($myfile))

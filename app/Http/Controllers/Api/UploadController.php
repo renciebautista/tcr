@@ -280,13 +280,13 @@ class UploadController extends Controller
 
 	        $error = DeviceError::where('filename',$filename)->first();
 	        if(!empty($error)){
-	        	$error->$filename = $filename;
+	        	$error->updated_at = date('Y-m-d H:i:s');
 	        	$error->update();
 	        }else{
 	        	DeviceError::create(['filename' => $filename]);
 	        }
 
-	        return response()->json(array('msg' => 'file uploaded', 'status' => 0);
+	        return response()->json(array('msg' => 'file uploaded', 'status' => 0));
 	    }
 	    return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
     }
