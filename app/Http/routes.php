@@ -95,6 +95,12 @@ Route::group(['middleware' => ['web']], function () {
 
 
     Route::get('templates/{id}/categories', ['as' => 'templates.categories', 'uses' => 'AuditTemplateController@categories']);
+
+    Route::get('deviceerror', ['as' => 'deviceerror.index', 'uses' => 'DeviceErrorController@index']);
+    Route::get('deviceerror/getfile/{filename}', ['as' => 'deviceerror.getfile', 'uses' => 'DeviceErrorController@getfile']);
+
+
+    Route::resource('deviceerror', 'DeviceErrorController' );
     
     Route::group(array('prefix' => 'api'), function()
 	{
@@ -103,6 +109,7 @@ Route::group(['middleware' => ['web']], function () {
 	    Route::post('storeaudit', 'Api\UploadController@storeaudit');
 	    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
 	   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
+	   	Route::post('uploadtrace', 'Api\UploadController@uploadtrace');
 
 	   	Route::get('audits', 'Api\AuditController@index');
 	   	Route::get('usersummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getUserSummary');

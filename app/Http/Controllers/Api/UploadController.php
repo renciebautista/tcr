@@ -18,6 +18,7 @@ use App\Audit;
 use App\PostedAudit;
 use App\PostedAuditDetail;
 use App\PostedAuditCategorySummary;
+use App\DeviceError;
 
 class UploadController extends Controller
 {
@@ -266,6 +267,26 @@ class UploadController extends Controller
 	        $request->file('data')->move($destinationPath, $fileName);
 
 	        return response()->json(array('msg' => 'file uploaded', 'status' => 0, 'audit_id' => $audit_id));
+	    }
+	    return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
+    }
+
+    public function uploadtrace(Request $request){
+		if ($request->hasFile('data'))
+		{
+	        $destinationPath = storage_path().'/uploads/traces/';
+	        $filename = $request->file('data')->getClientOriginalName();
+	        $request->file('data')->move($destinationPath, $filename);
+
+	        $error = DeviceError::where('filename',$filename)->first();
+	        if(!empty($error)){
+	        	$error->$filename = $filename;
+	        	$error->update();
+	        }else{
+	        	DeviceError::create(['filename' => $filename]);
+	        }
+
+	        return response()->json(array('msg' => 'file uploaded', 'status' => 0);
 	    }
 	    return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
     }
