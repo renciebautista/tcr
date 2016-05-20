@@ -286,8 +286,8 @@ class UploadController extends Controller
 	        	DeviceError::create(['filename' => $filename]);
 	        }
 
-	        return response()->json(array('msg' => 'file uploaded', 'status' => 0));
+	        return response()->json(array('msg' => 'Error trace successfully submitted.', 'status' => 0));
 	    }
-	    return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
+	    return response()->json(array('msg' => 'Failed in submitting error trace.', 'status' => 1));
     }
 }
