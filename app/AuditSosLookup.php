@@ -77,7 +77,7 @@ class AuditSosLookup extends Model
     
 
    	public static function getSosLookupsByAudit($audit){
-   		return self::where('audit_id',$audit->id)->get();
+   		return self::where('audit_id',$audit->id)->orderBy('id','desc')->get();
    	}
 
    	public static function createSosLookup($audit,$file_path){
@@ -160,10 +160,16 @@ class AuditSosLookup extends Model
                         if($cnt > 0){
                             if($row[0] != ''){
                                 $store = AuditStore::where('audit_id',$audit->id)->where('store_code',$row[0])->first();
+
+
                                 $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
                                 $sos = SosType::where('sos',strtoupper($row[3]))->first();
                                 $sos_target_template = self::getSosCategory($store->id);
-                                // dd($sos_target_template);
+
+                                if(empty($sos_target_template)){
+                                    dd($row);
+                                }
+
                                 if((!empty($store)) && (!empty($form_category))){
                                     AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
                                         'audit_store_id' => $store->id,

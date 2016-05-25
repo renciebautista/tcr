@@ -75,7 +75,7 @@ class AuditOsaLookup extends Model
     }
 
    	public static function getOsaLookupsByAudit($audit){
-   		return self::where('audit_id',$audit->id)->get();
+   		return self::where('audit_id',$audit->id)->orderBy('id','desc')->get();
    	}
 
    	public static function createOsaLookup($audit,$file_path){

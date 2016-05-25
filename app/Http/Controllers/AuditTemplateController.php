@@ -14,7 +14,7 @@ class AuditTemplateController extends Controller
 {
     public function index($id){
     	$audit = Audit::findOrFail($id);
-    	$templates = AuditTemplate::where('audit_id',$audit->id)->get();
+    	$templates = AuditTemplate::where('audit_id',$audit->id)->orderBy('updated_at', 'desc')->get();
     	return view('audittemplate.index', compact('audit', 'templates'));
     }
 

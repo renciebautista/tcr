@@ -64,10 +64,14 @@ class AuditStore extends Model
 								}
 							}
 							
+							$e_type = 'ENVISION';
+							if($row->enrollment_type != ''){
+								$e_type = $row->enrollment_type;
+							}
 
-							$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
+							$enrollment_type = EnrollmentType::where('enrollmenttype',$e_type)->first();
 							if(empty($enrollment_type)){
-								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
+								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $e_type, 'value' => 0]);
 							}
 
 							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$id)->where('enrollment_type_id',$enrollment_type->id)->first();
@@ -140,10 +144,15 @@ class AuditStore extends Model
 								$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
 							}
 							
+							$e_type = 'ENVISION';
+							if($row->enrollment_type != ''){
+								$e_type = $row->enrollment_type;
+							}
+							
 
-							$enrollment_type = EnrollmentType::where('enrollmenttype',$row->enrollment_type)->first();
+							$enrollment_type = EnrollmentType::where('enrollmenttype',$e_type)->first();
 							if(empty($enrollment_type)){
-								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $row->enrollment_type, 'value' => 0]);
+								$enrollment_type = EnrollmentType::create(['enrollmenttype' => $e_type, 'value' => 0]);
 							}
 
 							$audit_enrollment_mapping = AuditEnrollmentTypeMapping::where('audit_id',$audit->id)->where('enrollment_type_id',$enrollment_type->id)->first();

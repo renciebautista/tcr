@@ -28,13 +28,22 @@ class AuditTemplate extends Model
                         $results = $reader->get();
                         $sub_forms = [];
                         foreach ($results as $key => $row) {
+                            $rowtype = '';
+                            if($row->type == 'Single Line Text'){
+                                $rowtype = 'Single-Line Text';
+                            }else{
+                                $rowtype = $row->type;
+                            }
                             $sub_forms[] = ['audit_template_id' => $template->id, 'code' => $row->survey_code, 'prompt' => addslashes($row->survey_question),
-                                'required' => $row->required, 'type' => $row->type, 'choices' => $row->choices, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+                                'required' => $row->required, 'type' => $rowtype, 'choices' => $row->choices, 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
                         }
                         if(!empty($sub_forms)){
                             TemplateSubForm::insert($sub_forms);
                         }
                     });
+
+                    $template->updated_at = date('Y-m-d H:i:s');
+                    $template->update();
 
                     FormFormula::where('audit_template_id', $template->id)->delete();
                     FormCondition::where('audit_template_id', $template->id)->delete();
@@ -276,8 +285,8 @@ class AuditTemplate extends Model
         	return $data;
 
         } catch (\Exception $e) {
-            dd($e);
             \DB::rollback();
+            dd($e);
         }
   
     }
