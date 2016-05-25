@@ -18,7 +18,9 @@ class AuditTemplate extends Model
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
         	if($sheetNames[1] == 'Sub Forms'){
 
-                $store = AuditStore::where('template',$sheetNames[0])->first();
+                $store = AuditStore::where('template',$sheetNames[0])
+                    ->where('audit_id',$id)
+                    ->first();
                 if(!empty($store)){
                     $template = AuditTemplate::firstOrCreate(['audit_id' => $id, 'channel_code' => $store->channel_code, 'description' => $sheetNames[0]]);
 

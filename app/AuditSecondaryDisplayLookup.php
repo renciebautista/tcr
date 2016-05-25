@@ -14,7 +14,7 @@ class AuditSecondaryDisplayLookup extends Model
     		->join('audit_stores', 'audit_secondary_display_lookups.audit_store_id','=','audit_stores.id')
     		->where('audit_stores.audit_id', $audit->id)
     		->groupBy('store_name')
-    		->orderBy('audit_secondary_display_lookups.id')
+    		->orderBy('audit_secondary_display_lookups.id','desc')
     		->get();
     }
 

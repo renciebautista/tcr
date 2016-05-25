@@ -146,7 +146,12 @@ class AuditStore extends Model
 							
 							$e_type = 'ENVISION';
 							if($row->enrollment_type != ''){
-								$e_type = $row->enrollment_type;
+								if(strtolower($row->enrollment_type) ==  strtolower('Non-envision')){
+									$e_type = 'Non envision';
+								}else{
+									$e_type = $row->enrollment_type;
+								}
+								
 							}
 							
 
