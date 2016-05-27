@@ -30,13 +30,24 @@ class AuditStoreController extends Controller
             $file_path = $request->file('file')->move(storage_path().'/uploads/temp/',$request->file('file')->getClientOriginalName());
             
             $audit = Audit::findOrFail($id);
-            AuditStore::createStore($audit,$file_path);
+            $invalid_stores = AuditStore::createStore($audit,$file_path);
 
             \Artisan::call('db:seed', ['--class' => 'RemapUserSeeder']);
 
             if (\File::exists($file_path))
             {
                 \File::delete($file_path);
+            }
+
+            if(!empty($invalid_stores)){
+                $writer = WriterFactory::create(Type::CSV); 
+                $writer->openToBrowser('invalid stores.txt');
+                $writer->addRows($invalid_stores); 
+                $writer->close();
+            }else{
+                Session::flash('flash_message', 'Store Masterfile successfully uploaded.');
+                Session::flash('flash_class', 'alert-success');
+                return redirect()->route("audits.stores",$id); 
             }
 
             $hash = UpdatedHash::find(1);
@@ -47,9 +58,7 @@ class AuditStoreController extends Controller
                 $hash->update();
             }
 
-		   	Session::flash('flash_message', 'Store Masterfile successfully uploaded.');
-			Session::flash('flash_class', 'alert-success');
-            return redirect()->route("audits.stores",$id);    
+		   	   
 		}else{
 			Session::flash('flash_message', 'Error uploading masterfile.');
 			Session::flash('flash_class', 'alert-danger');

@@ -43,6 +43,7 @@ class AuditStore extends Model
     public static function import($id,$records){
     	\DB::beginTransaction();
 			try {
+				$invalid_stores = [];
 				$records->each(function($row) use ($id)  {
 					if(!is_null($row->account)){
 
@@ -79,28 +80,38 @@ class AuditStore extends Model
 								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
 							}
 
-							$store = self::firstOrCreate([
-								'audit_id' => $id,
-								'account' => $row->account,
-								'customer_code' => $row->customer_code,
-								'customer' => $row->customer,
-								'area' => $row->area,
-								'region_code' => $row->region_code,
-								'region' => $row->region,
-								'remarks' => $row->remarks,
-								'distributor_code' => $row->distributor_code,
-								'distributor' => $row->distributor,
-								'store_code' => $row->store_code,
-								'store_name' => $row->store_name,
-								'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
-								'channel_code' => $row->channel_code,
-								'template' => $row->template,
-								'agency_code' => $row->agency_code,
-								'agency_description' => $row->agency_description,
-								'user_id' => $user->id
-								]);
+							$store = self::where('audit_id',$id)
+								->where('store_code',$row->store_code)
+								->first();
+
+							if(empty($store)){
+								$store = self::firstOrCreate([
+									'audit_id' => $id,
+									'account' => $row->account,
+									'customer_code' => $row->customer_code,
+									'customer' => $row->customer,
+									'area' => $row->area,
+									'region_code' => $row->region_code,
+									'region' => $row->region,
+									'remarks' => $row->remarks,
+									'distributor_code' => $row->distributor_code,
+									'distributor' => $row->distributor,
+									'store_code' => $row->store_code,
+									'store_name' => $row->store_name,
+									'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
+									'channel_code' => $row->channel_code,
+									'template' => $row->template,
+									'agency_code' => $row->agency_code,
+									'agency_description' => $row->agency_description,
+									'user_id' => $user->id
+									]);
+							}else{
+								$invalid_stores[] = $row;
+							}
 						}
 				}
+
+				return $invalid_stores;
 				
 			});
 			\DB::commit();
