@@ -103,6 +103,45 @@ class PostedAudit extends Model
         return $data;
     }
 
+    public static function customerSearch($data,$request = null){
+        $data = self::where(function($query) use ($request){
+            if(!empty($request->users)){
+                    $query->whereIn('user_id',$request->users);
+                }
+            })
+            ->where(function($query) use ($request){
+            if(!empty($request->audits)){
+                    $query->whereIn('audit_id',$request->audits);
+                }
+            })
+            ->where(function($query) use ($request){
+            if(!empty($request->stores)){
+                    $query->whereIn('store_code',$request->stores);
+                }
+            })
+            ->where(function($query) use ($request){
+            if(!empty($request->status)){
+                    $query->whereIn('perfect_store',$request->status);
+                }
+            })
+
+            ->where('customer_code',$data['customer_code'])
+            ->where('region_code',$data['region_code'])
+            ->where('channel_code',$data['channel_code'])
+            ->where('audit_id',$data['audit_id'])
+            ->orderBy('updated_at','desc')
+            ->get();
+
+        foreach ($data as $key => $value) {
+
+            $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+            $data[$key]->total_category =  $perfect_store['total'];
+            $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+        }
+        return $data;
+    }
+
     public static function getUserSummary($request = null){
         $users = '';
         $audits = '';
@@ -245,5 +284,26 @@ class PostedAudit extends Model
 
         return $data;
 
+    }
+
+    public static function getCustomer($customer_code, $audit_id){
+        return self::where('customer_code', $customer_code)
+            ->where('audit_id', $audit_id)
+            ->groupBy('customer_code')
+            ->first();
+    }
+
+    public static function getRegion($region_code, $audit_id){
+        return self::where('region_code', $region_code)
+            ->where('audit_id', $audit_id)
+            ->groupBy('region_code')
+            ->first();
+    }
+
+    public static function getTemplate($channel_code, $audit_id){
+        return self::where('channel_code', $channel_code)
+            ->where('audit_id', $audit_id)
+            ->groupBy('channel_code')
+            ->first();
     }
 }
