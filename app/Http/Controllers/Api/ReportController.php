@@ -16,12 +16,14 @@ class ReportController extends Controller
     public function getUserSummary($audit_id,$user_id){
 
     	$audit = Audit::findOrFail($audit_id);
+
         $user = User::findOrFail($user_id);
 
         $posted_audit = PostedAudit::where('user_id',$user_id)
             ->where('audit_id',$audit->id)->get();
 
-        if($posted_audit->count() > 1){
+
+        if($posted_audit->count() > 0){
             $usersummary = UserSummary::getSummary($audit,$user);
 
         	$detail = $usersummary->detail;
@@ -42,7 +44,7 @@ class ReportController extends Controller
         $posted_audit = PostedAudit::where('user_id',$user_id)
             ->where('audit_id',$audit->id)->get();
 
-        if($posted_audit->count() > 1){
+        if($posted_audit->count() > 0){
             $usersummary = UserSummary::getSummary($audit,$user);
 
             $stores = $usersummary->stores;

@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\UpdatedHash;
+use App\Audit;
 
 class AuthController extends Controller
 {
@@ -20,7 +21,9 @@ class AuthController extends Controller
             $user = \Auth::user();
 
             $hash = UpdatedHash::find(1);
+            $audits = Audit::select('id', 'description')->get();
             $user->hash =  $hash->hash;
+            $user->audits = $audits;
             
             return response()->json($user);
         }else{
