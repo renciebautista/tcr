@@ -83,6 +83,15 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('usersummaryreport/{audit_id}/user/{user_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
     Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 
+    Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);
+    Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);
+
+    Route::get('npireport',['as' => 'npireport.index', 'uses' => 'NpiReportController@index']);
+    Route::post('npireport',['as' => 'npireport.create', 'uses' => 'NpiReportController@create']);
+
+    Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
+    Route::post('customizedplanoreport',['as' => 'customizedplanoreport.create', 'uses' => 'CustomizedPlanogramReportController@create']);
+
     Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
     Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);
     Route::get('customerreport/{id}/download',['as' => 'customerreport.download', 'uses' => 'CustomerReportController@download']);

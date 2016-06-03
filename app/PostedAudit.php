@@ -44,7 +44,7 @@ class PostedAudit extends Model
         return self::select('audit_id', 'audits.description')
             ->join('audits','audits.id', '=', 'posted_audits.audit_id')
             ->groupBy('audit_id')
-            ->orderBy('audits.description')
+            ->orderBy('audits.id')
             ->get();
     }
 
@@ -305,5 +305,142 @@ class PostedAudit extends Model
             ->where('audit_id', $audit_id)
             ->groupBy('channel_code')
             ->first();
+    }
+
+    public static function getOsaSku($request){
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $osas = '';
+        $osa_desc = [];
+        $formgroups = FormGroup::where('osa',1)->get();
+        foreach ($formgroups as $group) {
+            $osa_desc[] = $group->group_desc;
+        }
+
+        if(!empty($osa_desc)){
+            $osas = "and posted_audit_details.group in ('". implode("','", $osa_desc)  ."')";
+        }
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id, count(*) as store_count from posted_audits
+                group by audit_id
+            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "AVAILABLE ON SHELF"
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$osas,$audits,$templates);
+
+        return DB::select(DB::raw($query));
+    }
+
+    public static function getNpiSku($request){
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $npis = '';
+        $npi_desc = [];
+        $formgroups = FormGroup::where('npi',1)->get();
+        foreach ($formgroups as $group) {
+            $npi_desc[] = $group->group_desc;
+        }
+
+        if(!empty($npi_desc)){
+            $npis = "and posted_audit_details.group in ('". implode("','", $npi_desc)  ."')";
+        }
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id, count(*) as store_count from posted_audits
+                group by audit_id
+            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "AVAILABLE ON SHELF"
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$npis,$audits,$templates);
+
+        return DB::select(DB::raw($query));
+    }
+
+    public static function getCustomizedPlanoSku($request){
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $planos = '';
+        $plano_desc = [];
+        $formgroups = FormGroup::where('plano',1)->get();
+        foreach ($formgroups as $group) {
+            $plano_desc[] = $group->group_desc;
+        }
+
+        if(!empty($plano_desc)){
+            $planos = "and posted_audit_details.group in ('". implode("','", $plano_desc)  ."')";
+        }
+
+        // dd($plano_desc);
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id, count(*) as store_count from posted_audits
+                group by audit_id
+            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "IMPLEMENTED"
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$planos,$audits,$templates);
+
+        return DB::select(DB::raw($query));
     }
 }

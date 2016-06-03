@@ -68,9 +68,9 @@
 								<th class="center">Stores Mapped</th>
 								<th class="center">Stores Visited</th>
 								<th class="center">Perfect Stores</th>
-								<th class="center">OSA</th>
-								<th class="center">NPI</th>
-								<th class="center">Planogram</th>
+								<th class="center">Ave OSA</th>
+								<th class="center">Ave NPI</th>
+								<th class="center">Ave Planogram</th>
 								<th>Action</th>
 							</tr>
 						</thead>

@@ -40,6 +40,8 @@
                                                 <th>Customer</th>
                                                 <th>Store Code</th>
                                                 <th>Store Name</th>
+                                                <th class="text-center">PJP</th>
+                                                <th class="text-center">Target</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -49,7 +51,16 @@
                                                 <td>{{ $store->customer }}</td>
                                                 <td>{{ $store->store_code }}</td>
                                                 <td>{{ $store->store_name }}</td>
-
+                                                <td class="text-center">
+                                                    @if($store->pjp)
+                                                    <i class="fa fa-fw fa-check"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($store->pjp)
+                                                        {{ $store->freq }}
+                                                    @endif
+                                                </td>
                                             </tr>
                                             @endforeach
                                             @else
