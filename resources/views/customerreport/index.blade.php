@@ -65,12 +65,12 @@
 								<th>Region</th>
 								<th>Audit Template</th>
 								<th>Audit Month</th>
-								<th class="center">Stores Mapped</th>
-								<th class="center">Stores Visited</th>
-								<th class="center">Perfect Stores</th>
-								<th class="center">Ave OSA</th>
-								<th class="center">Ave NPI</th>
-								<th class="center">Ave Planogram</th>
+								<th class="right">Stores Mapped</th>
+								<th class="right">Stores Visited</th>
+								<th class="right">Perfect Stores</th>
+								<th class="right">Ave OSA</th>
+								<th class="right">Ave NPI</th>
+								<th class="right">Ave Planogram</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -82,12 +82,12 @@
 								<td>{{ $summary->region }}</td>
 								<td>{{ $summary->audit_tempalte }}</td>
 								<td>{{ $summary->audit_group }}</td>
-								<td class="center">{{ $summary->mapped_stores }}</td>
-								<td class="center">{{ $summary->visited_stores }}</td>
-								<td class="center">{{ $summary->perfect_stores }}</td>
-								<td class="center"></td>
-								<td class="center"></td>
-								<td class="center"></td>
+								<td class="right">{{ $summary->mapped_stores }}</td>
+								<td class="right">{{ $summary->visited_stores }}</td>
+								<td class="right">{{ $summary->perfect_stores }}</td>
+								<td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
+								<td class="right">{{ number_format($summary->npi_ave,2) }}%</td>
+								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td>
 								<td>
 									{!! link_to_action('CustomerReportController@show', 'View Stores', ['customer_code' => $summary->customer_code, 'region_code' => $summary->region_code,'channel_code' => $summary->channel_code, 'audit_id' => $summary->audit_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

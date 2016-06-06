@@ -252,8 +252,12 @@ class PostedAudit extends Model
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
 
-        $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte, audits.description as audit_group,
-            mapped_stores, count(*) as visited_stores
+        $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
+            audits.description as audit_group,
+            mapped_stores, count(*) as visited_stores,
+            (sum(osa) / count(*))  as osa_ave,
+            (sum(npi) / count(*)) as npi_ave,
+            (sum(planogram) / count(*)) as planogram_ave
             from posted_audits
             inner join audits on audits.id = posted_audits.audit_id
             left join (
@@ -262,10 +266,11 @@ class PostedAudit extends Model
                 group by audit_id, channel_code
             ) as tbl_mapped using(channel_code,audit_id)
              where mapped_stores > 0
-             %s %s %s %s
-            group by audit_id, channel_code, region_code
-            
-            ',$customers,$regions,$templates,$audits);
+            %s
+            %s
+            %s
+            %s
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits);
 
         $data = DB::select(DB::raw($query));
 

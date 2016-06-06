@@ -86,11 +86,17 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);
     Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);
 
+    Route::get('sosreport',['as' => 'sosreport.index', 'uses' => 'SosReportController@index']);
+    Route::post('sosreport',['as' => 'sosreport.create', 'uses' => 'SosReportController@create']);
+
     Route::get('npireport',['as' => 'npireport.index', 'uses' => 'NpiReportController@index']);
     Route::post('npireport',['as' => 'npireport.create', 'uses' => 'NpiReportController@create']);
 
     Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
     Route::post('customizedplanoreport',['as' => 'customizedplanoreport.create', 'uses' => 'CustomizedPlanogramReportController@create']);
+
+    Route::get('pjpreport/frequency',['as' => 'pjpreport.frequency', 'uses' => 'PjpReportController@frequency']);
+    Route::post('pjpreport/frequency',['as' => 'pjpreport.postfrequency', 'uses' => 'PjpReportController@postfrequency']);
 
     Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
     Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);
