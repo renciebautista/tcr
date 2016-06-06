@@ -176,26 +176,30 @@ class AuditStore extends Model
 								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $audit->id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
 							}
 
-							$store = self::firstOrCreate([
-								'audit_id' => $audit->id,
-								'account' => $row->account,
-								'customer_code' => $row->customer_code,
-								'customer' => $row->customer,
-								'area' => $row->area,
-								'region_code' => $row->region_code,
-								'region' => $row->region,
-								'remarks' => $row->remarks,
-								'distributor_code' => $row->distributor_code,
-								'distributor' => $row->distributor,
-								'store_code' => $row->store_code,
-								'store_name' => $row->store_name,
-								'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
-								'channel_code' => $row->channel_code,
-								'template' => $row->template,
-								'agency_code' => $row->agency_code,
-								'agency_description' => $row->agency_description,
-								'user_id' => $user->id
-								]);
+							if(!empty($row->channel_code)){
+								$store = self::firstOrCreate([
+									'audit_id' => $audit->id,
+									'account' => $row->account,
+									'customer_code' => $row->customer_code,
+									'customer' => $row->customer,
+									'area' => $row->area,
+									'region_code' => $row->region_code,
+									'region' => $row->region,
+									'remarks' => $row->remarks,
+									'distributor_code' => $row->distributor_code,
+									'distributor' => $row->distributor,
+									'store_code' => $row->store_code,
+									'store_name' => $row->store_name,
+									'audit_enrollment_type_mapping_id' => $audit_enrollment_mapping->id,
+									'channel_code' => $row->channel_code,
+									'template' => $row->template,
+									'agency_code' => $row->agency_code,
+									'agency_description' => $row->agency_description,
+									'user_id' => $user->id
+									]);
+							}
+
+							
 						}
 					}
                 }
