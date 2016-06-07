@@ -449,15 +449,54 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query));
     }
 
-    public static function getSos(){
+    public static function getSos($request){
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $stores = '';
+        if(!empty($request->stores)){
+            $stores = "and posted_audits.store_code in ('". implode("','", $request->get('stores')) ."')";
+        }
+
         $query = sprintf("
-            select audit_id, store_name, store_code, category, answer as sos_measurement
+            select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
             where posted_audit_details.group = 'PLACE- SHARE OF SHELVES'
             and posted_audit_details.prompt = 'PERFECT STORE -  ULP SOS PERCENTAGE'
-            order by audit_id, store_name, category");
+            %s
+            %s
+            order by audit_id, store_name, category", $audits, $stores);
 
-        return DB::select(DB::raw($query));
+        $sos_lists = DB::select(DB::raw($query));
+        foreach ($sos_lists as $key => $value) {
+            $store = AuditStore::where('store_code',$value->store_code)
+                ->where('audit_id', $value->audit_id)
+                ->first();
+            $category = FormCategory::where('audit_id', $value->audit_id)
+                ->where('category', $value->category)
+                ->first();
+
+            $result = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
+                    audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
+                    audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
+                    from audit_store_sos
+                    join audit_sos_lookup_details using(audit_sos_lookup_id, form_category_id, sos_type_id) 
+                    where audit_store_sos.audit_store_id = :store_id
+                    and audit_store_sos.form_category_id = :category_id"),array(
+                   'store_id' => $store->id, 'category_id' => $category->id));
+            // dd($result[0]->value);
+            if(!empty($result)){
+                $sos_lists[$key]->target = $result[0]->value *100;
+            }else{
+                $sos_lists[$key]->target = 0;
+            }
+
+            
+        }
+        return $sos_lists;
     }
 }

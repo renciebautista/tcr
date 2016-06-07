@@ -6,6 +6,39 @@
 
 <section class="content">
 
+	<div class="box box-default">
+		{!! Form::open(array('route' => array('sosreport.create'), 'method' => 'POST')) !!}
+
+        <div class="box-header with-border">
+          	<h3 class="box-title">SOS Report</h3>
+        </div>
+        <div class="box-body">
+          	<div class="row">
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Audit Name</label>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Store Name</label>
+	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              
+	            </div>
+          	</div>
+        </div>
+
+        <div class="box-footer">
+            <button type="submit" name="submit" value="process" class="btn btn-primary">Process</button>
+            <button type="submit" name="submit" value="download" class="btn btn-success">Download</button>
+        </div>
+        {{  Form::close() }}
+
+     </div>
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -19,7 +52,7 @@
 								<th>Category</th>
 								<th class="right" >PS SOS Measurement</th>
 								<th class="right" >Target</th>
-								<th class="right" >Achievement</th>
+								<th class="center" >Achievement</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -28,12 +61,21 @@
 							<?php $cnt = 1; ?>
 							@foreach($soss  as $sos)
 							<tr>
-								<td></td>
+								<td>{{ $sos->description }}</td>
 								<td>{{ $sos->store_name }}</td>
 								<td>{{ $sos->category }}</td>
-								<td class="right">{{ $sos->sos_measurement }}%</td>
-								<td class="right"></td>
-								<td class="center"></td>
+								<td class="right">
+									@if($sos->sos_measurement != '')
+									{{ number_format($sos->sos_measurement,2) }}%
+									@endif
+								</td>
+								<td class="right">{{ number_format($sos->target,2) }}%</td>
+								<td class="center">
+									@if($sos->sos_measurement >=$sos->target )
+										 <i class="fa fa-fw fa-check"></i>
+									@else
+									@endif
+								</td>
 							</tr>
 							<?php $cnt++; ?>
 							@endforeach
@@ -54,7 +96,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#templates').multiselect({
+$('#audits,#stores').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

@@ -8,5 +8,7 @@ use App\Http\Requests;
 
 class PjpReportController extends Controller
 {
-    //
+    public function frequency(){
+    	return view('pjpreport.frequency');
+    }
 }
