@@ -12,7 +12,7 @@ class SosReportController extends Controller
     public function index(){
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-    	$soss = PostedAudit::getSos();
+    	$soss = [];
     	return view('sosreport.index', compact('soss', 'audits', 'stores'));
     }
 
