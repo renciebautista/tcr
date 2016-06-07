@@ -449,7 +449,7 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query));
     }
 
-    public static function getSos($request){
+    public static function getSos($request = null){
         $audits = '';
         if(!empty($request->audits)){
             $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
