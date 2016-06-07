@@ -448,4 +448,16 @@ class PostedAudit extends Model
 
         return DB::select(DB::raw($query));
     }
+
+    public static function getSos(){
+        $query = sprintf("
+            select audit_id, store_name, store_code, category, answer as sos_measurement
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            where posted_audit_details.group = 'PLACE- SHARE OF SHELVES'
+            and posted_audit_details.prompt = 'PERFECT STORE -  ULP SOS PERCENTAGE'
+            order by audit_id, store_name, category");
+
+        return DB::select(DB::raw($query));
+    }
 }
