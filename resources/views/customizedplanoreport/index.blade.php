@@ -53,8 +53,8 @@
 								<th>Category</th>
 								<th>SKU</th>
 								<th class="right" >Store Count</th>
-								<th class="right" >Availability</th>
-								<th class="right">OSA %</th>
+								<th class="right" >Store Compliance</th>
+								<th class="right">Compliance Rate %</th>
 								<th class="center">Action</th>
 							</tr>
 						</thead>

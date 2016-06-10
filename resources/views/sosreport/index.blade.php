@@ -22,9 +22,36 @@
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
+	                <label>Customer Name</label>
+	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Audit Template</label>
+	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
 	                <label>Store Name</label>
 	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
 	              </div>
+	            </div>
+          	</div>
+
+          	<div class="row">
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Category</label>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	             
+	            </div>
+	            <div class="col-md-3">
+	              
 	            </div>
 	            <div class="col-md-3">
 	              
@@ -48,10 +75,12 @@
 						<thead>
 							<tr>
 								<th>Audit Name</th>
+								<th>Customer Name</th>
+								<th>Audit Template</th>
 								<th>Store Name</th>
 								<th>Category</th>
-								<th class="right" >PS SOS Measurement</th>
 								<th class="right" >Target</th>
+								<th class="right" >PS SOS Measurement</th>
 								<th class="center" >Achievement</th>
 							</tr>
 						</thead>
@@ -62,14 +91,18 @@
 							@foreach($soss  as $sos)
 							<tr>
 								<td>{{ $sos->description }}</td>
+								<th></th>
+								<th></th>
+								
 								<td>{{ $sos->store_name }}</td>
 								<td>{{ $sos->category }}</td>
+								<td class="right">{{ number_format($sos->target,2) }}%</td>
 								<td class="right">
 									@if($sos->sos_measurement != '')
 									{{ number_format($sos->sos_measurement,2) }}%
 									@endif
 								</td>
-								<td class="right">{{ number_format($sos->target,2) }}%</td>
+								
 								<td class="center">
 									@if($sos->sos_measurement >=$sos->target )
 										 <i class="fa fa-fw fa-check"></i>

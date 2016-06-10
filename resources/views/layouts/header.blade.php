@@ -40,7 +40,7 @@
 				  			<li>{!! link_to_route('osareport.index','Per SKU OSA Report') !!}</li>
 				  			<li>{!! link_to_route('npireport.index','Per SKU NPI Report') !!}</li>
 				  			<li>{!! link_to_route('sosreport.index','SOS Report') !!}</li>
-				  			<li>{!! link_to_route('customizedplanoreport.index','Per Customized Planogram Report') !!}</li>
+				  			<li>{!! link_to_route('customizedplanoreport.index','Customized Planogram Report') !!}</li>
 				  			<li>{!! link_to_route('pjpreport.frequency','PJP Frequency Report') !!}</li>
 				  			<li>{!! link_to_route('deviceerror.index','Device Error Report') !!}</li>
 				  		</ul>

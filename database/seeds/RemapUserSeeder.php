@@ -25,6 +25,7 @@ class RemapUserSeeder extends Seeder
         ['old_user' => 'LYCAR FLORES', 'new_user' => 'MIA ANTENOR CRUZ'],
         ['old_user' => 'TSINA SY JUCO', 'new_user' => 'TSINA SYJUCO'],
         ['old_user' => 'ANDI ARAZA', 'new_user' => 'ANDREA ARAZA'],
+        ['old_user' => 'CELYN DESQUITADO', 'new_user' => 'CARMELA DESQUITADO'],
         ];
 
         foreach ($datas as $key => $row) {

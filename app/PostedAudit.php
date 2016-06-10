@@ -343,9 +343,9 @@ class PostedAudit extends Model
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
             join(
-                select audit_id, count(*) as store_count from posted_audits
-                group by audit_id
-            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
             where posted_audit_details.type = "CONDITIONAL"
             and posted_audit_details.answer = "AVAILABLE ON SHELF"
             %s
@@ -388,9 +388,9 @@ class PostedAudit extends Model
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
             join(
-                select audit_id, count(*) as store_count from posted_audits
-                group by audit_id
-            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
             where posted_audit_details.type = "CONDITIONAL"
             and posted_audit_details.answer = "AVAILABLE ON SHELF"
             %s
@@ -435,9 +435,9 @@ class PostedAudit extends Model
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
             join(
-                select audit_id, count(*) as store_count from posted_audits
-                group by audit_id
-            ) as tbl_stores on tbl_stores.audit_id = posted_audits.audit_id
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
             where posted_audit_details.type = "CONDITIONAL"
             and posted_audit_details.answer = "IMPLEMENTED"
             %s
