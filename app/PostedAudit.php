@@ -98,7 +98,12 @@ class PostedAudit extends Model
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
             $data[$key]->total_category =  $perfect_store['total'];
-            $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+            if($perfect_store['perfect_count'] == 0){
+                 $data[$key]->perfect_percentage =  0.00 ;
+            }else{
+                 $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+            }
+           
         }
         return $data;
     }
