@@ -15,7 +15,7 @@ class CustomerReportController extends Controller
         $regions = PostedAudit::getRegions()->lists('region','region_code');
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $pjps = ['1' => 'With PJP', '2' => 'Without PJP'];
+        $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
         $customer_summaries = PostedAudit::getCustomerSummary();
     	return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','pjps'));
     }

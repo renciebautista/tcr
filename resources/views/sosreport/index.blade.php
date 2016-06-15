@@ -48,7 +48,10 @@
 	              </div>
 	            </div>
 	            <div class="col-md-3">
-	             
+	             	<div class="form-group">
+	                	<label>User</label>
+	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            <div class="col-md-3">
 	              
@@ -69,14 +72,15 @@
 
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="box">
+			<div class="box box-padding">
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 						<thead>
 							<tr>
 								<th>Audit Name</th>
 								<th>Customer Name</th>
 								<th>Audit Template</th>
+								<th>User</th>
 								<th>Store Name</th>
 								<th>Category</th>
 								<th class="right" >Target</th>
@@ -93,7 +97,7 @@
 								<td>{{ $sos->description }}</td>
 								<td>{{ $sos->customer }}</td>
 								<td>{{ $sos->template }}</td>
-								
+								<td>{{ $sos->name }}</td>
 								<td>{{ $sos->store_name }}</td>
 								<td>{{ $sos->category }}</td>
 								<td class="right">{{ number_format($sos->target,2) }}%</td>
@@ -104,7 +108,7 @@
 								</td>
 								
 								<td class="center">
-									@if($sos->sos_measurement >=$sos->target )
+									@if($sos->sos_measurement >= $sos->target )
 										 <i class="fa fa-fw fa-check"></i>
 									@else
 									@endif
@@ -114,7 +118,15 @@
 							@endforeach
 							@else
 							<tr>
-								<td colspan="8">No record found.</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 							@endif
 							
@@ -129,7 +141,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#stores, #categories, #customers, #templates').multiselect({
+$('#audits,#stores, #categories, #customers, #templates, #users').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -138,4 +150,7 @@ $('#audits,#stores, #categories, #customers, #templates').multiselect({
 	buttonClass: 'form-control',
 
  });
+
+
+$('#dt-table').dataTable();
 @endsection

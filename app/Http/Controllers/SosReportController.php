@@ -16,8 +16,9 @@ class SosReportController extends Controller
         $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
         $categories = FormCategory::getSOSCategories()->lists('category','category');
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+        $users = PostedAudit::getUsers()->lists('name','user_id');
     	$soss = [];
-    	return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates'));
+    	return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates','users'));
     }
 
     public function create(Request $request){
@@ -29,8 +30,9 @@ class SosReportController extends Controller
             $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
             $categories = FormCategory::getSOSCategories()->lists('category','category');
             $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+            $users = PostedAudit::getUsers()->lists('name','user_id');
             
-            return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates'));
+            return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates', 'users'));
         }else{
             $store_id_array = [];
             foreach ($posted_audits as $posted_audit) {

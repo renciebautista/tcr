@@ -345,6 +345,17 @@ class PostedAudit extends Model
             $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
         }
 
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
+        }
+
+
         $osas = '';
         $osa_desc = [];
         $formgroups = FormGroup::where('osa',1)->get();
@@ -360,7 +371,8 @@ class PostedAudit extends Model
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
             category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
             count(posted_audit_details.prompt)  as availability,
-            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
@@ -373,8 +385,10 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$osas,$audits,$templates);
+            order by osa_percent, audit_id, template',$osas,$audits,$templates, $customers, $categories);
 
         return DB::select(DB::raw($query));
     }
@@ -388,6 +402,16 @@ class PostedAudit extends Model
         $templates = '';
         if(!empty($request->templates)){
             $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
         }
 
         $npis = '';
@@ -405,7 +429,8 @@ class PostedAudit extends Model
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
             category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
             count(posted_audit_details.prompt)  as availability,
-            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
@@ -418,8 +443,10 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$npis,$audits,$templates);
+            order by osa_percent, audit_id, template',$npis,$audits,$templates, $categories, $customers);
 
         return DB::select(DB::raw($query));
     }
@@ -433,6 +460,16 @@ class PostedAudit extends Model
         $templates = '';
         if(!empty($request->templates)){
             $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
         }
 
         $planos = '';
@@ -452,7 +489,8 @@ class PostedAudit extends Model
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
             category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
             count(posted_audit_details.prompt)  as availability,
-            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
@@ -465,8 +503,10 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$planos,$audits,$templates);
+            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers);
 
         return DB::select(DB::raw($query));
     }
@@ -500,6 +540,11 @@ class PostedAudit extends Model
             $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
         }
 
+        $users = '';
+        if(!empty($request->users)){
+            $users = "and posted_audits.user_id in ('". implode("','", $request->get('users')) ."')";
+        }
+
         $soss = '';
         $sos_desc = [];
         $formgroups = FormGroup::where('sos',1)->get();
@@ -513,10 +558,11 @@ class PostedAudit extends Model
 
         $query = sprintf("
             select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement,
-            posted_audits.customer, template
+            posted_audits.customer, template, users.name
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
+            join users on users.id = posted_audits.user_id
             where posted_audit_details.prompt = 'PERFECT STORE -  ULP SOS PERCENTAGE'
             %s
             %s
@@ -524,7 +570,8 @@ class PostedAudit extends Model
             %s
             %s
             %s
-            order by audit_id, store_name, category", $soss,$audits, $customers, $templates, $stores, $categories);
+            %s
+            order by audit_id, store_name, category", $soss,$audits, $customers, $templates, $stores, $categories, $users);
 
         // dd($query);
 

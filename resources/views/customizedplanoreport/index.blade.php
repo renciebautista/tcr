@@ -10,14 +10,20 @@
 		{!! Form::open(array('route' => array('customizedplanoreport.create'), 'method' => 'POST')) !!}
 
         <div class="box-header with-border">
-          	<h3 class="box-title">Per SKU Customized Planogram Report</h3>
+          	<h3 class="box-title">Customized Planogram Report</h3>
         </div>
         <div class="box-body">
           	<div class="row">
 	            <div class="col-md-3">
 	              <div class="form-group">
-	                <label>Audit Name</label>
+	                <label>Audit Month</label>
 	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Customers</label>
+	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
@@ -26,8 +32,11 @@
 	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              
+	             <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Categories</label>
+	               	{!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
+	              </div>
 	            </div>
           	</div>
         </div>
@@ -48,14 +57,15 @@
 						<thead>
 							<tr>
 								<th>#</th>
-								<th>Audit Name</th>
+								<th>Audit Month</th>
+								<th>Customers</th>
 								<th>Audit Template</th>
 								<th>Category</th>
-								<th>SKU</th>
+								<th>Planogram</th>
 								<th class="right" >Store Count</th>
 								<th class="right" >Store Compliance</th>
 								<th class="right">Compliance Rate %</th>
-								<th class="center">Action</th>
+								<th class="center">Details</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -66,6 +76,7 @@
 							<tr>
 								<td>{{ $cnt }}</td>
 								<td>{{ $sku->description }}</td>
+								<td>{{ $sku->customer }}</td>
 								<td>{{ $sku->template }}</td>
 								<td>{{ $sku->category }}</td>
 								<td>{{ $sku->prompt }}</td>
@@ -78,6 +89,7 @@
 							@endforeach
 							@else
 							<tr>
+								<td></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -101,7 +113,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#templates').multiselect({
+$('#audits,#templates, #categories, #customers').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

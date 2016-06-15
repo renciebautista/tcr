@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\PostedAudit;
+use App\FormCategory;
 
 class CustomizedPlanogramReportController extends Controller
 {
     public function index(){
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
+        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+        $categories = FormCategory::getSOSCategories()->lists('category','category');
     	$skus = [];
-    	return view('customizedplanoreport.index', compact('audits','templates', 'skus'));
+    	return view('customizedplanoreport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
     }
 
     public function create(Request $request){
@@ -22,7 +25,9 @@ class CustomizedPlanogramReportController extends Controller
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
 	    	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
-	    	return view('customizedplanoreport.index', compact('audits','templates', 'skus'));
+            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+            $categories = FormCategory::getSOSCategories()->lists('category','category');
+	    	return view('customizedplanoreport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{
             // $store_id_array = [];
             // foreach ($posted_audits as $posted_audit) {

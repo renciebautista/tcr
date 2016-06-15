@@ -26,7 +26,7 @@
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Audits <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
-				  			<li>{!! link_to_route('audits.index','Audit List') !!}</li>
+				  			<li>{!! link_to_route('audits.index','Audit Month') !!}</li>
 				  		</ul>
 
 					</li>

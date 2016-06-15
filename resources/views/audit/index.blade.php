@@ -15,7 +15,7 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Audit Lists</h3>
+					<h3 class="box-title">Audit Month</h3>
 					<h5 class="pull-right">{{ $audits->count() }} {{str_plural('record', $audits->count())}} found.</h5>
 					
 				</div><!-- /.box-header -->
