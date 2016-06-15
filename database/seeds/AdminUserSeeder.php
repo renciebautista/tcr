@@ -29,6 +29,7 @@ class AdminUserSeeder extends Seeder
 
 		$admin = User::where('username', 'admin')->first();
 		$admin->roles()->attach(1);
+        
 		DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

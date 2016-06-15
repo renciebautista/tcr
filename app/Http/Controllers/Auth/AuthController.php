@@ -45,7 +45,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->middleware($this->guestMiddleware(), ['except' => 'getLogout']);
     }
 
     /**
@@ -90,12 +90,12 @@ class AuthController extends Controller
         if (Auth::attempt(array($field => $usernameinput, 'password' => $password), false)) {
    
             // if(Auth::user()->isActive()){
-                // if(Auth::user()->hasRole('FIELD')){
-                //     Auth::logout();
-                //     Session::flash('flash_message', 'Account not allowed to access the site.');
-                //     Session::flash('flash_class', 'alert alert-danger');
-                //     return \Redirect::back();
-                // }
+                if(Auth::user()->hasRole('field')){
+                    Auth::logout();
+                    Session::flash('flash_message', 'Account not allowed to access the site.');
+                    Session::flash('flash_class', 'alert alert-danger');
+                    return \Redirect::back();
+                }
             // }else{
             //     Auth::logout();
             //     Session::flash('flash_message', 'User account is inactive, please contact the administrator');
@@ -116,6 +116,7 @@ class AuthController extends Controller
 
     public function getLogout(){
         Auth::logout();
+        Session::flush();
         return redirect('/login');
 
     }
