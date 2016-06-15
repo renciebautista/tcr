@@ -158,6 +158,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Felixkiss\UniqueWithValidator\UniqueWithValidatorServiceProvider::class,
+        Zizaco\Entrust\EntrustServiceProvider::class,
 
 
     ],
@@ -208,7 +209,8 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-         'Paginate' => App\Helpers\Paginate::class,
+        'Paginate' => App\Helpers\Paginate::class,
+        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
 
     ],
 

@@ -55,4 +55,12 @@ class FormCategory extends Model
             })
             ->get();
     }
+
+     public static function getSOSCategories(){
+        return self::select('category', 'category')
+            ->where('sos', 1)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
 }   

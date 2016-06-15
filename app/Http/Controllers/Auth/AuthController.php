@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+
+use Auth;
+use Session;
+use Carbon\Carbon;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Auth\AuthManager;
 
 class AuthController extends Controller
 {
@@ -28,7 +36,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new authentication controller instance.
@@ -68,5 +76,47 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    public function getLogin(){
+        return view('auth.form1');
+    }
+
+    public function postLogin(Request $request){
+        $usernameinput =  $request->access;
+        $password = $request->password;
+        $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        if (Auth::attempt(array($field => $usernameinput, 'password' => $password), false)) {
+   
+            // if(Auth::user()->isActive()){
+                // if(Auth::user()->hasRole('FIELD')){
+                //     Auth::logout();
+                //     Session::flash('flash_message', 'Account not allowed to access the site.');
+                //     Session::flash('flash_class', 'alert alert-danger');
+                //     return \Redirect::back();
+                // }
+            // }else{
+            //     Auth::logout();
+            //     Session::flash('flash_message', 'User account is inactive, please contact the administrator');
+            //     Session::flash('flash_class', 'alert alert-danger');
+            //     return \Redirect::back();
+            // }
+            
+            // return Redirect::action('DashboardController@index');
+            return \Redirect::intended('/');
+        }
+
+        Auth::logout();
+        Session::flash('flash_message', 'Invalid credentials, please try again.');
+        Session::flash('flash_class', 'alert alert-danger');
+        return \Redirect::back();
+    }
+
+
+    public function getLogout(){
+        Auth::logout();
+        return redirect('/login');
+
     }
 }

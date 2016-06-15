@@ -167,7 +167,7 @@ class AuditSosLookup extends Model
                                 $sos_target_template = self::getSosCategory($store->id);
 
                                 if(empty($sos_target_template)){
-                                    dd($row);
+                                    // dd($row);
                                 }
 
                                 if((!empty($store)) && (!empty($form_category))){

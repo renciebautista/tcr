@@ -52,14 +52,10 @@
                                                 <td>{{ $store->store_code }}</td>
                                                 <td>{{ $store->store_name }}</td>
                                                 <td class="text-center">
-                                                    @if($store->pjp)
-                                                    <i class="fa fa-fw fa-check"></i>
-                                                    @endif
+                                                    {!! Form::checkbox("pjp[$store->id]", '1', $store->pjp, ['class' => 'chk-update']) !!}
                                                 </td>
                                                 <td class="text-center">
-                                                    @if($store->pjp)
-                                                        {{ $store->freq }}
-                                                    @endif
+                                                    {!! Form::text('email', $store->freq) !!}
                                                 </td>
                                             </tr>
                                             @endforeach

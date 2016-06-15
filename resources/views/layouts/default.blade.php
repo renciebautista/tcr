@@ -40,6 +40,8 @@
 
 		<link rel="stylesheet" href="{{ asset("/plugins/At.js-1.3.2/css/jquery.atwho.min.css")}}">
 
+		<link rel="stylesheet" href="{{ asset("/plugins/dataTables/dataTables.bootstrap.css")}}">
+
 		<link rel="stylesheet" href="{{ asset("/css/style.css")}}">
 	</head>
 	<!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
@@ -104,6 +106,9 @@
 
     	<!-- Numeric Input -->
     	<script src="{{ asset ("/plugins/jQuery.numeric_input/jquery.numeric_input.min.js") }}"></script>
+
+    	<script src="{{ asset ("/plugins/dataTables/jquery.dataTables.js") }}"></script>
+    	<script src="{{ asset ("/plugins/dataTables/dataTables.bootstrap.js") }}"></script>
     	
 		<script type="text/javascript">
 			$(document).ready(function() {

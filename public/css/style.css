@@ -71,3 +71,7 @@ table {
 .bold{
 	font-weight: bold;
 }
+
+.box-padding{
+	padding: 10px;
+}

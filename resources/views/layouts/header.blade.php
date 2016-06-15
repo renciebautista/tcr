@@ -48,9 +48,34 @@
 					</li>
 					
 
+
 					
 			  	</ul>
+
+			  	
+
 			</div><!-- /.navbar-collapse -->
+			<div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+
+            <!-- User Account Menu -->
+            <li class="dropdown user user-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="hidden-xs">{{ ucwords(strtolower(Auth::user()->name)) }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-right">
+                  	<a class="btn btn-default btn-flat" href="{{ url('/auth/logout') }}">Logout</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
 	  	</div><!-- /.container-fluid -->
 	</nav>
 </header>

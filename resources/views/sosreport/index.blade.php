@@ -23,13 +23,13 @@
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Customer Name</label>
-	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Template</label>
-	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
@@ -44,7 +44,7 @@
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Category</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	                {!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
@@ -91,8 +91,8 @@
 							@foreach($soss  as $sos)
 							<tr>
 								<td>{{ $sos->description }}</td>
-								<th></th>
-								<th></th>
+								<td>{{ $sos->customer }}</td>
+								<td>{{ $sos->template }}</td>
 								
 								<td>{{ $sos->store_name }}</td>
 								<td>{{ $sos->category }}</td>
@@ -114,7 +114,7 @@
 							@endforeach
 							@else
 							<tr>
-								<td colspan="6">No record found.</td>
+								<td colspan="8">No record found.</td>
 							</tr>
 							@endif
 							
@@ -129,7 +129,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#stores').multiselect({
+$('#audits,#stores, #categories, #customers, #templates').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

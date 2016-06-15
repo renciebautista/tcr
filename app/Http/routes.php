@@ -26,12 +26,37 @@
 |
 */
 
-Route::get('test', function(){
-	echo bcrypt('monsterinc');
+Route::group(['middleware' => ['web']], function () {
+
+	Route::get('login', 'Auth\AuthController@getLogin');
+	Route::get('auth/login', 'Auth\AuthController@getLogin');
+	Route::get('auth/logout', 'Auth\AuthController@getLogout');
+	// Route::get('auth/register', 'Auth\AuthController@getRegister');
+	Route::post('auth/login', 'Auth\AuthController@postLogin');
+
+	Route::group(array('prefix' => 'api'), function()
+	{
+	   	Route::get('auth', 'Api\AuthController@auth');
+	    Route::get('download', 'Api\DownloadController@index');
+	    Route::post('storeaudit', 'Api\UploadController@storeaudit');
+	    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
+	   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
+	   	Route::post('uploadtrace', 'Api\UploadController@uploadtrace');
+
+	   	Route::get('audits', 'Api\AuditController@index');
+	   	Route::get('usersummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getUserSummary');
+	   	Route::get('storesummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getStoreSummary');
+
+	});
+
 });
 
-Route::group(['middleware' => ['web']], function () {
+
+
+Route::group(['middleware' => ['web', 'auth']], function () {
+
 	Route::get('/',['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);
+	Route::get('/dashboard',['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);
 
 	Route::get('audits/{id}/stores',['as' => 'audits.stores', 'uses' => 'AuditStoreController@index']);
 	Route::get('audits/{id}/uploadstores',['as' => 'audits.uploadstores', 'uses' => 'AuditStoreController@create']);
@@ -116,22 +141,10 @@ Route::group(['middleware' => ['web']], function () {
 
 
     Route::resource('deviceerror', 'DeviceErrorController' );
-    
-    Route::group(array('prefix' => 'api'), function()
-	{
-	   	Route::get('auth', 'Api\AuthController@auth');
-	    Route::get('download', 'Api\DownloadController@index');
-	    Route::post('storeaudit', 'Api\UploadController@storeaudit');
-	    Route::post('uploaddetails', 'Api\UploadController@uploaddetails');
-	   	Route::post('uploadimage/{audit_id}', 'Api\UploadController@uploadimage');
-	   	Route::post('uploadtrace', 'Api\UploadController@uploadtrace');
 
-	   	Route::get('audits', 'Api\AuditController@index');
-	   	Route::get('usersummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getUserSummary');
-	   	Route::get('storesummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getStoreSummary');
-
-	});
 });
+
+
 
 
 

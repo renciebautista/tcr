@@ -42,9 +42,9 @@
 
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="box">
+			<div class="box box-padding">
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 						<thead>
 							<tr>
 								<th>#</th>
@@ -78,7 +78,15 @@
 							@endforeach
 							@else
 							<tr>
-								<td colspan="9">No record found.</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 							@endif
 							
@@ -102,4 +110,6 @@ $('#audits,#templates').multiselect({
 	buttonClass: 'form-control',
 
  });
+
+ $('#dt-table').dataTable();
 @endsection

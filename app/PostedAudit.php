@@ -69,6 +69,8 @@ class PostedAudit extends Model
             ->get();
     }
 
+   
+
     public static function search($request){
         $data = self::where(function($query) use ($request){
             if(!empty($request->users)){
@@ -244,6 +246,7 @@ class PostedAudit extends Model
         $regions = '';
         $templates = '';
         $audits = '';
+        $pjps = '';
         if(!empty($request->customers)){
             $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
         }
@@ -256,6 +259,20 @@ class PostedAudit extends Model
         if(!empty($request->audits)){
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
+
+        if(!empty($request->pjps)){
+            if(count($request->pjps) == 1){
+                if($request->pjps[0] == 1){
+                    $pjps = "and pjp = 1";
+                }else{
+                    $pjps = "and pjp = 0";
+                }
+                
+            }
+            
+        }
+
+        // dd($pjps);
 
         $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
             audits.description as audit_group,
@@ -455,9 +472,22 @@ class PostedAudit extends Model
     }
 
     public static function getSos($request = null){
+        // dd($request->all());
         $audits = '';
         if(!empty($request->audits)){
-            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+            $audits = "and posted_audits.audit_id in ('". implode("','", $request->get('audits')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        // dd($customers);
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
         }
 
         $stores = '';
@@ -465,18 +495,41 @@ class PostedAudit extends Model
             $stores = "and posted_audits.store_code in ('". implode("','", $request->get('stores')) ."')";
         }
 
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
+        }
+
+        $soss = '';
+        $sos_desc = [];
+        $formgroups = FormGroup::where('sos',1)->get();
+        foreach ($formgroups as $group) {
+            $sos_desc[] = $group->group_desc;
+        }
+
+        if(!empty($soss)){
+            $soss = "and posted_audit_details.group in ('". implode("','", $sos_desc)  ."')";
+        }
+
         $query = sprintf("
-            select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement
+            select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement,
+            posted_audits.customer, template
             from posted_audit_details
             join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
             join audits on audits.id = posted_audits.audit_id
-            where posted_audit_details.group = 'PLACE- SHARE OF SHELVES'
-            and posted_audit_details.prompt = 'PERFECT STORE -  ULP SOS PERCENTAGE'
+            where posted_audit_details.prompt = 'PERFECT STORE -  ULP SOS PERCENTAGE'
             %s
             %s
-            order by audit_id, store_name, category", $audits, $stores);
+            %s
+            %s
+            %s
+            %s
+            order by audit_id, store_name, category", $soss,$audits, $customers, $templates, $stores, $categories);
+
+        // dd($query);
 
         $sos_lists = DB::select(DB::raw($query));
+        // dd($sos_lists);
         foreach ($sos_lists as $key => $value) {
             $store = AuditStore::where('store_code',$value->store_code)
                 ->where('audit_id', $value->audit_id)
@@ -484,8 +537,9 @@ class PostedAudit extends Model
             $category = FormCategory::where('audit_id', $value->audit_id)
                 ->where('category', $value->category)
                 ->first();
-
-            $result = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
+            $result;
+            if((!empty($store)) && (!empty($category))){
+                $result = DB::select(DB::raw("select audit_store_sos.audit_store_id, 
                     audit_store_sos.form_category_id,audit_sos_lookup_details.sos_type_id,
                     audit_sos_lookup_details.less,audit_sos_lookup_details.value,audit_sos_lookup_details.audit_sos_lookup_id
                     from audit_store_sos
@@ -493,6 +547,9 @@ class PostedAudit extends Model
                     where audit_store_sos.audit_store_id = :store_id
                     and audit_store_sos.form_category_id = :category_id"),array(
                    'store_id' => $store->id, 'category_id' => $category->id));
+            }
+
+            
             // dd($result[0]->value);
             if(!empty($result)){
                 $sos_lists[$key]->target = $result[0]->value *100;
