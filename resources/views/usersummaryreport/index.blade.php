@@ -13,16 +13,22 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-4">
+	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>User</label>
 	                {!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-4">
+	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Name</label>
 	               {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>PJP Tagging</label>
+	                {!! Form::select('pjps[]', $pjps, null, array('class' => 'form-control select_form', 'id' => 'pjps', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
           	</div>
@@ -81,7 +87,7 @@
 @endsection
 
 @section('page-script')
-$('#users,#audits').multiselect({
+$('#users,#audits, #pjps').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

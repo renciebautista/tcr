@@ -21,12 +21,19 @@ class UserSummary
     	}
         
         $data->detail->perfect_store_count = $cnt;
-        $data->detail->perfect_store_achivement = number_format((($cnt/ $data->stores->count() ) * 100),2);
-
-        $data->doors = PostedAuditCategorySummary::getCategoryDoorsCount($audit,$user);
+        if($cnt == 0){
+            $data->detail->perfect_store_achivement = 0.00;
+        }else{
+            $data->detail->perfect_store_achivement = number_format((($cnt/ $data->stores->count() ) * 100),2);
+        }
         
+        $data->doors = PostedAuditCategorySummary::getCategoryDoorsCount($audit,$user);
         $data->detail->category_doors = $data->stores->count() * $data->doors['perfect_count'];
-        $data->detail->category_door_per = number_format(($data->detail->category_doors / ( $data->stores->count() * $data->doors['total']) * 100 ),2) ;
+        if($data->detail->category_doors == 0){
+            $data->detail->category_door_per = 0.00;
+        }else{
+            $data->detail->category_door_per = number_format(($data->detail->category_doors / ( $data->stores->count() * $data->doors['total']) * 100 ),2) ;
+        }
 
         return $data;
     }

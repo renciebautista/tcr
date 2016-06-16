@@ -72,27 +72,40 @@ class PostedAudit extends Model
    
 
     public static function search($request){
-        $data = self::where(function($query) use ($request){
-            if(!empty($request->users)){
-                    $query->whereIn('user_id',$request->users);
-                }
+        $data = self::select(DB::raw('posted_audits.*, audit_stores.pjp, audit_stores.freq'))
+            ->leftJoin('audit_stores', function($join){
+                $join->on('audit_stores.audit_id', '=', 'posted_audits.audit_id');
+                $join->on('audit_stores.store_code','=','posted_audits.store_code');
             })
             ->where(function($query) use ($request){
-            if(!empty($request->audits)){
-                    $query->whereIn('audit_id',$request->audits);
+            if(!empty($request->users)){
+                    $query->whereIn('posted_audits.user_id',$request->users);
                 }
             })
             ->where(function($query) use ($request){
             if(!empty($request->stores)){
-                    $query->whereIn('store_code',$request->stores);
+                    $query->whereIn('posted_audits.store_code',$request->stores);
                 }
             })
             ->where(function($query) use ($request){
-            if(!empty($request->status)){
-                    $query->whereIn('perfect_store',$request->status);
+            if(!empty($request->audits)){
+                    $query->whereIn('posted_audits.audit_id',$request->audits);
                 }
             })
-            ->orderBy('updated_at','desc')
+            ->where(function($query) use ($request){
+            if(!empty($request->pjps)){
+                    if(count($request->pjps) == 1){
+                        if($request->pjps[0] == 1){
+                            $query->where('audit_stores.pjp',1);
+                        }else{
+                            $query->where('audit_stores.pjp',0);
+                        }
+                    }
+                    
+                }
+            })
+            
+            ->orderBy('posted_audits.updated_at','desc')
             ->get();
 
         foreach ($data as $key => $value) {
@@ -152,30 +165,45 @@ class PostedAudit extends Model
     public static function getUserSummary($request = null){
         $users = '';
         $audits = '';
+        $pjps = '';
         if(!empty($request->users)){
             $users = "and users.id in (". implode(',', $request->get('users')) .')';
         }
         if(!empty($request->audits)){
             $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
         }
+        if(!empty($request->pjps)){
+            if(count($request->pjps) == 1){
+                if($request->pjps[0] == 1){
+                    $pjps = "where audit_stores.pjp = 1";
+                }else{
+                    $pjps = "where audit_stores.pjp = 0";
+                }
+            }
+        }
+
         $query = sprintf('
             select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
-            tbl_mapped.mapped_stores, tbl_posted.store_visited
+            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
             from posted_audits
             inner join users on users.id = posted_audits.user_id
             inner join audits on audits.id = posted_audits.audit_id
             left join (
                 select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                %s
                 group by user_id, audit_id
             ) as tbl_mapped using(user_id,audit_id)
             left join (
-                select user_id,audit_id,count(*) as store_visited from `posted_audits`
-                group by user_id, audit_id
+                select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
+                from `posted_audits`
+                left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+                %s
+                group by posted_audits.user_id, posted_audits.audit_id
             ) as tbl_posted using(user_id,audit_id)
             where tbl_posted.store_visited > 0
             %s %s
             group by posted_audits.user_id, posted_audits.audit_id
-            order by audits.description, users.name',$users,$audits);
+            order by audits.description, users.name',$pjps ,$pjps, $users,$audits);
 
         $data = DB::select(DB::raw($query));
 
@@ -246,7 +274,7 @@ class PostedAudit extends Model
         $regions = '';
         $templates = '';
         $audits = '';
-        $pjps = '';
+        // $pjps = '';
         if(!empty($request->customers)){
             $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
         }
@@ -260,17 +288,17 @@ class PostedAudit extends Model
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
 
-        if(!empty($request->pjps)){
-            if(count($request->pjps) == 1){
-                if($request->pjps[0] == 1){
-                    $pjps = "and pjp = 1";
-                }else{
-                    $pjps = "and pjp = 0";
-                }
+        // if(!empty($request->pjps)){
+        //     if(count($request->pjps) == 1){
+        //         if($request->pjps[0] == 1){
+        //             $pjps = "and pjp = 1";
+        //         }else{
+        //             $pjps = "and pjp = 0";
+        //         }
                 
-            }
+        //     }
             
-        }
+        // }
 
         // dd($pjps);
 
