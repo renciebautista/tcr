@@ -122,6 +122,7 @@ class AuditStore extends Model
     }
 
     public static function createStore($audit,$file_path){
+    	$invalid_stores = [];
     	 \DB::beginTransaction();
     	 try {
     	 	$sheetNames = \Excel::load($file_path)->getSheetNames();
@@ -176,7 +177,10 @@ class AuditStore extends Model
 								$audit_enrollment_mapping = AuditEnrollmentTypeMapping::create(['audit_id' => $audit->id, 'enrollment_type_id' => $enrollment_type->id, 'value' => $enrollment_type->value]);
 							}
 
-							if(!empty($row->channel_code)){
+							$store = self::where('audit_id',$audit->id)
+								->where('store_code',$row->store_code)
+								->first();
+							if((empty($store)) && (!empty($row->channel_code))){
 								$store = self::firstOrCreate([
 									'audit_id' => $audit->id,
 									'account' => $row->account,
@@ -197,6 +201,8 @@ class AuditStore extends Model
 									'agency_description' => $row->agency_description,
 									'user_id' => $user->id
 									]);
+							}else{
+								$invalid_stores[] = $row;
 							}
 
 							
@@ -204,6 +210,8 @@ class AuditStore extends Model
 					}
                 }
     	 	});
+			// dd($invalid_stores);
+			return $invalid_stores;
     	 	 \DB::commit();
     	 } catch (Exception $e) {
     	 	dd($e);
