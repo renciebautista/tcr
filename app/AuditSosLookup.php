@@ -160,23 +160,25 @@ class AuditSosLookup extends Model
                         if($cnt > 0){
                             if($row[0] != ''){
                                 $store = AuditStore::where('audit_id',$audit->id)->where('store_code',$row[0])->first();
+                                if(!empty($store)){
+                                    $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
+                                    $sos = SosType::where('sos',strtoupper($row[3]))->first();
+                                    $sos_target_template = self::getSosCategory($store->id);
 
+                                    if(empty($sos_target_template)){
+                                        // dd($row);
+                                    }
 
-                                $form_category = FormCategory::where('audit_id',$audit->id)->where('category', $row[2])->first();
-                                $sos = SosType::where('sos',strtoupper($row[3]))->first();
-                                $sos_target_template = self::getSosCategory($store->id);
-
-                                if(empty($sos_target_template)){
-                                    // dd($row);
+                                    if((!empty($store)) && (!empty($form_category)) && (!empty($sos_target_template))) {
+                                        AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
+                                            'audit_store_id' => $store->id,
+                                            'form_category_id' => $form_category->id,
+                                            'audit_sos_lookup_id' => $sos_target_template->id,
+                                            'sos_type_id' => $sos->id]);
+                                    }
                                 }
 
-                                if((!empty($store)) && (!empty($form_category))){
-                                    AuditStoreSos::firstOrCreate(['audit_id' => $audit->id,
-                                        'audit_store_id' => $store->id,
-                                        'form_category_id' => $form_category->id,
-                                        'audit_sos_lookup_id' => $sos_target_template->id,
-                                        'sos_type_id' => $sos->id]);
-                                }
+                                
                             }
                             
                         }
