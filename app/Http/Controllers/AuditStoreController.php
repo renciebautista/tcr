@@ -39,6 +39,15 @@ class AuditStoreController extends Controller
                 \File::delete($file_path);
             }
 
+
+            $hash = UpdatedHash::find(1);
+            if(empty($hash)){
+                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
+            }else{
+                $hash->hash = md5(date('Y-m-d H:i:s'));
+                $hash->update();
+            }
+            
             if(!empty($invalid_stores)){
                 $writer = WriterFactory::create(Type::CSV); 
                 $writer->openToBrowser('invalid stores.txt');
@@ -50,13 +59,7 @@ class AuditStoreController extends Controller
                 return redirect()->route("audits.stores",$id); 
             }
 
-            $hash = UpdatedHash::find(1);
-            if(empty($hash)){
-                UpdatedHash::create(['hash' => \Hash::make(date('Y-m-d H:i:s'))]);
-            }else{
-                $hash->hash = md5(date('Y-m-d H:i:s'));
-                $hash->update();
-            }
+            
 
 		   	   
 		}else{
