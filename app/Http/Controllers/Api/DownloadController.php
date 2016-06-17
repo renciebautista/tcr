@@ -271,12 +271,16 @@ class DownloadController extends Controller
             foreach ($forms as $form) {
                 $form_ids[] = $form->id;
             }
+            // dd($form_ids);
 
             $selections = FormMultiSelect::select('form_multi_selects.form_id', 'audit_multi_selects.id', 'audit_multi_selects.option')
                 ->join('audit_multi_selects', 'audit_multi_selects.id', '=', 'form_multi_selects.audit_multi_select_id')
                 ->whereIn('form_multi_selects.form_id',$form_ids)
                 ->orderBy('form_multi_selects.form_id')
                 ->get();
+
+            dd($selections);
+            
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('multi_selects.txt');
             $writer->addRow(['form_id', 'id', 'option']); 

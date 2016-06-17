@@ -55,7 +55,7 @@ class Form extends Model
 
 			if(!empty($survey->expected_answer)){
 				$_form = Form::find($form->id);
-				$ans = explode("^", $survey->expected_answer);
+				$ans = explode("~", $survey->expected_answer);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = AuditMultiSelect::where('audit_template_id',$survey->template->id)
@@ -63,14 +63,14 @@ class Form extends Model
 					$pos_ans[] = $_ans->id;
 				}
 				if(!empty($pos_ans)){
-					$_form->expected_answer = implode("^", $pos_ans);
+					$_form->expected_answer = implode("~", $pos_ans);
 					$_form->update();
 				}
 			}
 
 			if(!empty($surveydefault_answer)){
 				$_form = Form::find($form->id);
-				$ans = explode("^", $default_answer);
+				$ans = explode("~", $default_answer);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = AuditMultiSelect::where('audit_template_id',$survey->template->id)
@@ -78,7 +78,7 @@ class Form extends Model
 					$pos_ans[] = $_ans->id;
 				}
 				if(!empty($pos_ans)){
-					$_form->default_answer = implode("^", $pos_ans);
+					$_form->default_answer = implode("~", $pos_ans);
 					$_form->update();
 				}
 			}
@@ -101,7 +101,7 @@ class Form extends Model
 
 			if(!empty($survey->expected_answer)){
 				$_form = Form::find($form->id);
-				$ans = explode("^", $survey->expected_answer);
+				$ans = explode("~", $survey->expected_answer);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = AuditSingleSelect::where('audit_template_id',$survey->template->id)
@@ -109,14 +109,14 @@ class Form extends Model
 					$pos_ans[] = $_ans->id;
 				}
 				if(!empty($pos_ans)){
-					$_form->expected_answer = implode("^", $pos_ans);
+					$_form->expected_answer = implode("~", $pos_ans);
 					$_form->update();
 				}
 			}
 
 			if(!empty($surveydefault_answer)){
 				$_form = Form::find($form->id);
-				$ans = explode("^", $default_answer);
+				$ans = explode("~", $default_answer);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = AuditSingleSelect::where('audit_template_id',$survey->template->id)
@@ -124,7 +124,7 @@ class Form extends Model
 					$pos_ans[] = $_ans->id;
 				}
 				if(!empty($pos_ans)){
-					$_form->default_answer = implode("^", $pos_ans);
+					$_form->default_answer = implode("~", $pos_ans);
 					$_form->update();
 				}
 			}
@@ -146,7 +146,7 @@ class Form extends Model
 			if(!empty($survey->expected_answer)){
 				$_form = Form::find($form->id);
 
-				$ans = explode("^", $survey->expected_answer);
+				$ans = explode("~", $survey->expected_answer);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = FormCondition::where('option',strtoupper($value))
@@ -155,7 +155,7 @@ class Form extends Model
 					$pos_ans[] = $_ans->id;
 				}
 				if(!empty($pos_ans)){
-					$_form->expected_answer = implode("^", $pos_ans);
+					$_form->expected_answer = implode("~", $pos_ans);
 					$_form->update();
 				}
 			}
