@@ -277,10 +277,11 @@ class DownloadController extends Controller
                 ->join('audit_multi_selects', 'audit_multi_selects.id', '=', 'form_multi_selects.audit_multi_select_id')
                 ->whereIn('form_multi_selects.form_id',$form_ids)
                 ->orderBy('form_multi_selects.form_id')
+                ->orderBy('form_multi_selects.audit_multi_select_id')
                 ->get();
 
             // dd($selections);
-            
+
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('multi_selects.txt');
             $writer->addRow(['form_id', 'id', 'option']); 

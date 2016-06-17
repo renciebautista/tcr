@@ -47,15 +47,18 @@ class Form extends Model
 		));
 
 		if($form_type->id == 9){ // MULTI ITEM SELECT
+			// dd($survey);
 			$choices = explode("~", $survey->choices);
 			foreach ($choices as $choice) {
 				$sel = AuditMultiSelect::firstOrCreate(array('audit_template_id' => $survey->template->id, 'option' => strtoupper($choice)));
-				FormMultiSelect::create(array('audit_template_id' =>$survey->template->id, 'form_id' => $form->id, 'multi_select_id' => $sel->id));
+				// dd($sel);
+				FormMultiSelect::create(array('audit_template_id' =>$survey->template->id, 'form_id' => $form->id, 'audit_multi_select_id' => $sel->id));
 			}
 
 			if(!empty($survey->expected_answer)){
 				$_form = Form::find($form->id);
 				$ans = explode("~", $survey->expected_answer);
+				dd($ans);
 				$pos_ans = [];
 				foreach ($ans as $value) {
 					$_ans = AuditMultiSelect::where('audit_template_id',$survey->template->id)
