@@ -274,7 +274,7 @@ class PostedAudit extends Model
         $regions = '';
         $templates = '';
         $audits = '';
-        // $pjps = '';
+        $pjps = '';
         if(!empty($request->customers)){
             $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
         }
@@ -288,17 +288,17 @@ class PostedAudit extends Model
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
 
-        // if(!empty($request->pjps)){
-        //     if(count($request->pjps) == 1){
-        //         if($request->pjps[0] == 1){
-        //             $pjps = "and pjp = 1";
-        //         }else{
-        //             $pjps = "and pjp = 0";
-        //         }
+        if(!empty($request->pjps)){
+            if(count($request->pjps) == 1){
+                if($request->pjps[0] == 1){
+                    $pjps = "and pjp = 1";
+                }else{
+                    $pjps = "and pjp = 0";
+                }
                 
-        //     }
+            }
             
-        // }
+        }
 
         // dd($pjps);
 
@@ -315,7 +315,7 @@ class PostedAudit extends Model
                 audit_stores
                 group by audit_id, channel_code
             ) as tbl_mapped using(channel_code,audit_id)
-             where mapped_stores > 0
+            where mapped_stores > 0
             %s
             %s
             %s

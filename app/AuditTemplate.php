@@ -81,7 +81,6 @@ class AuditTemplate extends Model
                                     $form_type = FormType::where('form_type', strtoupper($type))->first();
                                 } 
 
-
                                 if($form_type->id == 11){ // Computational 
                                     $index1 = array();
                                     $index2 = array();
