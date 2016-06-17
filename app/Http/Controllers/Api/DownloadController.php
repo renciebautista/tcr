@@ -279,7 +279,7 @@ class DownloadController extends Controller
                 ->orderBy('form_multi_selects.form_id')
                 ->get();
 
-            dd($selections);
+            // dd($selections);
             
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('multi_selects.txt');
