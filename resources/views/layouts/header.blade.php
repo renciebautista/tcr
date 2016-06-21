@@ -13,7 +13,7 @@
 			  	<ul class="nav navbar-nav">
 					<!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li> -->
 					<!-- <li><a href="#">Link</a></li> -->
-					@if(Entrust::hasRole('admin'))
+					@if(Entrust::hasRole('ADMIN'))
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">File Maintenane <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
@@ -24,7 +24,7 @@
 				  		
 					</li>
 					@endif
-					@if(Entrust::hasRole('admin'))
+					@if(Entrust::hasRole('ADMIN'))
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Audits <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
@@ -44,7 +44,7 @@
 				  			<li>{!! link_to_route('sosreport.index','SOS Report') !!}</li>
 				  			<li>{!! link_to_route('customizedplanoreport.index','Customized Planogram Report') !!}</li>
 				  			<li>{!! link_to_route('pjpreport.frequency','PJP Frequency Report') !!}</li>
-				  			@if(Entrust::hasRole('admin'))
+				  			@if(Entrust::hasRole('ADMIN'))
 				  			<li>{!! link_to_route('deviceerror.index','Device Error Report') !!}</li>
 				  			@endif
 				  		</ul>
