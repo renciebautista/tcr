@@ -35,9 +35,15 @@ class DownloadController extends Controller
         $user = $request->id;
         $type = $request->type;
 
-        $user = User::find($user);
+        if ($request->has('audit')) {
+            $storelist = AuditStore::where('audit_id', $request->audit)
+                ->groupBy('channel_code')
+                ->get();
+        }else{
+            $user = User::find($user);
+            $storelist = AuditStore::getUserStores($user);
+        }
         
-        $storelist = AuditStore::getUserStores($user);
 
         $result = array();
         $r_audit_list = array();
@@ -47,7 +53,6 @@ class DownloadController extends Controller
             if(!empty($audit_template)){
                 $result[] = $audit_template->id;
             }
-            
         }
 
         $list = array_unique($result);
