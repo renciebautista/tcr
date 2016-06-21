@@ -37,8 +37,7 @@
 								<td>{{ $user->name }}</td>
 								<td>{{ $user->username }}</td>
 								<td>
-
-									{{ $user->roles }}
+									{{ $user->role_name() }}
 								</td>
 								<td>{{ $user->getStatus() }}</td>
 								<td>
