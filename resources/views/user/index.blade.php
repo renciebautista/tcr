@@ -36,7 +36,7 @@
 							<tr>
 								<td>{{ $user->name }}</td>
 								<td>{{ $user->username }}</td>
-								<td>{{ strtoupper($user->roles[0]->name) }}</td>
+								<td></td>
 								<td>{{ $user->getStatus() }}</td>
 								<td>
 									{!! link_to_route('users.edit', 'Edit', $user->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
