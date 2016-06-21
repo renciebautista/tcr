@@ -24,6 +24,7 @@ class AuthController extends Controller
             $audits = Audit::select('id', 'description')->get();
             $user->hash =  $hash->hash;
             $user->audits = $audits;
+            $user->role_name = $user->roles[0]->name;
             
             return response()->json($user);
         }else{

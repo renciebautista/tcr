@@ -44,6 +44,11 @@ class User extends Model implements AuthenticatableContract,
         'password', 'remember_token',
     ];
 
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role','role_user');
+    }
+
     public static function auditUsers(Audit $audit){
         $stores = AuditStore::where('audit_id', $audit->id)->get();
         $store_ids = [];
@@ -54,5 +59,12 @@ class User extends Model implements AuthenticatableContract,
         return self::whereIn('users.id', $store_ids)
             ->orderBy('name')
             ->get();
+    }
+
+    public function getStatus(){
+        if($this->active){
+            return 'Active';
+        }
+        return 'In-active';
     }
 }

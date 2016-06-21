@@ -13,16 +13,18 @@
 			  	<ul class="nav navbar-nav">
 					<!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li> -->
 					<!-- <li><a href="#">Link</a></li> -->
-
+					@if(Entrust::hasRole('admin'))
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">File Maintenane <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
 				  			<li>{!! link_to_route('sostypes.index','SOS Type') !!}</li>
 				  			<li>{!! link_to_route('enrollmenttypes.index','Enrollment Type') !!}</li>
+				  			<li>{!! link_to_route('users.index','Users') !!}</li>
 				  		</ul>
 				  		
 					</li>
-
+					@endif
+					@if(Entrust::hasRole('admin'))
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Audits <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
@@ -30,7 +32,7 @@
 				  		</ul>
 
 					</li>
-
+					@endif
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
@@ -42,7 +44,9 @@
 				  			<li>{!! link_to_route('sosreport.index','SOS Report') !!}</li>
 				  			<li>{!! link_to_route('customizedplanoreport.index','Customized Planogram Report') !!}</li>
 				  			<li>{!! link_to_route('pjpreport.frequency','PJP Frequency Report') !!}</li>
+				  			@if(Entrust::hasRole('admin'))
 				  			<li>{!! link_to_route('deviceerror.index','Device Error Report') !!}</li>
+				  			@endif
 				  		</ul>
 				  		
 					</li>

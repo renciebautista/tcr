@@ -55,50 +55,64 @@ Route::group(['middleware' => ['web']], function () {
 
 Route::group(['middleware' => ['web', 'auth']], function () {
 
+	Route::group(['middleware' => ['role:admin']], function(){
+		Route::get('audits/{id}/stores',['as' => 'audits.stores', 'uses' => 'AuditStoreController@index']);
+		Route::get('audits/{id}/uploadstores',['as' => 'audits.uploadstores', 'uses' => 'AuditStoreController@create']);
+		Route::post('audits/{id}/postuploadstores',['as' => 'audits.postuploadstores', 'uses' => 'AuditStoreController@store']);
+
+		Route::get('audits/{id}/templates',['as' => 'audits.templates', 'uses' => 'AuditTemplateController@index']);
+		Route::get('audits/{id}/uploadtemplates',['as' => 'audits.uploadtemplates', 'uses' => 'AuditTemplateController@create']);
+		Route::post('audits/{id}/postuploadtemplates',['as' => 'audits.postuploadtemplates', 'uses' => 'AuditTemplateController@store']);
+
+		Route::get('audits/{audit}/users/{id}',['as' => 'audits.mappedstores', 'uses' => 'AuditUserController@mappedstores']);
+		Route::get('audits/{id}/users',['as' => 'audits.users', 'uses' => 'AuditUserController@index']);
+
+
+		Route::get('audits/{id}/categories',['as' => 'audits.categories', 'uses' => 'AuditCategoryController@index']);
+		Route::post('audits/{id}/categories',['as' => 'audits.categories_update', 'uses' => 'AuditCategoryController@store']);
+
+		Route::get('audits/{id}/groups',['as' => 'audits.groups', 'uses' => 'AuditGroupController@index']);
+		Route::post('audits/{id}/groups',['as' => 'audits.groups_update', 'uses' => 'AuditGroupController@store']);
+
+		Route::get('audits/{audit}/secondarydisplay',['as' => 'audits.secondarydisplay', 'uses' => 'AuditSecondaryDisplayController@index']);
+		Route::get('audits/{audit}/secondarydisplay/{id}',['as' => 'audits.secondarydisplay_details', 'uses' => 'AuditSecondaryDisplayController@edit']);
+		Route::put('audits/{audit}/secondarydisplay/{id}',['as' => 'audits.secondarydisplayupdate', 'uses' => 'AuditSecondaryDisplayController@update']);
+		Route::get('audits/{audit}/uploadsecondarydisplay',['as' => 'audits.uploadsecondarydisplay', 'uses' => 'AuditSecondaryDisplayController@create']);
+		Route::post('audits/{audit}/postuploadsecondarydisplay',['as' => 'audits.postuploadsecondarydisplay', 'uses' => 'AuditSecondaryDisplayController@store']);
+
+		Route::get('audits/{audit}/osatargets',['as' => 'audits.osatargets', 'uses' => 'AuditOsaTargetController@index']);
+		Route::get('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargets_details', 'uses' => 'AuditOsaTargetController@edit']);
+		Route::put('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargetsupdate', 'uses' => 'AuditOsaTargetController@update']);
+		Route::delete('osatargets/{id}',['as' => 'audits.osadestroy', 'uses' => 'AuditOsaTargetController@destroy']);
+		Route::get('audits/{audit}/uploadosatargets',['as' => 'audits.uploadosatargets', 'uses' => 'AuditOsaTargetController@create']);
+		Route::post('audits/{audit}/postuploadosatargets',['as' => 'audits.postuploadosatargets', 'uses' => 'AuditOsaTargetController@store']);
+
+		Route::get('audits/{audit}/sostargets',['as' => 'audits.sostargets', 'uses' => 'AuditSosTargetController@index']);
+		Route::get('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargets_details', 'uses' => 'AuditSosTargetController@edit']);
+		Route::put('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargetsupdate', 'uses' => 'AuditSosTargetController@update']);
+		Route::delete('sostargets/{id}',['as' => 'audits.sosdestroy', 'uses' => 'AuditSosTargetController@destroy']);
+		Route::get('audits/{audit}/uploadsostargets',['as' => 'audits.uploadsostargets', 'uses' => 'AuditSosTargetController@create']);
+		Route::post('audits/{audit}/postuploadsostargets',['as' => 'audits.postuploadsostargets', 'uses' => 'AuditSosTargetController@store']);
+
+		Route::get('audits/{id}/enrollments',['as' => 'audits.enrollments', 'uses' => 'AuditEnrollmentController@index']);
+		
+	    Route::resource('audits', 'AuditController');
+
+	    Route::resource('users', 'UserController' );
+
+	    Route::get('deviceerror', ['as' => 'deviceerror.index', 'uses' => 'DeviceErrorController@index']);
+	    Route::get('deviceerror/getfile/{filename}', ['as' => 'deviceerror.getfile', 'uses' => 'DeviceErrorController@getfile']);
+
+
+	    Route::resource('deviceerror', 'DeviceErrorController' );
+
+	    Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
+    	Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
+	});
 	Route::get('/',['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);
 	Route::get('/dashboard',['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);
 
-	Route::get('audits/{id}/stores',['as' => 'audits.stores', 'uses' => 'AuditStoreController@index']);
-	Route::get('audits/{id}/uploadstores',['as' => 'audits.uploadstores', 'uses' => 'AuditStoreController@create']);
-	Route::post('audits/{id}/postuploadstores',['as' => 'audits.postuploadstores', 'uses' => 'AuditStoreController@store']);
-
-	Route::get('audits/{id}/templates',['as' => 'audits.templates', 'uses' => 'AuditTemplateController@index']);
-	Route::get('audits/{id}/uploadtemplates',['as' => 'audits.uploadtemplates', 'uses' => 'AuditTemplateController@create']);
-	Route::post('audits/{id}/postuploadtemplates',['as' => 'audits.postuploadtemplates', 'uses' => 'AuditTemplateController@store']);
-
-	Route::get('audits/{audit}/users/{id}',['as' => 'audits.mappedstores', 'uses' => 'AuditUserController@mappedstores']);
-	Route::get('audits/{id}/users',['as' => 'audits.users', 'uses' => 'AuditUserController@index']);
-
-
-	Route::get('audits/{id}/categories',['as' => 'audits.categories', 'uses' => 'AuditCategoryController@index']);
-	Route::post('audits/{id}/categories',['as' => 'audits.categories_update', 'uses' => 'AuditCategoryController@store']);
-
-	Route::get('audits/{id}/groups',['as' => 'audits.groups', 'uses' => 'AuditGroupController@index']);
-	Route::post('audits/{id}/groups',['as' => 'audits.groups_update', 'uses' => 'AuditGroupController@store']);
-
-	Route::get('audits/{audit}/secondarydisplay',['as' => 'audits.secondarydisplay', 'uses' => 'AuditSecondaryDisplayController@index']);
-	Route::get('audits/{audit}/secondarydisplay/{id}',['as' => 'audits.secondarydisplay_details', 'uses' => 'AuditSecondaryDisplayController@edit']);
-	Route::put('audits/{audit}/secondarydisplay/{id}',['as' => 'audits.secondarydisplayupdate', 'uses' => 'AuditSecondaryDisplayController@update']);
-	Route::get('audits/{audit}/uploadsecondarydisplay',['as' => 'audits.uploadsecondarydisplay', 'uses' => 'AuditSecondaryDisplayController@create']);
-	Route::post('audits/{audit}/postuploadsecondarydisplay',['as' => 'audits.postuploadsecondarydisplay', 'uses' => 'AuditSecondaryDisplayController@store']);
-
-	Route::get('audits/{audit}/osatargets',['as' => 'audits.osatargets', 'uses' => 'AuditOsaTargetController@index']);
-	Route::get('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargets_details', 'uses' => 'AuditOsaTargetController@edit']);
-	Route::put('audits/{audit}/osatargets/{id}',['as' => 'audits.osatargetsupdate', 'uses' => 'AuditOsaTargetController@update']);
-	Route::delete('osatargets/{id}',['as' => 'audits.osadestroy', 'uses' => 'AuditOsaTargetController@destroy']);
-	Route::get('audits/{audit}/uploadosatargets',['as' => 'audits.uploadosatargets', 'uses' => 'AuditOsaTargetController@create']);
-	Route::post('audits/{audit}/postuploadosatargets',['as' => 'audits.postuploadosatargets', 'uses' => 'AuditOsaTargetController@store']);
-
-	Route::get('audits/{audit}/sostargets',['as' => 'audits.sostargets', 'uses' => 'AuditSosTargetController@index']);
-	Route::get('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargets_details', 'uses' => 'AuditSosTargetController@edit']);
-	Route::put('audits/{audit}/sostargets/{id}',['as' => 'audits.sostargetsupdate', 'uses' => 'AuditSosTargetController@update']);
-	Route::delete('sostargets/{id}',['as' => 'audits.sosdestroy', 'uses' => 'AuditSosTargetController@destroy']);
-	Route::get('audits/{audit}/uploadsostargets',['as' => 'audits.uploadsostargets', 'uses' => 'AuditSosTargetController@create']);
-	Route::post('audits/{audit}/postuploadsostargets',['as' => 'audits.postuploadsostargets', 'uses' => 'AuditSosTargetController@store']);
-
-	Route::get('audits/{id}/enrollments',['as' => 'audits.enrollments', 'uses' => 'AuditEnrollmentController@index']);
 	
-    Route::resource('audits', 'AuditController');
 
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::post('auditreport',['as' => 'auditreport.create', 'uses' => 'AuditReportController@create']);
@@ -128,19 +142,16 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('customerreport/{id}/download',['as' => 'customerreport.download', 'uses' => 'CustomerReportController@download']);
     Route::get('customerreport/{customer_code}/region/{region_code}/template/{channel_code}/audit/{audit_id}',['as' => 'customerreport.show', 'uses' => 'CustomerReportController@show']);
 
-    Route::get('sostypes',['as' => 'sostypes.index', 'uses' => 'SosTypesController@index']);
-    Route::get('enrollmenttypes',['as' => 'enrollmenttypes.index', 'uses' => 'EnrollmentTypesController@index']);
+    
 
     Route::get('auditimage/{folder}/{filename}', 'Api\DownloadController@auditimage');
 
 
     Route::get('templates/{id}/categories', ['as' => 'templates.categories', 'uses' => 'AuditTemplateController@categories']);
 
-    Route::get('deviceerror', ['as' => 'deviceerror.index', 'uses' => 'DeviceErrorController@index']);
-    Route::get('deviceerror/getfile/{filename}', ['as' => 'deviceerror.getfile', 'uses' => 'DeviceErrorController@getfile']);
+    
 
 
-    Route::resource('deviceerror', 'DeviceErrorController' );
 
 });
 
