@@ -49,6 +49,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->belongsToMany('App\Role','role_user');
     }
 
+    public function role_name()
+    {
+        return $this->roles[0]->name;
+    }
+
     public static function auditUsers(Audit $audit){
         $stores = AuditStore::where('audit_id', $audit->id)->get();
         $store_ids = [];
