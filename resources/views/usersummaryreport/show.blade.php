@@ -27,6 +27,10 @@
                   	<td>{{ $detail->mapped_stores }}</td>
                 </tr>
                 <tr>
+                    <td>PJP Target</td>
+                    <td>{{ $detail->pjptarget }}</td>
+                </tr>
+                <tr>
                   	<td>Stores Audited</td>
                   	<td>{{ $detail->store_visited }}</td>
                 </tr>

@@ -218,7 +218,7 @@ class PostedAudit extends Model
     public static function getUserSummaryDetails($audit_id,$user_id){
         $query = sprintf('
             select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
-            tbl_mapped.mapped_stores, tbl_posted.store_visited
+            tbl_mapped.mapped_stores, tbl_posted.store_visited, coalesce(tbl_target.target, 0) as pjptarget
             from posted_audits
             inner join users on users.id = posted_audits.user_id
             inner join audits on audits.id = posted_audits.audit_id
@@ -230,6 +230,9 @@ class PostedAudit extends Model
                 select user_id,audit_id,count(*) as store_visited from `posted_audits`
                 group by user_id, audit_id
             ) as tbl_posted using(user_id,audit_id)
+            left join (
+                select * from audit_user_pjps
+            ) as tbl_target using(user_id,audit_id)
             where posted_audits.user_id = %d 
             and posted_audits.audit_id = %d
             order by audits.description, users.name',$user_id,$audit_id );
