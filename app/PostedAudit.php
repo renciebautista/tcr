@@ -205,8 +205,8 @@ class PostedAudit extends Model
                 ->where('audit_id', $value->audit_id)
                 ->first();
 
-            $data[$key]->target;
-            
+            $data[$key]->target = 0;
+
             if(!empty($pjp_target)){
                 $data[$key]->target = $pjp_target->target;
             }
