@@ -40,8 +40,6 @@
                                                 <th>Customer</th>
                                                 <th>Store Code</th>
                                                 <th>Store Name</th>
-                                                <th class="text-center">PJP</th>
-                                                <th class="text-center">Target</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -51,12 +49,6 @@
                                                 <td>{{ $store->customer }}</td>
                                                 <td>{{ $store->store_code }}</td>
                                                 <td>{{ $store->store_name }}</td>
-                                                <td class="text-center">
-                                                    {!! Form::checkbox("pjp[$store->id]", '1', $store->pjp, ['class' => 'chk-update']) !!}
-                                                </td>
-                                                <td class="text-center">
-                                                    {!! Form::text('email', $store->freq) !!}
-                                                </td>
                                             </tr>
                                             @endforeach
                                             @else
