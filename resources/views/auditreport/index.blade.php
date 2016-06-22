@@ -54,7 +54,7 @@
 								<th>User</th>
 								<th>Store Name</th>
 								<th>Audit Name</th>
-								<th class="center" >Perfect Store</th>
+								<th class="right" >Perfect Store</th>
 								<th class="right">OSA %</th>
 								<th class="right">NPI %</th>
 								<th class="right">Planogram %</th>
@@ -70,7 +70,7 @@
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
 								<td>{{ $audit->audit->description }}</td>
-								<td class="center">{{ $audit->perfect_percentage }} %</td>
+								<td class="right">{{ $audit->perfect_percentage }} %</td>
 								<td class="right">{{ $audit->osa }}%</td>
 								<td class="right">{{ $audit->npi }}%</td>
 								<td class="right">{{ $audit->planogram }}%</td>
