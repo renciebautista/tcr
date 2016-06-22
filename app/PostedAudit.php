@@ -92,18 +92,6 @@ class PostedAudit extends Model
                     $query->whereIn('posted_audits.audit_id',$request->audits);
                 }
             })
-            ->where(function($query) use ($request){
-            if(!empty($request->pjps)){
-                    if(count($request->pjps) == 1){
-                        if($request->pjps[0] == 1){
-                            $query->where('audit_stores.pjp',1);
-                        }else{
-                            $query->where('audit_stores.pjp',0);
-                        }
-                    }
-                    
-                }
-            })
             
             ->orderBy('posted_audits.updated_at','desc')
             ->get();
@@ -213,6 +201,12 @@ class PostedAudit extends Model
             $summary = UserSummary::getSummary($audit,$user);
 
             $data[$key]->perfect_store = $summary->detail->perfect_store_count;
+            $pjp_target = AuditUserPjp::where('user_id', $value->user_id)
+                ->where('audit_id', $value->audit_id)
+                ->first();
+            if(!empty($pjp_target)){
+                $data[$key]->target = $pjp_target->target;
+            }
         }
 
         return $data;

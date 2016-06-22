@@ -16,18 +16,16 @@ class UserSummaryReportController extends Controller
     public function index(){
     	$users = PostedAudit::getUsers()->lists('name','user_id');
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
     	$user_summaries = PostedAudit::getUserSummary();
-    	return view('usersummaryreport.index', compact('user_summaries','users','audits', 'pjps'));
+    	return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 
     public function create(Request $request){
         $request->flash();
         $users = PostedAudit::getUsers()->lists('name','user_id');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
         $user_summaries = PostedAudit::getUserSummary($request);
-        return view('usersummaryreport.index', compact('user_summaries','users','audits', 'pjps'));
+        return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 
     public function show($audit_id,$user_id){

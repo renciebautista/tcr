@@ -64,8 +64,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		Route::get('audits/{id}/uploadtemplates',['as' => 'audits.uploadtemplates', 'uses' => 'AuditTemplateController@create']);
 		Route::post('audits/{id}/postuploadtemplates',['as' => 'audits.postuploadtemplates', 'uses' => 'AuditTemplateController@store']);
 
+
+
+
 		Route::get('audits/{audit}/users/{id}',['as' => 'audits.mappedstores', 'uses' => 'AuditUserController@mappedstores']);
 		Route::get('audits/{id}/users',['as' => 'audits.users', 'uses' => 'AuditUserController@index']);
+		Route::get('audits/{id}/uploadpjptarget',['as' => 'audits.uploadpjptarget', 'uses' => 'AuditUserController@create']);
+		Route::post('audits/{id}/postuploadpjptarget',['as' => 'audits.postuploadpjptarget', 'uses' => 'AuditUserController@store']);
 
 
 		Route::get('audits/{id}/categories',['as' => 'audits.categories', 'uses' => 'AuditCategoryController@index']);

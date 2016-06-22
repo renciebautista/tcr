@@ -61,9 +61,21 @@ class User extends Model implements AuthenticatableContract,
             $store_ids[] = $store->user_id;
         }
 
-        return self::whereIn('users.id', $store_ids)
+        $data = self::whereIn('users.id', $store_ids)
             ->orderBy('name')
             ->get();
+
+        foreach ($data as $key => $value) {
+            $data[$key]->target;
+            $pjp_target = AuditUserPjp::where('user_id', $value->id)
+                ->where('audit_id', $audit->id)
+                ->first();
+            if(!empty($pjp_target)){
+                $data[$key]->target = $pjp_target->target;
+            }
+            
+        }
+        return $data;
     }
 
     public function getStatus(){

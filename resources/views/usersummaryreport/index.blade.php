@@ -25,12 +25,6 @@
 	               {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>PJP Tagging</label>
-	                {!! Form::select('pjps[]', $pjps, null, array('class' => 'form-control select_form', 'id' => 'pjps', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
           	</div>
 
         </div>
@@ -53,10 +47,11 @@
 							<tr>
 								<th>User</th>
 								<th>Audit Name</th>
-								<th class="center">Stores Mapped</th>
-								<th class="center">Stores Visited</th>
-								<th class="center">To be Visited</th>
-								<th class="center">Perfect Stores</th>
+								<th class="right">Stores Mapped</th>
+								<th class="right">PJP Target</th>
+								<th class="right">Stores Visited</th>
+								<th class="right">To be Visited</th>
+								<th class="right">Perfect Stores</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -66,10 +61,11 @@
 							<tr>
 								<td>{{ $summary->name }}</td>
 								<td>{{ $summary->description }}</td>
-								<td class="center">{{ $summary->mapped_stores }}</td>
-								<td class="center">{{ $summary->store_visited }}</td>
-								<td class="center">{{ $summary->mapped_stores -  $summary->store_visited}}</td>
-								<td class="center">{{ $summary->perfect_store }}</td>
+								<td class="right">{{ $summary->mapped_stores }}</td>
+								<td class="right">{{ $summary->target }}</td>
+								<td class="right">{{ $summary->store_visited }}</td>
+								<td class="right">{{ $summary->mapped_stores -  $summary->store_visited}}</td>
+								<td class="right">{{ $summary->perfect_store }}</td>
 								<td>
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

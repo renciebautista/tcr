@@ -15,9 +15,8 @@ class CustomerReportController extends Controller
         $regions = PostedAudit::getRegions()->lists('region','region_code');
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
         $customer_summaries = PostedAudit::getCustomerSummary();
-    	return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','pjps'));
+    	return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
     }
 
     public function create(Request $request){
@@ -26,11 +25,10 @@ class CustomerReportController extends Controller
         $regions = PostedAudit::getRegions()->lists('region','region_code');
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-       $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
         $customer_summaries = PostedAudit::getCustomerSummary($request);
         
 
-        return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','pjps'));
+        return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
     }
 
     public function show($customer_code,$region_code,$channel_code,$audit_id){

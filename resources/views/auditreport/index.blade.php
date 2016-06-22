@@ -32,12 +32,7 @@
 	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>PJP Tagging</label>
-	                {!! Form::select('pjps[]', $pjps, null, array('class' => 'form-control select_form', 'id' => 'pjps', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
+	            
           	</div>
         </div>
 
@@ -64,8 +59,6 @@
 								<th class="right">NPI %</th>
 								<th class="right">Planogram %</th>
 								<th >Posting Date</th>
-								<th class="center">PJP</th>
-								<th class="right">PJP Target</th>
 								<th class="center">Action</th>
 							</tr>
 						</thead>
@@ -82,17 +75,6 @@
 								<td class="right">{{ $audit->npi }}%</td>
 								<td class="right">{{ $audit->planogram }}%</td>
 								<td>{{ $audit->updated_at }}</td>
-								<td class="center">
-									@if($audit->pjp)
-									<i class="fa fa-fw fa-check"></i>
-									@endif
-								</td>
-								<td class="right">
-									@if($audit->pjp)
-									{{ $audit->freq }}
-									@endif
-									
-								</td>
 								<td class="right">
 									{!! link_to_route('auditreport.download', 'Download Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 									{!! link_to_route('storesummaryreport.show', 'Store Summary', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}

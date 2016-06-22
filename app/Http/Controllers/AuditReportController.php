@@ -15,9 +15,8 @@ class AuditReportController extends Controller
         $users = PostedAudit::getUsers()->lists('name','user_id');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-        $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
     	$posted_audits = PostedAudit::search([]);
-    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores','pjps'));
+    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores'));
     }
 
     public function create(Request $request){
@@ -27,9 +26,8 @@ class AuditReportController extends Controller
             $users = PostedAudit::getUsers()->lists('name','user_id');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-            $pjps = ['1' => 'Within PJP', '2' => 'Outside PJP'];
             
-            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores', 'pjps'));
+            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores'));
         }else{
             $store_id_array = [];
             foreach ($posted_audits as $posted_audit) {

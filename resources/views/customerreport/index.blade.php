@@ -43,28 +43,6 @@
 	            
           	</div>
 
-          	<div class="row">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>PJP Tagging</label>
-	                {!! Form::select('pjps[]', $pjps, null, array('class' => 'form-control select_form', 'id' => 'pjps', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-
-	            <div class="col-md-3">
-	              
-	            </div>
-
-	            <div class="col-md-3">
-	              
-	            </div>
-	            
-	            <div class="col-md-3">
-	              
-	            </div>
-	            
-          	</div>
-
         </div>
 
         <div class="box-footer">
