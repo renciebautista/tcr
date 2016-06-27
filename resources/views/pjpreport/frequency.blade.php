@@ -31,16 +31,21 @@
 					<table class="table table-hover table-striped">
 						<thead>
 							<tr>
-								<th>Audit Month</th>
 								<th>User</th>
-								<th>Store Mapped</th>
-								<th>Store Visited</th>
-								<th class="right" >Compliance</th>
+								<th>Store Name</th>
+								<th>Frequency</th>
 								<th></th>
 							</tr>
 						</thead>
 						<tbody>
-							
+							@foreach($checkins as $checkin)
+							<tr>
+								<td>{{ $checkin->user_id }}</td>
+								<td>{{ $checkin->store_name}}</td>
+								<td>1</td>
+								<td></td>
+							</tr>
+							@endforeach
 							
 							
 						</tbody>
@@ -51,16 +56,4 @@
 	</div>
 </section>
 
-@endsection
-
-@section('page-script')
-$('#audits,#stores').multiselect({
- 	maxHeight: 200,
-    includeSelectAllOption: true,
-    enableCaseInsensitiveFiltering: true,
-    enableFiltering: true,
-    buttonWidth: '100%',
-	buttonClass: 'form-control',
-
- });
 @endsection

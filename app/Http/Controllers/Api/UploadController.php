@@ -19,6 +19,7 @@ use App\PostedAudit;
 use App\PostedAuditDetail;
 use App\PostedAuditCategorySummary;
 use App\DeviceError;
+use App\CheckIn;
 
 class UploadController extends Controller
 {
@@ -79,7 +80,10 @@ class UploadController extends Controller
 				                $posted_audit->osa = $row[14];
 				                $posted_audit->npi = $row[15];
 				                $posted_audit->planogram = $row[16];
-
+				                if(isset($row[17])){
+				                	$posted_audit->area = $row[17];
+				                }
+				               
 				                $posted_audit->updated_at = date('Y-m-d H:i:s');
 
 				                $posted_audit->update();
@@ -106,6 +110,10 @@ class UploadController extends Controller
 				                $posted_audit->osa = $row[14];
 				                $posted_audit->npi = $row[15];
 				                $posted_audit->planogram = $row[16];
+
+				                if(isset($row[17])){
+				                	$posted_audit->area = $row[17];
+				                }
 
 				                $posted_audit->save();
 			            	}
@@ -289,5 +297,56 @@ class UploadController extends Controller
 	        return response()->json(array('msg' => 'Error trace successfully submitted.', 'status' => 0));
 	    }
 	    return response()->json(array('msg' => 'Failed in submitting error trace.', 'status' => 1));
+    }
+
+    public function uploadcheckin(Request $request){
+    	if ($request->hasFile('data'))
+		{
+		    $destinationPath = storage_path().'/uploads/checkins/';
+			$fileName = $request->file('data')->getClientOriginalName();
+
+			$request->file('data')->move($destinationPath, $fileName);
+
+			$filePath = storage_path().'/uploads/checkins/' . $fileName;
+		   
+			DB::beginTransaction();
+			try {
+				
+			    $reader = ReaderFactory::create(Type::CSV); // for XLSX files
+			    $reader->setFieldDelimiter('|');
+			    $reader->open($filePath);
+
+			    foreach ($reader->getSheetIterator() as $sheet) {
+			        foreach ($sheet->getRowIterator() as $row) {
+			            CheckIn::firstOrCreate([
+			            	'user_id' => $row[0],
+			            	'account' => $row[1],
+			            	'customer_code' => $row[2],
+			            	'customer' => $row[3],
+			            	'area' => $row[4],
+			            	'region_code' => $row[5],
+			            	'region' => $row[6],
+			            	'distributor_code' => $row[7],
+			            	'distributor' => $row[8],
+			            	'store_code' => $row[9],
+			            	'store_name' => $row[10],
+			            	'checkin' => $row[11],
+			            	'lat' => $row[12],
+			            	'long' => $row[13]]);
+
+			        }
+			    }
+			   
+			    $reader->close();
+			    DB::commit();
+			   
+			    return response()->json(array('msg' => 'file uploaded',  'status' => 0));
+				
+			} catch (Exception $e) {
+			    DB::rollback();
+			    return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
+			}
+		}
+		return response()->json(array('msg' => 'file uploaded error', 'status' => 1));
     }
 }
