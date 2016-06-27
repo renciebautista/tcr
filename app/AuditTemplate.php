@@ -63,8 +63,9 @@ class AuditTemplate extends Model
 
                     \Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use ($template) {
                         $results = $reader->get();
+                        // dd($results);
                         foreach ($results as $key => $row) {
-                            if(!empty($row->client_code)){
+                            if(!empty($row->activity)){
                                 if(!empty($row->activity)){
                                     $category = FormCategory::firstOrCreate(['audit_id' => $template->audit_id, 'category' => $row->activity]);
                                 }
