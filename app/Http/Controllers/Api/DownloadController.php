@@ -116,7 +116,8 @@ class DownloadController extends Controller
 
             $writer = WriterFactory::create(Type::CSV); 
             $writer->openToBrowser('temp_category.txt');
-            $writer->addRow(['id', 'audit_template_id','category_order', 'form_category_id','category',  'perfect_store']); 
+            // $writer->addRow(['id', 'audit_template_id','category_order', 'form_category_id','category',  'perfect_store']); 
+            $writer->addRow([count($categories)]); 
             foreach ($categories as $category) {
                 $data[0] = $category->id;
                 $data[1] = $category->audit_template_id;

@@ -140,8 +140,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
     Route::post('customizedplanoreport',['as' => 'customizedplanoreport.create', 'uses' => 'CustomizedPlanogramReportController@create']);
 
-    Route::get('pjpreport/frequency',['as' => 'pjpreport.frequency', 'uses' => 'PjpReportController@frequency']);
-    Route::post('pjpreport/frequency',['as' => 'pjpreport.postfrequency', 'uses' => 'PjpReportController@postfrequency']);
+    Route::get('pjpreport',['as' => 'pjpreport.index', 'uses' => 'PjpReportController@index']);
+    Route::post('pjpreport',['as' => 'pjpreport.create', 'uses' => 'PjpReportController@create']);
 
     Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
     Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);

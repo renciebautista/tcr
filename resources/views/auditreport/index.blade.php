@@ -28,7 +28,7 @@
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
-	                <label>Audit Name</label>
+	                <label>Audit Month</label>
 	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
@@ -53,7 +53,7 @@
 							<tr>
 								<th>User</th>
 								<th>Store Name</th>
-								<th>Audit Name</th>
+								<th>Audit Month</th>
 								<th class="right" >Perfect Store</th>
 								<th class="right">OSA %</th>
 								<th class="right">NPI %</th>

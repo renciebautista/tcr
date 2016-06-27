@@ -6,11 +6,21 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\CheckIn;
+use App\PostedAudit;
 
 class PjpReportController extends Controller
 {
-    public function frequency(){
-    	$checkins = CheckIn::all();
-    	return view('pjpreport.frequency', compact('checkins'));
+    public function index(){
+    	$users = PostedAudit::getUsers()->lists('name','user_id');
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');
+    	$checkins = [];
+    	return view('pjpreport.frequency', compact('checkins', 'users', 'audits'));
+    }
+
+    public function create(Request $request){
+    	$users = PostedAudit::getUsers()->lists('name','user_id');
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');
+    	$checkins = [];
+    	return view('pjpreport.frequency', compact('checkins', 'users', 'audits'));
     }
 }
