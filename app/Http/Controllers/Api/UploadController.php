@@ -318,6 +318,8 @@ class UploadController extends Controller
 
 			    foreach ($reader->getSheetIterator() as $sheet) {
 			        foreach ($sheet->getRowIterator() as $row) {
+			        	$date_time = explode("-", $row[12]);
+			        	$date = explode("/", $date_time[0]);
 			            CheckIn::firstOrCreate([
 			            	'user_id' => $row[0],
 			            	'audit_id' => $row[1],
@@ -331,7 +333,7 @@ class UploadController extends Controller
 			            	'distributor' => $row[9],
 			            	'store_code' => $row[10],
 			            	'store_name' => $row[11],
-			            	'checkin' => $row[12],
+			            	'checkin' => $date[2].'-'.$date[0].'-'.$date[1].' '. $date_time[1],
 			            	'lat' => $row[13],
 			            	'long' => $row[14]]);
 
