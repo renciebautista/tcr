@@ -47,6 +47,10 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
+				<div class="box-header">
+					<h5 class="pull-right">{{ $posted_audits->count() }} {{str_plural('record', $posted_audits->count())}} found.</h5>
+					
+				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table class="table table-hover table-striped">
 						<thead>

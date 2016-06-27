@@ -8,6 +8,11 @@ use App\Http\Requests;
 use App\PostedAudit;
 use App\FormCategory;
 
+
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Common\Type;
+use Box\Spout\Writer\WriterFactory;
+
 class SosReportController extends Controller
 {
     public function index(){
@@ -34,18 +39,35 @@ class SosReportController extends Controller
             
             return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates', 'users'));
         }else{
-            $store_id_array = [];
-            foreach ($posted_audits as $posted_audit) {
-                $store_id_array[] = $posted_audit->id;
-            }
-            $details = PostedAuditDetail::getMultipleStoreDetails($store_id_array);
-            
-            \Excel::create('Posted Audit Report', function($excel) use ($details) {
-                $excel->sheet('Sheet1', function($sheet) use ($details) {
-                    $sheet->fromModel($details,null, 'A1', true);
-                })->download('xls');
+            set_time_limit(0);
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('SOS Report.csv');
+            $writer->addRow(['audit_month', 'customers', 'audit_template', 'user', 'store_name', 'category', 'target', 'ps_sos_measurement', 'achievement']); 
 
-            });
+            foreach($soss as $row)
+            {
+                $row_data[0] = $row->description;
+                $row_data[1] = $row->customer;
+                $row_data[2] = $row->template;
+                $row_data[3] = $row->name;
+                $row_data[4] = $row->store_name;
+                $row_data[5] = $row->category;
+                $row_data[6] = number_format($row->target,2);
+                if($row->sos_measurement != ''){
+                    $row_data[7] = number_format($row->sos_measurement,2);
+                }
+                else{
+                    $row_data[7] = '';
+                }
+                if($row->sos_measurement >= $row->target){
+                    $row_data[8] = 'true';
+                }
+                else{
+                    $row_data[8] = 'false';
+                }
+                $writer->addRow($row_data); // add multiple rows at a time
+            }   
+            $writer->close();
         }
         
     }

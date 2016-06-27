@@ -8,6 +8,10 @@ use App\Http\Requests;
 use App\PostedAudit;
 use App\FormCategory;
 
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Common\Type;
+use Box\Spout\Writer\WriterFactory;
+
 class NpiReportController extends Controller
 {
     public function index(){
@@ -29,18 +33,24 @@ class NpiReportController extends Controller
             $categories = FormCategory::getSOSCategories()->lists('category','category');
 	    	return view('npireport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{
-            // $store_id_array = [];
-            // foreach ($posted_audits as $posted_audit) {
-            //     $store_id_array[] = $posted_audit->id;
-            // }
-            // $details = PostedAuditDetail::getMultipleStoreDetails($store_id_array);
-            
-            // \Excel::create('Posted Audit Report', function($excel) use ($details) {
-            //     $excel->sheet('Sheet1', function($sheet) use ($details) {
-            //         $sheet->fromModel($details,null, 'A1', true);
-            //     })->download('xls');
+            set_time_limit(0);
+            $writer = WriterFactory::create(Type::CSV); 
+            $writer->openToBrowser('Per SKU NPI Report.csv');
+            $writer->addRow(['audit_month', 'customers', 'audit_template', 'category', 'sku', 'store_count', 'availability', 'osa']); 
 
-            // });
+            foreach($skus as $row)
+            {
+                $row_data[0] = $row->description;
+                $row_data[1] = $row->customer;
+                $row_data[2] = $row->template;
+                $row_data[3] = $row->category;
+                $row_data[4] = $row->prompt;
+                $row_data[5] = $row->store_count;
+                $row_data[6] = $row->availability;
+                $row_data[7] = number_format($row->osa_percent,2);
+                $writer->addRow($row_data); // add multiple rows at a time
+            }   
+            $writer->close();
         }
     }
 }

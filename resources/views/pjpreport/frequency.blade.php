@@ -58,7 +58,7 @@
 						<tbody>
 							@foreach($checkins as $checkin)
 							<tr>
-								<td>{{ $checkin->description }}</td>
+								<td>{{ $checkin->audit_month }}</td>
 								<td>{{ $checkin->name }}</td>
 								<td>{{ $checkin->store_name }}</td>
 								<td>{{ $checkin->frequency }}</td>

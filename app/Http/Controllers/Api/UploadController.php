@@ -320,7 +320,7 @@ class UploadController extends Controller
 			        foreach ($sheet->getRowIterator() as $row) {
 			            CheckIn::firstOrCreate([
 			            	'user_id' => $row[0],
-			            	'user_id' => $row[1],
+			            	'audit_id' => $row[1],
 			            	'account' => $row[2],
 			            	'customer_code' => $row[3],
 			            	'customer' => $row[4],

@@ -46,8 +46,8 @@
         </div>
 
         <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Process</button>
-            <button type="submit" class="btn btn-success">Download</button>
+            <button type="submit" name="submit" value="process" class="btn btn-primary">Process</button>
+            <button type="submit" name="submit" value="download" class="btn btn-success">Download</button>
         </div>
         {{  Form::close() }}
     </div>
@@ -57,6 +57,10 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
+				<div class="box-header">
+					<h5 class="pull-right">{{ count($customer_summaries) }} {{str_plural('record', count($customer_summaries))}} found.</h5>
+					
+				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table class="table table-hover table-striped">
 						<thead>

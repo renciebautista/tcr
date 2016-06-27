@@ -21,7 +21,7 @@
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
-	                <label>Audit Name</label>
+	                <label>Audit Month</label>
 	               {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
@@ -41,12 +41,16 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
+				<div class="box-header">
+					<h5 class="pull-right">{{ count($user_summaries) }} {{str_plural('record', count($user_summaries))}} found.</h5>
+					
+				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>User</th>
-								<th>Audit Name</th>
+								<th>Audit Month</th>
 								<th class="right">Stores Mapped</th>
 								<th class="right">PJP Target</th>
 								<th class="right">Stores Visited</th>

@@ -12,7 +12,7 @@ class CheckIn extends Model
 		'lat', 'long'];
 
 	public static function search($request){
-		return self::select(DB::raw('users.name, check_ins.store_name, count(*) as frequency, audits.description'))
+		return self::select(DB::raw('audits.description as audit_month, users.name, check_ins.store_name, count(*) as frequency'))
 			->where(function($query) use ($request){
             if(!empty($request->users)){
                     $query->whereIn('user_id',$request->users);

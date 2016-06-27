@@ -56,9 +56,33 @@ class FormCategory extends Model
             ->get();
     }
 
-     public static function getSOSCategories(){
+    public static function getSOSCategories(){
         return self::select('category', 'category')
             ->where('sos', 1)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+
+    public static function getOSACategories(){
+        return self::select('category', 'category')
+            ->where('osa', 1)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+
+    public static function getNPICategories(){
+        return self::select('category', 'category')
+            ->where('npi', 1)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+
+    public static function getPlanoCategories(){
+        return self::select('category', 'category')
+            ->where('plano', 1)
             ->groupBy('category')
             ->orderBy('category')
             ->get();
