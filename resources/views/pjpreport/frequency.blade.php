@@ -7,7 +7,7 @@
 <section class="content">
 
 	<div class="box box-default">
-		{!! Form::open(array('route' => array('sosreport.create'), 'method' => 'POST')) !!}
+		{!! Form::open(array('route' => array('pjpreport.create'), 'method' => 'POST')) !!}
 
         <div class="box-header with-border">
           	<h3 class="box-title">PJP Frequency Report</h3>
@@ -48,6 +48,7 @@
 					<table class="table table-hover table-striped">
 						<thead>
 							<tr>
+								<th>Audit Month</th>
 								<th>User</th>
 								<th>Store Name</th>
 								<th>Frequency</th>
@@ -57,9 +58,10 @@
 						<tbody>
 							@foreach($checkins as $checkin)
 							<tr>
-								<td>{{ $checkin->user_id }}</td>
-								<td>{{ $checkin->store_name}}</td>
-								<td>1</td>
+								<td>{{ $checkin->description }}</td>
+								<td>{{ $checkin->name }}</td>
+								<td>{{ $checkin->store_name }}</td>
+								<td>{{ $checkin->frequency }}</td>
 								<td></td>
 							</tr>
 							@endforeach

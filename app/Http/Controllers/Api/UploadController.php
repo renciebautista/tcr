@@ -320,19 +320,20 @@ class UploadController extends Controller
 			        foreach ($sheet->getRowIterator() as $row) {
 			            CheckIn::firstOrCreate([
 			            	'user_id' => $row[0],
-			            	'account' => $row[1],
-			            	'customer_code' => $row[2],
-			            	'customer' => $row[3],
-			            	'area' => $row[4],
-			            	'region_code' => $row[5],
-			            	'region' => $row[6],
-			            	'distributor_code' => $row[7],
-			            	'distributor' => $row[8],
-			            	'store_code' => $row[9],
-			            	'store_name' => $row[10],
-			            	'checkin' => $row[11],
-			            	'lat' => $row[12],
-			            	'long' => $row[13]]);
+			            	'user_id' => $row[1],
+			            	'account' => $row[2],
+			            	'customer_code' => $row[3],
+			            	'customer' => $row[4],
+			            	'area' => $row[5],
+			            	'region_code' => $row[6],
+			            	'region' => $row[7],
+			            	'distributor_code' => $row[8],
+			            	'distributor' => $row[9],
+			            	'store_code' => $row[10],
+			            	'store_name' => $row[11],
+			            	'checkin' => $row[12],
+			            	'lat' => $row[13],
+			            	'long' => $row[14]]);
 
 			        }
 			    }

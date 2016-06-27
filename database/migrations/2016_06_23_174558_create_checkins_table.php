@@ -15,6 +15,7 @@ class CreateCheckinsTable extends Migration
         Schema::create('check_ins', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
+            $table->integer('audit_id');
             $table->string('account');
             $table->string('customer_code');
             $table->string('customer');
