@@ -15,7 +15,7 @@
                 <div class="tab-content">
                     <div class="row menu pull-right">
                         <div class="col-xs-12">
-                            {!! link_to_route('audits.uploadtemplates','Upload MT Audit Template',array($audit),['class' => 'btn btn-success']) !!}
+                            {!! link_to_route('audits.uploaddttemplates','Upload DT Audit Template',array($audit),['class' => 'btn btn-success']) !!}
                         </div>
                     </div>
                     
@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="box-header">
-                                    <h3 class="box-title">MT Audit Template Lists</h3>
+                                    <h3 class="box-title">DT Audit Template Lists</h3>
                                     <h5 class="pull-right">{{ $templates->count() }} {{str_plural('record', $templates->count()) }} found.</h5>
                                 </div>
                                 <div class="box-body table-responsive no-padding">

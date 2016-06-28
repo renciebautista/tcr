@@ -72,6 +72,9 @@
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
 								<th class="right">Perfect Stores</th>
+								<th class="right">Ave Perfect Store</th>
+								<th class="right">Ave Category PS</th>
+								<th class="right">Ave Category Door</th>
 								<th class="right">Ave OSA</th>
 								<th class="right">Ave NPI</th>
 								<th class="right">Ave Planogram</th>
@@ -89,6 +92,9 @@
 								<td class="right">{{ $summary->mapped_stores }}</td>
 								<td class="right">{{ $summary->visited_stores }}</td>
 								<td class="right">{{ $summary->perfect_stores }}</td>
+								<td class="right">{{ $summary->ave_perfect_stores }}%</td>
+								<td class="right"></td>
+								<td class="right"></td>
 								<td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->npi_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td>

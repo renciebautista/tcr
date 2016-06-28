@@ -333,12 +333,15 @@ class PostedAudit extends Model
         foreach ($data as $key => $value) {
             $stores = self::getCustomerStores($value->audit_id,$value->channel_code,$value->region_code,$value->customer_code);
             $perfect_stores = 0;
+            $total_perfect_store_percentage = 0;
             foreach ($stores as $store) {
+                $total_perfect_store_percentage += $store->perfect_percentage;
                 if($store->perfect_percentage == '100.00'){
                     $perfect_stores++;
                 }
             }
             $data[$key]->perfect_stores = $perfect_stores;
+            $data[$key]->ave_perfect_stores = number_format($total_perfect_store_percentage / count($stores),2);
         }
 
         return $data;

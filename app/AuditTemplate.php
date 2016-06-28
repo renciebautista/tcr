@@ -10,9 +10,9 @@ use App\MyClasses\SurveyQuestion;
 class AuditTemplate extends Model
 {
 
-	protected $fillable = ['audit_id', 'channel_code', 'description'];
+	protected $fillable = ['audit_id', 'channel_code', 'description', 'template_type'];
 
-    public static function import($id,$file_path){
+    public static function import($id,$file_path,$type){
         \DB::beginTransaction();
         try {
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
@@ -22,7 +22,10 @@ class AuditTemplate extends Model
                     ->where('audit_id',$id)
                     ->first();
                 if(!empty($store)){
-                    $template = AuditTemplate::firstOrCreate(['audit_id' => $id, 'channel_code' => $store->channel_code, 'description' => $sheetNames[0]]);
+                    $template = AuditTemplate::firstOrCreate(['audit_id' => $id, 
+                        'channel_code' => $store->channel_code, 
+                        'description' => $sheetNames[0],
+                        'template_type' => $type]);
 
                     TemplateSubForm::where('audit_template_id', $template->id)->delete();
 

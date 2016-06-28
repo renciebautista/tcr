@@ -93,6 +93,7 @@ class DownloadController extends Controller
                     $data[20] = $store->audit_id;
                     if ($request->has('version')){
                         $data[21] = $store->area;
+                        $data[22] = $audit_template->template_type;
                     }
                     $writer->addRow($data); 
                 }

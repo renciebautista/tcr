@@ -9,9 +9,9 @@
 		<div class="col-md-12 col-xs-12">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-				  	<h3 class="box-title">Upload Audit MT Templates</h3>
+				  	<h3 class="box-title">Upload Audit DT Templates</h3>
 				</div>
-				{!! Form::open(array('route' => array('audits.postuploadtemplates', $audit->id),'files' => true)) !!}
+				{!! Form::open(array('route' => array('audits.postuploaddttemplates', $audit->id),'files' => true)) !!}
 				  	<div class="box-body">
 		                <div class="form-group">
 					    	{!! Form::file('file','',array('id'=>'','class'=>'')) !!}
@@ -20,7 +20,7 @@
 
 				 	<div class="box-footer">
 						<button type="submit" class="btn btn-success">Submit</button>
-						{!! link_to_route('audits.templates','Back',array('id' => $audit->id),['class' => 'btn btn-default']) !!}
+						{!! link_to_route('audits.dttemplates','Back',array('id' => $audit->id),['class' => 'btn btn-default']) !!}
 				  	</div>
 
 				{!! Form::close() !!}

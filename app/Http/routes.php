@@ -66,7 +66,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		Route::get('audits/{id}/uploadtemplates',['as' => 'audits.uploadtemplates', 'uses' => 'AuditTemplateController@create']);
 		Route::post('audits/{id}/postuploadtemplates',['as' => 'audits.postuploadtemplates', 'uses' => 'AuditTemplateController@store']);
 
-
+		Route::get('audits/{id}/dttemplates',['as' => 'audits.dttemplates', 'uses' => 'AuditDtTemplateController@index']);
+		Route::get('audits/{id}/uploaddttemplates',['as' => 'audits.uploaddttemplates', 'uses' => 'AuditDtTemplateController@create']);
+		Route::post('audits/{id}/postuploaddttemplates',['as' => 'audits.postuploaddttemplates', 'uses' => 'AuditDtTemplateController@store']);
 
 
 		Route::get('audits/{audit}/users/{id}',['as' => 'audits.mappedstores', 'uses' => 'AuditUserController@mappedstores']);
