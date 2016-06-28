@@ -52,6 +52,10 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box box-padding">
+				<div class="box-header">
+					<h5 class="pull-right">{{ count($skus) }} {{str_plural('record', count($skus))}} found.</h5>
+					
+				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table id="dt-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 						<thead>
