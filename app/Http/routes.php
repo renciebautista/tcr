@@ -45,6 +45,7 @@ Route::group(['middleware' => ['web']], function () {
 	   	Route::post('uploadcheckin', 'Api\UploadController@uploadcheckin');
 
 	   	Route::get('audits', 'Api\AuditController@index');
+	   	Route::get('postedaudits', 'Api\AuditController@postedaudits');
 	   	Route::get('usersummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getUserSummary');
 	   	Route::get('storesummaryreport/{audit_id}/user/{user_id}', 'Api\ReportController@getStoreSummary');
 
