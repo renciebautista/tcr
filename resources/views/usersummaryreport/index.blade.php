@@ -29,9 +29,9 @@
 
         </div>
 
-        <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Process</button>
-            <button type="submit" class="btn btn-success">Download</button>
+       <div class="box-footer">
+            <button type="submit" name="submit" value="process" class="btn btn-primary">Process</button>
+            <button type="submit" name="submit" value="download" class="btn btn-success">Download</button>
         </div>
         {{  Form::close() }}
     </div>

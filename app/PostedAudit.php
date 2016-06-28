@@ -92,7 +92,11 @@ class PostedAudit extends Model
                     $query->whereIn('posted_audits.audit_id',$request->audits);
                 }
             })
-            
+            ->where(function($query) use ($request){
+            if(!empty($request->customers)){
+                    $query->whereIn('posted_audits.customer_code',$request->customers);
+                }
+            })
             ->orderBy('posted_audits.updated_at','desc')
             ->get();
 

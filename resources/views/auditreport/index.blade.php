@@ -28,6 +28,13 @@
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
+	                <label>Customer</label>
+	                {!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>
+
+	            <div class="col-md-3">
+	              <div class="form-group">
 	                <label>Audit Month</label>
 	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              </div>
@@ -57,6 +64,7 @@
 							<tr>
 								<th>User</th>
 								<th>Store Name</th>
+								<th>Customer</th>
 								<th>Audit Month</th>
 								<th class="right" >Perfect Store</th>
 								<th class="right">OSA %</th>
@@ -73,6 +81,7 @@
 							<tr>
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
+								<td>{{ $audit->customer }}</td>
 								<td>{{ $audit->audit->description }}</td>
 								<td class="right">{{ $audit->perfect_percentage }} %</td>
 								<td class="right">{{ $audit->osa }}%</td>
@@ -98,7 +107,7 @@
 @endsection
 
 @section('page-script')
-$('#users,#audits,#stores,#status, #pjps').multiselect({
+$('#users, #customers,#audits,#stores,#status, #pjps').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

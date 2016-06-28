@@ -18,8 +18,9 @@ class AuditReportController extends Controller
         $users = PostedAudit::getUsers()->lists('name','user_id');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
+        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
     	$posted_audits = PostedAudit::search([]);
-    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores'));
+    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores', 'customers'));
     }
 
     public function create(Request $request){
@@ -29,8 +30,9 @@ class AuditReportController extends Controller
             $users = PostedAudit::getUsers()->lists('name','user_id');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
+            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
             
-            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores'));
+            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers'));
         }else{
             set_time_limit(0);
             $writer = WriterFactory::create(Type::CSV); 
