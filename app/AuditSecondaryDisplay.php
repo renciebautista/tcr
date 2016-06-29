@@ -57,7 +57,7 @@ class AuditSecondaryDisplay extends Model
 			        }elseif($cnt == 1){
 			        	$new_brand =[];
 			        	for ($i=3; $i < count($row); $i++) { 
-
+			        		dd($header_field);
 			    //     		$category = $categories->filter(function($record) use ($header_field,$i){
 							//    if( $record->category ==  $header_field[$i]) return $record;
 							// })->first();
