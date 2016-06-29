@@ -73,7 +73,7 @@ class AuditSecondaryDisplay extends Model
 			        				'brand' => $row[$i]]);
 			        			$brand_ids[$i] = $brand->id;
 			        		}else{
-			        			dd($category);
+			        			dd($header_field[$i]);
 			        		}
 			        	}
 			        	dd($new_brand);
