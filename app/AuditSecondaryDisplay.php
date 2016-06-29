@@ -15,7 +15,7 @@ class AuditSecondaryDisplay extends Model
     public static function createSecondaryDisplay($audit, $file_path){
     	 \DB::beginTransaction();
         try {
-
+        	set_time_limit(0);
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
     	 	\Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use($sheetNames,$audit) {
     	 		$customer_name = $sheetNames[0];
