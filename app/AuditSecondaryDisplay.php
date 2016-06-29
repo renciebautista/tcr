@@ -34,16 +34,14 @@ class AuditSecondaryDisplay extends Model
 	    		// dd($records);
 	    		$categories = [];
 	    		foreach ($records as $row) {
-	    			
 	    			if($cnt == 0){
 			        	foreach ($row as $value) {
-
 				        	$header_field[] = $value;
-
 				        	if($value != ''){
 				        		$category = FormCategory::where('audit_id', $audit->id)
 				        			->where('category', $value)
 				        			->first();
+
 				        		if(!empty($category)){
 				        			$category->update(['second_display' => 1]);
 				        		}else{
@@ -55,37 +53,37 @@ class AuditSecondaryDisplay extends Model
 			        		->whereIn('category', $header_field)
 			        		->get();
 			        }elseif($cnt == 1){
-			        	$new_brand =[];
-			        	for ($i=3; $i < count($row); $i++) { 
+			    //     	$new_brand =[];
+			    //     	for ($i=3; $i < count($row); $i++) { 
 			        		
-			        		$category = $categories->filter(function($record) use ($header_field,$i){
-							   if( strtoupper($record->category) ==  strtoupper($header_field[$i])) return $record;
-							})->first();
+			    //     		$category = $categories->filter(function($record) use ($header_field,$i){
+							//    if( strtoupper($record->category) ==  strtoupper($header_field[$i])) return $record;
+							// })->first();
 			        		
-			        		if(!empty($category)){
-			        			// $new_brand[$i] = $category; 
-			        			$brand = self::create(['audit_id' => $audit->id, 
-			        				'form_category_id' => $category->id, 
-			        				'customer' => $customer_name,
-			        				'brand' => $row[$i]]);
-			        			$brand_ids[$i] = $brand->id;
-			        		}
-			        	}
+			    //     		if(!empty($category)){
+			    //     			// $new_brand[$i] = $category; 
+			    //     			$brand = self::create(['audit_id' => $audit->id, 
+			    //     				'form_category_id' => $category->id, 
+			    //     				'customer' => $customer_name,
+			    //     				'brand' => $row[$i]]);
+			    //     			$brand_ids[$i] = $brand->id;
+			    //     		}
+			    //     	}
 			        	// dd($new_brand);
 			        }else{
 			        	// dd($brand_ids);	
-			        	$store = AuditStore::where('audit_id',$audit->id)
-			        		->where('store_code',trim($row[1]))->first();
-			        	if(!empty($store)){
-			        		for ($i=3; $i < count($row); $i++) { 
-			        			if(($row[$i] == 1) || ($row[$i] == "1.0")){
-			        				AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 
-			        					'customer' => $customer_name,
-			        					'audit_store_id' => $store->id, 
-			        					'secondary_display_id' => $brand_ids[$i]]);
-			        			}
-				        	}
-			        	}
+			        	// $store = AuditStore::where('audit_id',$audit->id)
+			        	// 	->where('store_code',trim($row[1]))->first();
+			        	// if(!empty($store)){
+			        	// 	for ($i=3; $i < count($row); $i++) { 
+			        	// 		if(($row[$i] == 1) || ($row[$i] == "1.0")){
+			        	// 			AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 
+			        	// 				'customer' => $customer_name,
+			        	// 				'audit_store_id' => $store->id, 
+			        	// 				'secondary_display_id' => $brand_ids[$i]]);
+			        	// 		}
+				        // 	}
+			        	// }
 			        }
 			        
 			        $cnt++;
