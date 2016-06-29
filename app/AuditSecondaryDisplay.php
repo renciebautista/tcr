@@ -49,6 +49,7 @@ class AuditSecondaryDisplay extends Model
 				        		}
 				        	}
 			        	}
+			        	dd($header_field);
 			        	$categories = FormCategory::where('audit_id', $audit->id)
 			        		->whereIn('category', $header_field)
 			        		->get();
@@ -60,7 +61,7 @@ class AuditSecondaryDisplay extends Model
 							})->first();
 			        		$new_brand[$i] = $category;
 			        		if(!empty($category)){
-			        			
+
 			        			$brand = self::create(['audit_id' => $audit->id, 
 			        				'form_category_id' => $category->id, 
 			        				'customer' => $customer_name,
