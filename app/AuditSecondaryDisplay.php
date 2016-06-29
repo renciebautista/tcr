@@ -82,7 +82,7 @@ class AuditSecondaryDisplay extends Model
 			        			$brand_ids[$i] = $brand->id;
 			        		}
 			        	}
-			        	dd($row);
+			        	dd($brand_ids);
 			        }else{
 			        	// dd($brand_ids);	
 			        	$store = AuditStore::where('audit_id',$audit->id)
