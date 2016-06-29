@@ -37,7 +37,9 @@ class AuditSecondaryDisplay extends Model
 	    			
 	    			if($cnt == 0){
 			        	foreach ($row as $value) {
+
 				        	$header_field[] = $value;
+
 				        	if($value != ''){
 				        		$category = FormCategory::where('audit_id', $audit->id)
 				        			->where('category', $value)
@@ -49,17 +51,20 @@ class AuditSecondaryDisplay extends Model
 				        		}
 				        	}
 			        	}
-			        	// dd($header_field);
 			        	$categories = FormCategory::where('audit_id', $audit->id)
 			        		->whereIn('category', $header_field)
 			        		->get();
 			        }elseif($cnt == 1){
 			        	$new_brand =[];
 			        	for ($i=3; $i < count($row); $i++) { 
-			        		$category = $categories->filter(function($category) use ($header_field,$i){
-							   if( $category->category ==  $header_field[$i]) return $category;
-							})->first();
-			        		$new_brand[$i] = $category;
+
+			    //     		$category = $categories->filter(function($record) use ($header_field,$i){
+							//    if( $record->category ==  $header_field[$i]) return $record;
+							// })->first();
+							$category = FormCategory::where('audit_id', $audit->id)
+				        			->where('category', $header_field[$i])
+				        			->first();
+
 			        		if(!empty($category)){
 
 			        			$brand = self::create(['audit_id' => $audit->id, 
