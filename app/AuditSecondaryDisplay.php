@@ -49,7 +49,7 @@ class AuditSecondaryDisplay extends Model
 				        		}
 				        	}
 			        	}
-			        	dd($header_field);
+			        	// dd($header_field);
 			        	$categories = FormCategory::where('audit_id', $audit->id)
 			        		->whereIn('category', $header_field)
 			        		->get();
@@ -67,6 +67,8 @@ class AuditSecondaryDisplay extends Model
 			        				'customer' => $customer_name,
 			        				'brand' => $row[$i]]);
 			        			$brand_ids[$i] = $brand->id;
+			        		}else{
+			        			dd($category);
 			        		}
 			        	}
 			        	dd($new_brand);
