@@ -16,6 +16,7 @@ class AuditSecondaryDisplay extends Model
     	 \DB::beginTransaction();
         try {
         	set_time_limit(0);
+			ini_set('memory_limit', -1);
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
     	 	\Excel::selectSheets($sheetNames[0])->load($file_path, function($reader) use($sheetNames,$audit) {
     	 		$customer_name = $sheetNames[0];
@@ -30,7 +31,7 @@ class AuditSecondaryDisplay extends Model
 	    		$records = $reader->toArray();
 
 	    		$cnt = 0;
-
+	    		// dd($records);
 	    		foreach ($records as $row) {
 	    			if($cnt == 0){
 			        	foreach ($row as $value) {
