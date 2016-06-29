@@ -83,6 +83,7 @@ class AuditSecondaryDisplay extends Model
 			        		}
 			        	}
 			        }else{
+			        	dd($brand_ids);
 			        	$store = AuditStore::where('audit_id',$audit->id)
 			        		->where('store_code',trim($row[1]))->first();
 			        	if(!empty($store)){
