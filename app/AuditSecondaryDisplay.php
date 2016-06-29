@@ -58,8 +58,9 @@ class AuditSecondaryDisplay extends Model
 			        		$category = $categories->filter(function($category) use ($header_field,$i){
 							   if( $category->category ==  $header_field[$i]) return $category;
 							})->first();
-			        		$new_brand[$i] = $row[$i];
+
 			        		if(!empty($category)){
+			        			$new_brand[$i] = $row[$i];
 			        			$brand = self::create(['audit_id' => $audit->id, 
 			        				'form_category_id' => $category->id, 
 			        				'customer' => $customer_name,
