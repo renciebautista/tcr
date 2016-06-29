@@ -68,21 +68,19 @@ class AuditSecondaryDisplay extends Model
 			        			$brand_ids[$i] = $brand->id;
 			        		}
 			        	}
-			        	// dd($new_brand);
 			        }else{
-			        	// dd($brand_ids);	
-			        	// $store = AuditStore::where('audit_id',$audit->id)
-			        	// 	->where('store_code',trim($row[1]))->first();
-			        	// if(!empty($store)){
-			        	// 	for ($i=3; $i < count($row); $i++) { 
-			        	// 		if(($row[$i] == 1) || ($row[$i] == "1.0")){
-			        	// 			AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 
-			        	// 				'customer' => $customer_name,
-			        	// 				'audit_store_id' => $store->id, 
-			        	// 				'secondary_display_id' => $brand_ids[$i]]);
-			        	// 		}
-				        // 	}
-			        	// }
+			        	$store = AuditStore::where('audit_id',$audit->id)
+			        		->where('store_code',trim($row[1]))->first();
+			        	if(!empty($store)){
+			        		for ($i=3; $i < count($row); $i++) { 
+			        			if(($row[$i] == 1) || ($row[$i] == "1.0")){
+			        				AuditSecondaryDisplayLookup::create(['audit_id' => $audit->id, 
+			        					'customer' => $customer_name,
+			        					'audit_store_id' => $store->id, 
+			        					'secondary_display_id' => $brand_ids[$i]]);
+			        			}
+				        	}
+			        	}
 			        }
 			        
 			        $cnt++;
