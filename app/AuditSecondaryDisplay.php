@@ -53,36 +53,21 @@ class AuditSecondaryDisplay extends Model
 			        		->whereIn('category', $header_field)
 			        		->get();
 			        }elseif($cnt == 1){
-			        	// dd($categories);
+			        	$new_brand =[];
 			        	for ($i=3; $i < count($row); $i++) { 
-
 			        		$category = $categories->filter(function($category) use ($header_field,$i){
 							   if( $category->category ==  $header_field[$i]) return $category;
 							})->first();
-
-			        		// // // $category = FormCategory::where('audit_id', $audit->id)
-			        		// // 	->where('category', $header_field[$i])
-			        		// // 	->first();
-
-			        		// // dd($category);
-
-			        		// if(!empty($category)){
-			        		// 	// $category->update(['second_display' => 1]);
-			        		// }else{
-			        		// 	$category = FormCategory::firstOrCreate(['audit_id' => $audit->id, 'category' => $header_field[$i], 'second_display' => 1]);
-			        		// }
-			        		// dd($category);
+			        		$new_brand[$i] = $row[$i];
 			        		if(!empty($category)){
-			        			// dd($category);
 			        			$brand = self::create(['audit_id' => $audit->id, 
 			        				'form_category_id' => $category->id, 
 			        				'customer' => $customer_name,
 			        				'brand' => $row[$i]]);
-
 			        			$brand_ids[$i] = $brand->id;
 			        		}
 			        	}
-			        	dd($brand_ids);
+			        	dd($new_brand);
 			        }else{
 			        	// dd($brand_ids);	
 			        	$store = AuditStore::where('audit_id',$audit->id)
