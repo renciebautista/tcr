@@ -70,6 +70,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		Route::get('audits/{id}/dttemplates',['as' => 'audits.dttemplates', 'uses' => 'AuditDtTemplateController@index']);
 		Route::get('audits/{id}/uploaddttemplates',['as' => 'audits.uploaddttemplates', 'uses' => 'AuditDtTemplateController@create']);
 		Route::post('audits/{id}/postuploaddttemplates',['as' => 'audits.postuploaddttemplates', 'uses' => 'AuditDtTemplateController@store']);
+		Route::delete('audits/{id}/dttemplates',['as' => 'audits.dttemplatedestroy', 'uses' => 'AuditDtTemplateController@destroy']);
 
 
 		Route::get('audits/{audit}/users/{id}',['as' => 'audits.mappedstores', 'uses' => 'AuditUserController@mappedstores']);

@@ -32,7 +32,7 @@
                                             <tr>
                                                 <th>Template Code</th>
                                                 <th>Template Name</th>
-                                                
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -41,12 +41,16 @@
                                             <tr>
                                                 <td>{{ $template->channel_code }}</td>
                                                 <td>{{ $template->description }}</td>
-                                                
+                                                <td>
+                                                    {!! Form::open(array('method' => 'DELETE', 'action' => array('AuditDtTemplateController@destroy', $template->id), 'class' => 'disable-button')) !!}                       
+                                                    {!! Form::submit('Delete', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to delete this record?')){return false;};")) !!}
+                                                    {!! Form::close() !!}
+                                                </td>
                                             </tr>
                                             @endforeach
                                             @else
                                             <tr>
-                                                <td colspan="2">No record found.</td>
+                                                <td colspan="3">No record found.</td>
                                             </tr>
                                             @endif
                                         </tbody>
