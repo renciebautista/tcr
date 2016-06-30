@@ -60,6 +60,9 @@ class AuditSosLookup extends Model
     		$template = AuditStore::where('audit_id', $this->audit_id)
     			->where('channel_code', $this->channel_code)
     			->first();
+            if(empty($template)){
+               return  $this->channel_code;
+            }
     		return $template->template;
     	}
     }
@@ -71,6 +74,9 @@ class AuditSosLookup extends Model
     		$store = AuditStore::where('audit_id', $this->audit_id)
     			->where('store_code', $this->store_code)
     			->first();
+            if(empty($store)){
+               return  $this->store_code;
+            }
     		return $store->store_name;
     	}
     }

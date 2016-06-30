@@ -59,6 +59,9 @@ class AuditOsaLookup extends Model
     		$template = AuditStore::where('audit_id', $this->audit_id)
     			->where('channel_code', $this->channel_code)
     			->first();
+            if(empty($template)){
+                return $this->channel_code;
+            }
     		return $template->template;
     	}
     }

@@ -9,6 +9,17 @@ use App\Http\Requests;
 use App\Audit;
 use App\AuditTemplate;
 use App\UpdatedHash;
+use App\TemplateSubForm;
+use App\FormFormula;
+use App\FormCondition;
+use App\AuditTemplateForm;
+use App\AuditTemplateGroup;
+use App\AuditTemplateCategory;
+use App\FormMultiSelect;
+use App\FormSingleSelect;
+use App\AuditMultiSelect;
+use App\AuditSingleSelect;
+use App\Form;
 
 class AuditTemplateController extends Controller
 {
@@ -64,5 +75,43 @@ class AuditTemplateController extends Controller
     public function categories($id){
         $categories = [];
         return view('audittemplate.categories',compact('categories'));
+    }
+
+    public function destroy(Request $request, $id){
+        $template = AuditTemplate::findOrFail($id);
+
+        // dd($template);
+        \DB::beginTransaction();
+
+        try {
+            TemplateSubForm::where('audit_template_id', $template->id)->delete();
+
+            FormFormula::where('audit_template_id', $template->id)->delete();
+            FormCondition::where('audit_template_id', $template->id)->delete();
+            AuditTemplateForm::where('audit_template_id', $template->id)->delete();
+            AuditTemplateGroup::where('audit_template_id', $template->id)->delete();
+            AuditTemplateCategory::where('audit_template_id', $template->id)->delete();
+
+            FormMultiSelect::where('audit_template_id', $template->id)->delete();
+            FormSingleSelect::where('audit_template_id', $template->id)->delete();
+
+            AuditMultiSelect::where('audit_template_id', $template->id)->delete();
+            AuditSingleSelect::where('audit_template_id', $template->id)->delete();
+            
+            Form::where('audit_template_id', $template->id)->delete();
+
+            $template->delete();
+
+            \DB::commit();
+            Session::flash('flash_message', 'Audit template successfully deleted!');
+            Session::flash('flash_class', 'alert-success');
+           return redirect()->back();
+
+        } catch (Exception $e) {
+            \DB::rollBack();
+            Session::flash('flash_message', 'Error occured while deleting Audit template');
+            Session::flash('flash_class', 'alert-danger');
+            return redirect()->back();
+        }
     }
 }

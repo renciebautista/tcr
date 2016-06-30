@@ -46,6 +46,8 @@
                                 </td>
 								<td>
 									{!! link_to_route('audits.stores', 'Audit Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
+									{!! link_to_route('audits.edit', 'Edit', $audit->id, ['class' => 'btn btn-xs btn btn-info']) !!}
+
 								</td>
 							</tr>
 							@endforeach
