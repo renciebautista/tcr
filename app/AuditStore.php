@@ -149,10 +149,17 @@ class AuditStore extends Model
 						if(!empty($row->fullname)){
 							$user = User::where('name',$row->fullname)->first();
 							if(empty($user)){
-								$last_user = User::orderBy('id', 'desc')->first();
-								$last_id =  (int)substr($last_user->username, 4);
-								$last_id++;
-								$username = 'User'.$last_id;
+								$validuser = false;
+								$cnt = 1;
+								while (!$validuser) {
+									$username = 'User'.sprintf("%02d", $cnt);;
+									$x = User::where('username',$username)->first();
+									if(empty($x)){
+										$validuser = true;
+									}
+									$cnt++;
+								}
+								
 								$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
 							}
 							
