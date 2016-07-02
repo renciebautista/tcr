@@ -33,15 +33,25 @@
 						<tbody>
 							
 							@foreach($users as $user)
-							<tr>
+							@if($user->active === 1)
+								<tr>
+							@elseif($user->active === 0)
+								<tr class="danger" style="opacity:0.6; filter:alpha(opacity=40);">
+							@endif
 								<td>{{ $user->name }}</td>
 								<td>{{ $user->username }}</td>
 								<td>
 									{{ $user->role_name() }}
 								</td>
 								<td>{{ $user->getStatus() }}</td>
-								<td>
+								<td>									
+								@if($user->active===1)
 									{!! link_to_route('users.edit', 'Edit', $user->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
+									{!! link_to_route('users.updatestatus', 'Deactivate User', [$user['id']], ['class' => 'btn btn-xs btn btn-danger','onclick' => "if(!confirm('Are you sure to deactivate this user?')){return false;};"]) !!}
+															
+								@else
+									{!! link_to_route('users.updatestatus', 'Activate User', [$user['id']], ['class' => 'btn btn-xs btn btn-info','onclick' => "if(!confirm('Are you sure to activate this user?')){return false;};"]) !!}
+								@endif
 								</td>
 							</tr>
 							@endforeach

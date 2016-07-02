@@ -92,7 +92,15 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::where('id',$id)->first();
+
+        $myrole = Role::myroleid($id)->role_id;
+        
+        // $myrole = Role::myrole($myroleid->role_id);
+        
+        // $roles = Role::where('id','!=',$myroleid->role_id)->orderBy('name')->lists('name','id');
+        $roles = Role::orderBy('name')->lists('name','id');                
+        return view('user.edit',['user'=>$user,'myrole'=>$myrole,'roles'=>$roles]);
     }
 
     /**
@@ -104,7 +112,41 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $role = Role::findOrFail($request->role);
+        $user->email = $request->email;        
+
+        $role_user = DB::table('role_user')->where('user_id',$id);
+        $role_user->delete();
+           
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        $user->roles()->attach($role);
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        $user->update();
+        
+
+        return redirect('users');
+    }
+
+    public function updatestatus($id){
+
+        $user = User::findOrFail($id);
+        
+        if($user->active === 1){
+                $user->active = 0;
+                $user->update();
+                Session::flash('flash_message', 'User was successfully Deactivated.');
+                Session::flash('flash_class', 'alert-success');
+                return redirect('users');
+            }
+        elseif($user->active === 0){
+                $user->active = 1;     
+                $user->update();
+                Session::flash('flash_message', 'User was successfully Activated.');
+                Session::flash('flash_class', 'alert-success');
+                return redirect('users');
+            }          
     }
 
     /**
