@@ -20,7 +20,11 @@ class CustomerReportController extends Controller
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $customer_summaries = PostedAudit::getCustomerSummary();
-    	return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
+        $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
+        $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
+        $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
+        $total_perfect_store_ave = PostedAudit::getTotalPerfectStoreAverage($customer_summaries);    
+    	return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','total_perfect_store_ave','stores_visited_ave','perfect_stores','perfect_stores_percentage'));
     }
 
     public function create(Request $request){

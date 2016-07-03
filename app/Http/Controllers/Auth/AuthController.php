@@ -87,7 +87,7 @@ class AuthController extends Controller
         $password = $request->password;
         $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if (Auth::attempt(array($field => $usernameinput, 'password' => $password), false)) {
+        if (Auth::attempt(array($field => $usernameinput, 'password' => $password,'active'=>1), false)) {
    
             // if(Auth::user()->isActive()){
                 // if(Auth::user()->hasRole('field')){

@@ -18,17 +18,23 @@ class AuthController extends Controller
 
         if (\Auth::attempt(array('username' => $usernameinput, 'password' => $password), false))
         {
-            $user = \Auth::user();
+            if(\Auth::attempt(array('active'=>0),false))
+            {                
+                return response()->json(array('msg' => 'account was suspended', 'status' => 0));    
+            }
+            else{            
 
-            $hash = UpdatedHash::find(1);
-            $audits = Audit::select('id', 'description')->get();
-            $user->hash =  $hash->hash;
-            $user->audits = $audits;
-            $user->role_name = $user->roles[0]->name;
-            
-            return response()->json($user);
+                $user = \Auth::user();
+                $hash = UpdatedHash::find(1);
+                $audits = Audit::select('id', 'description')->get();
+                $user->hash =  $hash->hash;
+                $user->audits = $audits;
+                $user->role_name = $user->roles[0]->name;
+                
+                return response()->json($user);
+            }
         }else{
-        	return response()->json(array('msg' => 'user not found', 'status' => 0));
+            return response()->json(array('msg' => 'user not found', 'status' => 0));
         }
     }
 }

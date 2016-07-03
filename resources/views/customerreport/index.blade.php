@@ -52,7 +52,68 @@
         {{  Form::close() }}
     </div>
 
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>{{$stores_visited_ave}}<sup style="font-size: 20px">%</sup></h3>
 
+              <p>Stores Visited</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>{{$perfect_stores}}<sup style="font-size: 20px">%</sup></h3>
+
+              <p>Perfect Stores</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3>{{$perfect_stores_percentage}}<sup style="font-size: 20px">%</sup></h3>
+
+              <p>Perfect Stores Percentage</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3>{{$total_perfect_store_ave}}<sup style="font-size: 20px">%</sup></h3>
+
+              <p>Perfect Stores Average</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+  	</div>
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -72,11 +133,12 @@
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
 								<th class="right">Perfect Stores</th>
-								<th class="right">Ave Perfect Store</th>
+								<th class="right">Perfect Stores Percentage</th>
+								<th class="right">Perfect Stores Ave</th>
 								<th class="right">Ave Category PS</th>
 								<th class="right">Ave Category Door</th>
-								<th class="right">Ave OSA</th>
-								<th class="right">Ave NPI</th>
+								<!-- <th class="right">Ave OSA</th>
+								<th class="right">Ave NPI</th> -->
 								<th class="right">Ave Planogram</th>
 								<th>Action</th>
 							</tr>
@@ -92,9 +154,10 @@
 								<td class="right">{{ $summary->mapped_stores }}</td>
 								<td class="right">{{ $summary->visited_stores }}</td>
 								<td class="right">{{ $summary->perfect_stores }}</td>
+								<td class="right">{{ number_format((float)$summary->perfect_stores/$summary->visited_stores,2,'.',',')}}</td>
 								<td class="right">{{ $summary->ave_perfect_stores }}%</td>
-								<td class="right"></td>
-								<td class="right"></td>
+								<!-- <td class="right"></td>
+								<td class="right"></td> -->
 								<td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->npi_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td>
