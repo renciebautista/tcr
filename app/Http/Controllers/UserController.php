@@ -153,14 +153,20 @@ class UserController extends Controller
     public function managefields($id){
 
         $user = User::where('id',$id)->first();
-        $fields = ManagerFields::where('managers_id',$id)->get();             
-        // $fields_name =  ManagerFields::getFieldsDetails($fields);
-
+        $fields = ManagerFields::where('managers_id',$id)->get();                 
         return view('user.managefields',compact('user','fields'));
     }
     public function managefields_create($id){        
         $manager = User::where('id',$id)->first();
-        $users = User::orderBy('name')->get();
+        $already_tagged = ManagerFields::where('managers_id',$id)->get();
+
+        $data = [];
+        foreach ($already_tagged as $value) {
+            $data[] =  $value->fields_id;
+        }
+        
+        $users = User::whereNotIn('id', $data)->orderBy('name')->get();
+
         return view('user.managefieldscreate',compact('users','manager'));
     }
 
@@ -181,11 +187,16 @@ class UserController extends Controller
                 }                
             }
         }        
-       return redirect()->action('UserController@managefields', [$manager_id]);
+        return redirect()->action('UserController@managefields', [$manager_id]);
     }
-    public function managefieldsupdate($id){
-        $manager = $request->get('manager_id');
-        $tagged = ManagerFields::where('fields_id',$id)->where('managers_id',$manager)->first();            
+    public function managefieldsupdate(Request $request){
+        
+        $manager = $request->get('manager_id');        
+        $fields = $request->get('fields_id');
+        $tagged = DB::table('manager_fields')->where('fields_id',$fields)->where('managers_id',$manager)->delete();        
+        Session::flash('flash_message', 'Field was successfully Untagged.');
+        Session::flash('flash_class', 'alert-success');
+        return redirect()->action('UserController@managefields', [$manager]);
     }
     /**
      * Remove the specified resource from storage.

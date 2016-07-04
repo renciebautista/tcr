@@ -21,7 +21,7 @@
 								<th>Fullname</th>
 								<th>Username</th>								
 								<th>Status</th>		
-								<th>Action</th>						
+								<th><input type="checkbox" name="checkAll" id="checkAll"> Select All</th>						
 							</tr>
 							<tr>								
 								<th></th>
@@ -31,9 +31,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td></td><td></td><td></td><td><input type="checkbox" name="checkAll" id="checkAll"></td>										
-							</tr>
 							@foreach($users as $user)
 								@if($user->role_name() == "field")									
 									@if($user->active === 1)

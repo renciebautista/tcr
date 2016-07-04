@@ -12,7 +12,7 @@
 				  	<h3 class="box-title">List of Fields Tagged</h3>
 				  	<div class="pull-right">{!! link_to_route('users.managefields_create','Tag Field',[$user['id']],['class' => 'btn btn-primary']) !!}</div>
 				</div>
-				{!! Form::open(array('route' => 'users.store')) !!}
+				
 				  	<div class="box-body">
 						<table class="table table-hover table-striped">
 						<thead>
@@ -33,12 +33,13 @@
 									<td>{{ $fd->fdetails->name }}</td>
 									<td>{{ $fd->fdetails->username }}</td>							
 									@if($fd->fdetails->active === 1)
-										<td>Active</td>
+										<td>Active											
 									@else
 										<td>In-active</td>
-									@endif
-									<td>{{ Form::open(array('method' => 'PUT', 'route' => array('users.managefieldsupdate', $fd->fdetails['id']))) }}                       
+									@endif	
+									<td>{{ Form::open(array('route' => array('users.managefieldsupdate'))) }}                       
 										{{ Form::hidden('manager_id',$user->id)}}
+										{{ Form::hidden('fields_id',$fd->fdetails->id)}}
 										{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this field?')){return false;};")) }}
 										{{ Form::close() }}						
 									</tr>																
@@ -47,8 +48,7 @@
 					</table>								  					  					
 				  	</div>
 				 	<div class="box-footer">						
-				  	</div>				
-				{!! Form::close() !!}
+				  	</div>								
 			  </div>
 		</div>
 		<div class="col-md-6 col-xs-6">

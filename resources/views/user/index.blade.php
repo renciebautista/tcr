@@ -30,8 +30,7 @@
 								<th>Action</th>
 							</tr>
 						</thead>
-						<tbody>
-							
+						<tbody>							
 							@foreach($users as $user)
 							@if($user->active === 1)
 								<tr>
@@ -51,10 +50,8 @@
 															
 								@else
 									{!! link_to_route('users.updatestatus', 'Activate User', [$user['id']], ['class' => 'btn btn-xs btn btn-info','onclick' => "if(!confirm('Are you sure to activate this user?')){return false;};"]) !!}
-								@endif
-								@if($user->role_name() == "manager")
-									{!! link_to_route('users.managefields', 'Manage Fields', [$user['id']], ['class' => 'btn btn-xs btn btn-info']) !!}
-								@endif
+								@endif								
+									{!! link_to_route('users.managefields', 'Manage Fields', [$user['id']], ['class' => 'btn btn-xs btn btn-info']) !!}								
 								</td>
 							</tr>
 							@endforeach

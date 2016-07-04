@@ -13,6 +13,8 @@ class AuditTemplate extends Model
 	protected $fillable = ['audit_id', 'channel_code', 'description', 'template_type'];
 
     public static function import($id,$file_path,$type){
+        set_time_limit(0);
+        ini_set('memory_limit', -1);
         \DB::beginTransaction();
         try {
         	$sheetNames = \Excel::load($file_path)->getSheetNames();
