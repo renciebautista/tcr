@@ -151,7 +151,7 @@ class UserController extends Controller
 
     public function managefields($id){
 
-        print_r("This module is on going")die;
+        print_r("This module is on going"); die;
         return view('user.managefields');
     }
 
