@@ -112,6 +112,10 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	    Route::resource('users', 'UserController' );
 	    Route::get('users/{id}/updatestatus',['as'=>'users.updatestatus','uses'=>'UserController@updatestatus']);
 	    Route::get('users/{id}/managefields',['as'=>'users.managefields','uses'=>'UserController@managefields']);
+	    Route::get('users/{id}/managefields/create',['as'=>'users.managefields_create','uses'=>'UserController@managefields_create']);
+	    Route::post('users/managefields/store',['as'=>'users.managefields_store','uses'=>'UserController@managefields_store']);
+	    Route::get('users/{id}/managefields/update',['as'=>'users.managefieldsupdate','uses'=>'UserController@managefieldsupdate']);
+
 	    Route::get('deviceerror', ['as' => 'deviceerror.index', 'uses' => 'DeviceErrorController@index']);
 	    Route::get('deviceerror/getfile/{filename}', ['as' => 'deviceerror.getfile', 'uses' => 'DeviceErrorController@getfile']);
 

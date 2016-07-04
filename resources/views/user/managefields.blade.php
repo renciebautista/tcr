@@ -6,26 +6,59 @@
 
 <section class="content">
 	<div class="row">
-		<div class="col-md-12 col-xs-12">
+		<div class="col-md-6 col-xs-6">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-				  	<h3 class="box-title">New User</h3>
+				  	<h3 class="box-title">List of Fields Tagged</h3>
+				  	<div class="pull-right">{!! link_to_route('users.managefields_create','Tag Field',[$user['id']],['class' => 'btn btn-primary']) !!}</div>
 				</div>
 				{!! Form::open(array('route' => 'users.store')) !!}
 				  	<div class="box-body">
-				  	
-
-				  		
-						
+						<table class="table table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Fullname</th>
+								<th>Username</th>								
+								<th>Status</th>		
+								<th>Action</th>						
+							</tr>
+						</thead>
+						<tbody>							
+							@foreach($fields as $fd)								
+								@if($fd->fdetails->active === 1)
+								<tr>
+								@elseif($fd->fdetails->active === 0)
+									<tr class="danger" style="opacity:0.6; filter:alpha(opacity=40);">
+								@endif
+									<td>{{ $fd->fdetails->name }}</td>
+									<td>{{ $fd->fdetails->username }}</td>							
+									@if($fd->fdetails->active === 1)
+										<td>Active</td>
+									@else
+										<td>In-active</td>
+									@endif
+									<td>{{ Form::open(array('method' => 'PUT', 'route' => array('users.managefieldsupdate', $fd->fdetails['id']))) }}                       
+										{{ Form::hidden('manager_id',$user->id)}}
+										{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this field?')){return false;};")) }}
+										{{ Form::close() }}						
+									</tr>																
+							@endforeach					
+						</tbody>
+					</table>								  					  					
 				  	</div>
-
-				 	<div class="box-footer">
-						<button type="submit" class="btn btn-success">Submit</button>
-						{!! link_to_route('users.index','Back',array(),['class' => 'btn btn-default']) !!}
-				  	</div>
-
-
+				 	<div class="box-footer">						
+				  	</div>				
 				{!! Form::close() !!}
+			  </div>
+		</div>
+		<div class="col-md-6 col-xs-6">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+				  	<h3 class="box-title">List of Templates Tagged</h3>
+				  	<div class="pull-right">{!! link_to_route('users.create','Tag Template',[$user['id']],['class' => 'btn btn-primary']) !!}</div>
+				</div>				
+				  	<div class="box-body">				  					  				
+				  	</div>				
 			  </div>
 		</div>
 	</div>

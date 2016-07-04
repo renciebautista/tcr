@@ -10,7 +10,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
-
+use DB;
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -49,6 +49,7 @@ class User extends Model implements AuthenticatableContract,
         return $this->belongsToMany('App\Role','role_user');
     }
 
+
     public function role_name()
     {
         return $this->roles[0]->name;
@@ -84,4 +85,5 @@ class User extends Model implements AuthenticatableContract,
         }
         return 'In-active';
     }
+    
 }

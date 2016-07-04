@@ -312,7 +312,7 @@ class DownloadController extends Controller
             foreach ($selections as $selection) {
                 $data[0] = $selection->form_id;
                 $data[1] = $selection->id;
-                $data[2] = $selection->option;
+                $data[2] = preg_replace("/[\\n\\r]+/", " ", $selection->option);
                 $writer->addRow($data); 
             }
 

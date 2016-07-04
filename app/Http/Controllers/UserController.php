@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
 use App\Role;
+use App\ManagerFields;
 use DB;
 use Session;
-
+use Auth;
 class UserController extends Controller
 {
     /**
@@ -151,10 +152,41 @@ class UserController extends Controller
 
     public function managefields($id){
 
-        print_r("This module is on going"); die;
-        return view('user.managefields');
+        $user = User::where('id',$id)->first();
+        $fields = ManagerFields::where('managers_id',$id)->get();             
+        // $fields_name =  ManagerFields::getFieldsDetails($fields);
+
+        return view('user.managefields',compact('user','fields'));
+    }
+    public function managefields_create($id){        
+        $manager = User::where('id',$id)->first();
+        $users = User::orderBy('name')->get();
+        return view('user.managefieldscreate',compact('users','manager'));
     }
 
+    public function managefields_store(Request $request){
+
+        $user = $request->get('tagfields');
+        $manager_id = $request->get('manager_id');
+        if(is_array($user)){
+
+            foreach($user as $users)
+            {                    
+                if(!empty($users))
+                {
+                    DB::table('manager_fields')->insert(array([
+                    'managers_id' => $manager_id,
+                    'fields_id' => $users,                
+                    ]));    
+                }                
+            }
+        }        
+       return redirect()->action('UserController@managefields', [$manager_id]);
+    }
+    public function managefieldsupdate($id){
+        $manager = $request->get('manager_id');
+        $tagged = ManagerFields::where('fields_id',$id)->where('managers_id',$manager)->first();            
+    }
     /**
      * Remove the specified resource from storage.
      *
