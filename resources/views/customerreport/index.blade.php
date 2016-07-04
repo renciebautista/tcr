@@ -63,7 +63,7 @@
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
 								<th class="right">Perfect Stores</th>
-								<th class="right">Perfect Stores Percentage</th>
+								<th class="right">Perfect Stores %</th>
 								<th class="right">Perfect Stores Ave</th>
 								<!-- <th class="right">Ave Category PS</th>
 								<th class="right">Ave Category Door</th>								
@@ -81,7 +81,7 @@
 								<td class="right">{{ $summary->mapped_stores }}</td>
 								<td class="right">{{ $summary->visited_stores }}</td>
 								<td class="right">{{ $summary->perfect_stores }}</td>
-								<td class="right">{{ number_format((float)$summary->perfect_stores/$summary->visited_stores,2,'.',',')}}</td>
+								<td class="right">{{ (number_format((float)$summary->perfect_stores/$summary->visited_stores,2,'.',','))*100}}%</td>
 								<td class="right">{{ $summary->ave_perfect_stores }}%</td>
 								<!-- <td class="right"></td>
 								<td class="right"></td> -->
