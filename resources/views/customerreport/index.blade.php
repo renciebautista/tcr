@@ -24,103 +24,33 @@
 	              <div class="form-group">
 	                <label>Region</label>
 	                {!! Form::select('regions[]', $regions, null, array('class' => 'form-control select_form', 'id' => 'regions', 'multiple' => 'multiple')) !!}
-	              </div>
+	            	</div>
 	            </div>
-
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Template</label>
-	                {!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            
+	              	<div class="form-group">
+	                	<label>Audit Template</label>
+	                	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	            
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Month</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            
+	              	<div class="form-group">
+	                	<label>Audit Month</label>
+	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	            	</div>
+	            </div>	            
           	</div>
-
         </div>
-
         <div class="box-footer">
             <button type="submit" name="submit" value="process" class="btn btn-primary">Process</button>
             <button type="submit" name="submit" value="download" class="btn btn-success">Download</button>
         </div>
         {{  Form::close() }}
     </div>
-
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>{{$stores_visited_ave}}<sup style="font-size: 20px">%</sup></h3>
-
-              <p>Stores Visited</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3>{{$perfect_stores}}<sup style="font-size: 20px">%</sup></h3>
-
-              <p>Perfect Stores</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="#" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>{{$perfect_stores_percentage}}<sup style="font-size: 20px">%</sup></h3>
-
-              <p>Perfect Stores Percentage</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>{{$total_perfect_store_ave}}<sup style="font-size: 20px">%</sup></h3>
-
-              <p>Perfect Stores Average</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-  	</div>
-
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h5 class="pull-right">{{ count($customer_summaries) }} {{str_plural('record', count($customer_summaries))}} found.</h5>
-					
+					<h5 class="pull-right">{{ count($customer_summaries) }} {{str_plural('record', count($customer_summaries))}} found.</h5>					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
 					<table class="table table-hover table-striped">
@@ -135,16 +65,13 @@
 								<th class="right">Perfect Stores</th>
 								<th class="right">Perfect Stores Percentage</th>
 								<th class="right">Perfect Stores Ave</th>
-								<th class="right">Ave Category PS</th>
-								<th class="right">Ave Category Door</th>
-								<!-- <th class="right">Ave OSA</th>
-								<th class="right">Ave NPI</th> -->
-								<th class="right">Ave Planogram</th>
+								<!-- <th class="right">Ave Category PS</th>
+								<th class="right">Ave Category Door</th>								
+								<th class="right">Ave Planogram</th> -->
 								<th>Action</th>
-							</tr>
+							</tr>	
 						</thead>
-						<tbody>
-							
+						<tbody>							
 							@foreach($customer_summaries as $summary)
 							<tr>
 								<td>{{ $summary->customer }}</td>
@@ -158,9 +85,9 @@
 								<td class="right">{{ $summary->ave_perfect_stores }}%</td>
 								<!-- <td class="right"></td>
 								<td class="right"></td> -->
-								<td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
+								<!-- <td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->npi_ave,2) }}%</td>
-								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td>
+								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td> -->
 								<td>
 									{!! link_to_action('CustomerReportController@show', 'View Stores', ['customer_code' => $summary->customer_code, 'region_code' => $summary->region_code,'channel_code' => $summary->channel_code, 'audit_id' => $summary->audit_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

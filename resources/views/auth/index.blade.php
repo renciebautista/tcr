@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=1,initial-scale=1,user-scalable=1" />
-	<title>PCount System</title>
+	<title>Trade Check Report</title>
 	
 	{!! Html::style('bootstrap/css/bootstrap.min.css') !!}
 	{!! Html::style('css/styles.css') !!}

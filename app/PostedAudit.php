@@ -643,69 +643,127 @@ class PostedAudit extends Model
         }
         return $sos_lists;
     }
-    public static function getTotalPerfectStoreAverage($customer_summaries){
-        $counter = 0;
-        $total_summary = 0.00;
-        $total_aves = 0.00;
-        $count = 0;
-        foreach($customer_summaries as $summary)
-        {
-            $add = $summary->ave_perfect_stores;
-            $total_summary = $total_summary + $add;
-            $counter++;
-            $count = $count+1;        
-        }            
-        $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-        return $total_aves;
-    }
+    public static function getPerfectStoreAverage($posted_audits){
 
-    public static function getTotalStoresVisitedAve($customer_summaries){
         $counter = 0;
-        $total_summary = 0.00;
-        $total_aves = 0.00;
         $count = 0;
-        foreach($customer_summaries as $summary){
-
-            $add = $summary->visited_stores;
-            $total_summary = $total_summary + $add;
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->perfect_percentage;
+            $total_posted = $total_posted + $add;
             $counter++;
-            $count = $count+1;
+            $count++;
         }
-        $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-        return $total_aves;   
+        $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        return $total_average;
     }
-
-    public static function getTotalPerfectStores($customer_summaries){
+    public static function getOsaAverage($posted_audits){
         $counter = 0;
-        $total_summary = 0.00;
-        $total_aves = 0.00;
         $count = 0;
-        foreach($customer_summaries as $summary){
-
-            $add = $summary->perfect_stores;
-            $total_summary = $total_summary + $add;
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->osa;
+            $total_posted = $total_posted + $add;
             $counter++;
-            $count = $count+1;
+            $count++;
         }
-        $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-        return $total_aves;   
+        $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        return $total_average;
     }
-    public static function getTotalPerfectStoresPercentage($customer_summaries){
+    public static function getNpiAverage($posted_audits){
         $counter = 0;
-        $total_summary = 0.00;
-        $total_aves = 0.00;
         $count = 0;
-        foreach($customer_summaries as $summary){
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->npi;
+            $total_posted = $total_posted + $add;
+            $counter++;
+            $count++;
+        }
+        $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        return $total_average;
+    }
+
+    public static function getPlanogramAverage($posted_audits){
+        $counter = 0;
+        $count = 0;
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->planogram;
+            $total_posted = $total_posted + $add;
+            $counter++;
+            $count++;
+        }
+        $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        return $total_average;
+    }
+    // public static function getTotalPerfectStoreAverage($customer_summaries){
+    //     $counter = 0;
+    //     $total_summary = 0.00;
+    //     $total_aves = 0.00;
+    //     $count = 0;
+    //     foreach($customer_summaries as $summary)
+    //     {
+    //         $add = $summary->ave_perfect_stores;
+    //         $total_summary = $total_summary + $add;
+    //         $counter++;
+    //         $count = $count+1;        
+    //     }            
+    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
+    //     return $total_aves;
+    // }
+
+    // public static function getTotalStoresVisitedAve($customer_summaries){
+    //     $counter = 0;
+    //     $total_summary = 0.00;
+    //     $total_aves = 0.00;
+    //     $count = 0;
+    //     foreach($customer_summaries as $summary){
+
+    //         $add = $summary->visited_stores;
+    //         $total_summary = $total_summary + $add;
+    //         $counter++;
+    //         $count = $count+1;
+    //     }
+    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
+    //     return $total_aves;   
+    // }
+
+    // public static function getTotalPerfectStores($customer_summaries){
+    //     $counter = 0;
+    //     $total_summary = 0.00;
+    //     $total_aves = 0.00;
+    //     $count = 0;
+    //     foreach($customer_summaries as $summary){
+
+    //         $add = $summary->perfect_stores;
+    //         $total_summary = $total_summary + $add;
+    //         $counter++;
+    //         $count = $count+1;
+    //     }
+    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
+    //     return $total_aves;   
+    // }
+    // public static function getTotalPerfectStoresPercentage($customer_summaries){
+    //     $counter = 0;
+    //     $total_summary = 0.00;
+    //     $total_aves = 0.00;
+    //     $count = 0;
+    //     foreach($customer_summaries as $summary){
 
             
-            $ps = $summary->perfect_stores;
-            $vs = $summary->visited_stores;
-            $percentage = number_format((float)$ps/$vs,2,'.',',');
-            $total_summary = $total_summary + $percentage;
-            $counter++;
-            $count = $count+1;
-        }
-        $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-        return $total_aves;   
-    }
+    //         $ps = $summary->perfect_stores;
+    //         $vs = $summary->visited_stores;
+    //         $percentage = number_format((float)$ps/$vs,2,'.',',');
+    //         $total_summary = $total_summary + $percentage;
+    //         $counter++;
+    //         $count = $count+1;
+    //     }
+    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
+    //     return $total_aves;   
+    // }
 }

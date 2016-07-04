@@ -19,8 +19,12 @@ class AuditReportController extends Controller
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
         $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
-    	$posted_audits = PostedAudit::search([]);
-    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores', 'customers'));
+    	$posted_audits = PostedAudit::search([]);                
+        $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
+        $osa_average = PostedAudit::getOsaAverage($posted_audits);
+        $npi_average = PostedAudit::getNpiAverage($posted_audits);
+        $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores', 'customers','p_store_average','osa_average','npi_average','planogram_average'));
     }
 
     public function create(Request $request){
@@ -31,8 +35,11 @@ class AuditReportController extends Controller
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
             $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
-            
-            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers'));
+            $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
+            $osa_average = PostedAudit::getOsaAverage($posted_audits);
+            $npi_average = PostedAudit::getNpiAverage($posted_audits);
+            $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers','p_store_average','osa_average','npi_average','planogram_average'));
         }else{
             set_time_limit(0);
             $writer = WriterFactory::create(Type::CSV); 
