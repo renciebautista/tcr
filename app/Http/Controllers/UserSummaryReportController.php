@@ -10,7 +10,7 @@ use App\PostedAuditCategorySummary;
 use App\Audit;
 use App\User;
 use App\UserSummary;
-
+use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
@@ -18,17 +18,19 @@ use Box\Spout\Writer\WriterFactory;
 class UserSummaryReportController extends Controller
 {
     public function index(){
-    	$users = PostedAudit::getUsers()->lists('name','user_id');
+        $auth_user = Auth::id(); 
+    	$users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$user_summaries = PostedAudit::getUserSummary();
     	return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 
     public function create(Request $request){
+        $auth_user = Auth::id(); 
         $user_summaries = PostedAudit::getUserSummary($request);
         if($request->submit == 'process'){
             $request->flash();
-            $users = PostedAudit::getUsers()->lists('name','user_id');
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             
             return view('usersummaryreport.index', compact('user_summaries','users','audits'));

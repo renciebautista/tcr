@@ -113,9 +113,17 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	    Route::get('users/{id}/updatestatus',['as'=>'users.updatestatus','uses'=>'UserController@updatestatus']);
 	    Route::get('users/{id}/managefields',['as'=>'users.managefields','uses'=>'UserController@managefields']);
 	    Route::get('users/{id}/managefields/create',['as'=>'users.managefields_create','uses'=>'UserController@managefields_create']);
+	    Route::get('users/{id}/managefields/template/create',['as'=>'users.managefields_template_create','uses'=>'UserController@managefields_template_create']);
+	    
 	    Route::post('users/managefields/store',['as'=>'users.managefields_store','uses'=>'UserController@managefields_store']);
+	    Route::post('users/managefields/template/store',['as'=>'users.managefields_template_store','uses'=>'UserController@managefields_template_store']);
+	    
 	    Route::post('users/managefieldsupdate',['as'=>'users.managefieldsupdate','uses'=>'UserController@managefieldsupdate']);
+	    Route::post('users/managefieldstemplateupdate',['as'=>'users.managefieldstemplateupdate','uses'=>'UserController@managefieldstemplateupdate']);
+	    
 	    Route::resource('templatemaintenance', 'TemplateController' );
+	    
+	    Route::get('templatemaintenance/{id}/updatestatus',['as'=>'templatemaintenance.updatestatus','uses'=>'TemplateController@updatestatus']);
 
 	    Route::get('deviceerror', ['as' => 'deviceerror.index', 'uses' => 'DeviceErrorController@index']);
 	    Route::get('deviceerror/getfile/{filename}', ['as' => 'deviceerror.getfile', 'uses' => 'DeviceErrorController@getfile']);

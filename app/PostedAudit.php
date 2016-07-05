@@ -25,9 +25,19 @@ class PostedAudit extends Model
     	
     }
 
-    public static function getUsers(){
+    public static function getUsers($auth_user){        
+
+        $myFields = DB::table('manager_fields')
+            ->select('manager_fields.*')
+            ->where('manager_fields.managers_id','=',$auth_user)
+            ->get();
+        $data = [];
+        foreach ($myFields as $value) {
+            $data[] =  $value->fields_id;
+        }       
         return self::select('user_id', 'users.name')
-            ->join('users','users.id', '=', 'posted_audits.user_id')
+            ->whereIn('user_id',$data)
+            ->join('users','users.id', '=', 'posted_audits.user_id')                    
             ->groupBy('user_id')
             ->orderBy('users.name')
             ->get();
@@ -72,6 +82,7 @@ class PostedAudit extends Model
    
 
     public static function search($request){
+        
         $data = self::select(DB::raw('posted_audits.*, audit_stores.pjp, audit_stores.freq'))
             ->leftJoin('audit_stores', function($join){
                 $join->on('audit_stores.audit_id', '=', 'posted_audits.audit_id');

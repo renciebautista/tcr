@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PostedAudit;
 use App\FormCategory;
-
+use Auth;
 
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
@@ -16,17 +16,19 @@ use Box\Spout\Writer\WriterFactory;
 class SosReportController extends Controller
 {
     public function index(){
+        $auth_user = Auth::id(); 
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
         $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
         $categories = FormCategory::getSOSCategories()->lists('category','category');
         $templates = PostedAudit::getTemplates()->lists('template','channel_code');
-        $users = PostedAudit::getUsers()->lists('name','user_id');
+        $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
     	$soss = [];
     	return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates','users'));
     }
 
     public function create(Request $request){
+        $auth_user = Auth::id(); 
         $soss = PostedAudit::getSos($request);
         if($request->submit == 'process'){
             $request->flash();
@@ -35,7 +37,7 @@ class SosReportController extends Controller
             $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
             $categories = FormCategory::getSOSCategories()->lists('category','category');
             $templates = PostedAudit::getTemplates()->lists('template','channel_code');
-            $users = PostedAudit::getUsers()->lists('name','user_id');
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             
             return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates', 'users'));
         }else{

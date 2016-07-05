@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-
+use Auth;
 use App\PostedAudit;
 use App\PostedAuditDetail;
 use Box\Spout\Reader\ReaderFactory;
@@ -15,7 +15,8 @@ use Box\Spout\Writer\WriterFactory;
 class AuditReportController extends Controller
 {
     public function index(){
-        $users = PostedAudit::getUsers()->lists('name','user_id');
+        $auth_user = Auth::id();    
+        $users = PostedAudit::getUsers($auth_user)->lists('name','user_id'); 
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
         $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
@@ -28,10 +29,11 @@ class AuditReportController extends Controller
     }
 
     public function create(Request $request){
+        $auth_user = Auth::id(); 
         $posted_audits = PostedAudit::search($request);
         if($request->submit == 'process'){
             $request->flash();
-            $users = PostedAudit::getUsers()->lists('name','user_id');
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
             $customers = PostedAudit::getCustomers()->lists('customer','customer_code');

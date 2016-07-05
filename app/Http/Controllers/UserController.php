@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\User;
+use App\Template;
 use App\Role;
 use App\ManagerFields;
+use App\ManagerTemplates;
 use DB;
 use Session;
 use Auth;
@@ -152,9 +154,10 @@ class UserController extends Controller
 
     public function managefields($id){
 
-        $user = User::where('id',$id)->first();
+        $user = User::where('id',$id)->first();        
         $fields = ManagerFields::where('managers_id',$id)->get();                 
-        return view('user.managefields',compact('user','fields'));
+        $templates = ManagerTemplates::where('managers_id',$id)->get();                 
+        return view('user.managefields',compact('user','fields','templates'));
     }
     public function managefields_create($id){        
         $manager = User::where('id',$id)->first();
@@ -168,6 +171,19 @@ class UserController extends Controller
         $users = User::whereNotIn('id', $data)->orderBy('name')->get();
 
         return view('user.managefieldscreate',compact('users','manager'));
+    }
+    public function managefields_template_create($id){        
+        $manager = User::where('id',$id)->first();
+        $already_tagged = ManagerTemplates::where('managers_id',$id)->get();
+
+        $data = [];
+        foreach ($already_tagged as $value) {
+            $data[] =  $value->templates_id;
+        }
+        
+        $templates = Template::whereNotIn('id', $data)->orderBy('code')->get();
+
+        return view('user.managefieldstemplatecreate',compact('templates','manager'));
     }
 
     public function managefields_store(Request $request){
@@ -189,12 +205,40 @@ class UserController extends Controller
         }        
         return redirect()->action('UserController@managefields', [$manager_id]);
     }
+    public function managefields_template_store(Request $request){
+
+        $templates = $request->get('tagfields');
+        $manager_id = $request->get('manager_id');
+        if(is_array($templates)){
+
+            foreach($templates as $template)
+            {                    
+                if(!empty($template))
+                {
+                    DB::table('manager_templates')->insert(array([
+                    'managers_id' => $manager_id,
+                    'templates_id' => $template,                
+                    ]));    
+                }                
+            }
+        }        
+        return redirect()->action('UserController@managefields', [$manager_id]);
+    }
     public function managefieldsupdate(Request $request){
         
         $manager = $request->get('manager_id');        
         $fields = $request->get('fields_id');
         $tagged = DB::table('manager_fields')->where('fields_id',$fields)->where('managers_id',$manager)->delete();        
         Session::flash('flash_message', 'Field was successfully Untagged.');
+        Session::flash('flash_class', 'alert-success');
+        return redirect()->action('UserController@managefields', [$manager]);
+    }
+    public function managefieldstemplateupdate(Request $request){
+        
+        $manager = $request->get('manager_id');        
+        $templates = $request->get('templates_id');
+        $tagged = DB::table('manager_templates')->where('templates_id',$templates)->where('managers_id',$manager)->delete();        
+        Session::flash('flash_message', 'Template was successfully Untagged.');
         Session::flash('flash_class', 'alert-success');
         return redirect()->action('UserController@managefields', [$manager]);
     }

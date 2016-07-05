@@ -8,7 +8,7 @@
 		<div class="col-md-12 col-xs-12">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-				  	<h3 class="box-title">New User</h3>
+				  	<h3 class="box-title">Edit User</h3>
 				</div>
 				{!! Form::open(array('route' => array('users.update', $user->id), 'method' => 'PUT')) !!}
 				  	<div class="box-body">

@@ -11,7 +11,8 @@ class TemplateController extends Controller
 {
    public function index(){
 
-   	return view('template.index');
+   	$templates = Template::all();
+   	return view('template.index',compact('templates'));
    
    }
 
@@ -36,8 +37,46 @@ class TemplateController extends Controller
 
    	Session::flash('flash_message', 'Template successfully added.');
     Session::flash('flash_class', 'alert-success');
-
     return redirect()->route("templatemaintenance.index");
 
    }
+
+   public function edit($id){
+
+   	$template = Template::where('id',$id)->first();
+
+   	return view('template.edit',compact('template'));
+
+   }
+
+   public function update(Request $request,$id){
+   	$template = Template::findOrFail($id);
+
+   	$template->code = $request->code;
+   	$template->description = $request->description;
+   	$template->update();
+   	Session::flash('flash_message', 'Template was successfully Updated.');
+    Session::flash('flash_class', 'alert-success');
+    return redirect('templatemaintenance');
+   }
+
+   public function updatestatus($id){
+
+        $template = Template::findOrFail($id);
+        
+        if($template->active === 1){
+                $template->active = 0;
+                $template->update();
+                Session::flash('flash_message', 'Template was successfully Deactivated.');
+                Session::flash('flash_class', 'alert-success');
+                return redirect('templatemaintenance');
+            }
+        elseif($template->active === 0){
+                $template->active = 1;     
+                $template->update();
+                Session::flash('flash_message', 'Template was successfully Activated.');
+                Session::flash('flash_class', 'alert-success');
+                return redirect('templatemaintenance');
+            }          
+    }
 }

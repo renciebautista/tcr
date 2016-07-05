@@ -55,9 +55,41 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 				  	<h3 class="box-title">List of Templates Tagged</h3>
-				  	<div class="pull-right">{!! link_to_route('users.create','Tag Template',[$user['id']],['class' => 'btn btn-primary']) !!}</div>
+				  	<div class="pull-right">{!! link_to_route('users.managefields_template_create','Tag Template',[$user['id']],['class' => 'btn btn-primary']) !!}</div>
 				</div>				
-				  	<div class="box-body">				  					  				
+				  	<div class="box-body">		
+				  	<table class="table table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Code</th>
+								<th>Description</th>								
+								<th>Status</th>		
+								<th>Action</th>						
+							</tr>
+						</thead>
+						<tbody>							
+							@foreach($templates as $tem)								
+								@if($tem->tdetails->active === 1)
+								<tr>
+								@elseif($tem->tdetails->active === 0)
+									<tr class="danger" style="opacity:0.6; filter:alpha(opacity=40);">
+								@endif
+									<td>{{ $tem->tdetails->code }}</td>
+									<td>{{ $tem->tdetails->description }}</td>							
+									@if($tem->tdetails->active === 1)
+										<td>Active											
+									@else
+										<td>In-active</td>
+									@endif	
+									<td>{{ Form::open(array('route' => array('users.managefieldstemplateupdate'))) }}                       
+										{{ Form::hidden('manager_id',$user->id)}}
+										{{ Form::hidden('templates_id',$tem->tdetails->id)}}
+										{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this template?')){return false;};")) }}
+										{{ Form::close() }}						
+									</tr>																
+							@endforeach					
+						</tbody>
+					</table>								  						  					  				
 				  	</div>				
 			  </div>
 		</div>

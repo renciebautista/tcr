@@ -147,9 +147,7 @@
 								<th class="center">Action</th>
 							</tr>
 						</thead>
-						<tbody>
-							
-
+						<tbody>							
 							@foreach($posted_audits as $audit)
 							<tr>
 								<td>{{ $audit->user->name }}</td>
@@ -164,7 +162,6 @@
 								<td class="right">
 									{!! link_to_route('auditreport.download', 'Download Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 									{!! link_to_route('storesummaryreport.show', 'Store Summary', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
-
 								</td>
 							</tr>
 							@endforeach
