@@ -161,6 +161,9 @@ class AuditStore extends Model
 								}
 								
 								$user = User::create(['name' => strtoupper($row->fullname), 'username' => $username, 'password' => \Hash::make($username)]);
+								DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+								$user->roles()->attach(2);
+								DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 							}
 							
 							$e_type = 'ENVISION';

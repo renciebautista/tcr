@@ -26,7 +26,7 @@ class RemapUserSeeder extends Seeder
         ['old_user' => 'TSINA SY JUCO', 'new_user' => 'TSINA SYJUCO'],
         ['old_user' => 'ANDI ARAZA', 'new_user' => 'ANDREA ARAZA'],
         ['old_user' => 'CELYN DESQUITADO', 'new_user' => 'CARMELA DESQUITADO'],
-        
+        ['old_user' => 'CLARISSE LUNA', 'new_user' => 'CLANG LUNA'],
         ];
 
         foreach ($datas as $key => $row) {
@@ -37,7 +37,6 @@ class RemapUserSeeder extends Seeder
 	                ->update(['user_id' => $new_user->id]);
 	            PostedAudit::where('user_id', $user->id)
 	                ->update(['user_id' => $new_user->id]);
-
 	            $user->delete(); 
         	}
                
