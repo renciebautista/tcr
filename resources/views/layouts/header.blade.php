@@ -20,6 +20,7 @@
 				  			<li>{!! link_to_route('sostypes.index','SOS Type') !!}</li>
 				  			<li>{!! link_to_route('enrollmenttypes.index','Enrollment Type') !!}</li>
 				  			<li>{!! link_to_route('users.index','Users') !!}</li>
+				  			<li>{!! link_to_route('templatemaintenance.index','Templates') !!}</li>
 				  		</ul>
 				  		
 					</li>
