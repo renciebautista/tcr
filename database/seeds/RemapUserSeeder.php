@@ -16,30 +16,29 @@ class RemapUserSeeder extends Seeder
     public function run()
     {
         // $users = User::all();
+        // $datas = [['old_user' => 'GELO ISIP', 'new_user' => 'ANGELO ISIP'],
+        //     ['old_user' => 'CLIFF CENDENA', 'new_user' => 'CLIFF CENDANA'],
+        //     ['old_user' => 'MIA CRUZ', 'new_user' => 'MIA ANTENOR CRUZ'],
+        //     ['old_user' => 'STAN RAMOS', 'new_user' => 'STANLEY RAMOS'],
+        //     ['old_user' => 'ANJ CASTILLO', 'new_user' => 'ANGELA CASTILLO'],
+        //     ['old_user' => 'LYCAR FLORES', 'new_user' => 'MIA ANTENOR CRUZ'],
+        //     ['old_user' => 'TSINA SY JUCO', 'new_user' => 'TSINA SYJUCO'],
+        //     ['old_user' => 'ANDI ARAZA', 'new_user' => 'ANDREA ARAZA'],
+        //     ['old_user' => 'CELYN DESQUITADO', 'new_user' => 'CARMELA DESQUITADO'],
+        //     ['old_user' => 'CLARISSE LUNA', 'new_user' => 'CLANG LUNA'],
+        // ];
 
-        $datas = [['old_user' => 'GELO ISIP', 'new_user' => 'ANGELO ISIP'],
-        ['old_user' => 'CLIFF CENDENA', 'new_user' => 'CLIFF CENDANA'],
-        ['old_user' => 'MIA CRUZ', 'new_user' => 'MIA ANTENOR CRUZ'],
-        ['old_user' => 'STAN RAMOS', 'new_user' => 'STANLEY RAMOS'],
-        ['old_user' => 'ANJ CASTILLO', 'new_user' => 'ANGELA CASTILLO'],
-        ['old_user' => 'LYCAR FLORES', 'new_user' => 'MIA ANTENOR CRUZ'],
-        ['old_user' => 'TSINA SY JUCO', 'new_user' => 'TSINA SYJUCO'],
-        ['old_user' => 'ANDI ARAZA', 'new_user' => 'ANDREA ARAZA'],
-        ['old_user' => 'CELYN DESQUITADO', 'new_user' => 'CARMELA DESQUITADO'],
-        ['old_user' => 'CLARISSE LUNA', 'new_user' => 'CLANG LUNA'],
-        ];
-
-        foreach ($datas as $key => $row) {
-        	$user = User::where('name',$row['old_user'])->first();
-        	if(!empty($user)){
-        		$new_user = User::where('name', $row['new_user'])->first();
-	            AuditStore::where('user_id', $user->id)
-	                ->update(['user_id' => $new_user->id]);
-	            PostedAudit::where('user_id', $user->id)
-	                ->update(['user_id' => $new_user->id]);
-	            $user->delete(); 
-        	}
+        // foreach ($datas as $key => $row) {
+        // 	$user = User::where('name',$row['old_user'])->first();
+        // 	if(!empty($user)){
+        // 		$new_user = User::where('name', $row['new_user'])->first();
+	       //      AuditStore::where('user_id', $user->id)
+	       //          ->update(['user_id' => $new_user->id]);
+	       //      PostedAudit::where('user_id', $user->id)
+	       //          ->update(['user_id' => $new_user->id]);
+	       //      $user->delete(); 
+        // 	}
                
-        }
+        // }
     }
 }
