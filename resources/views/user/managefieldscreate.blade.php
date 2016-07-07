@@ -22,13 +22,7 @@
 								<th>Username</th>								
 								<th>Status</th>		
 								<th><input type="checkbox" name="checkAll" id="checkAll"> Select All</th>						
-							</tr>
-							<tr>								
-								<th></th>
-								<th></th>								
-								<th></th>		
-												
-							</tr>
+							</tr>							
 						</thead>
 						<tbody>
 							@foreach($users as $user)

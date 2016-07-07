@@ -25,14 +25,14 @@ class TemplateController extends Controller
    public function store(Request $request){
 
    	$this->validate($request, [
-            'code' => 'required|unique:templates',
-            'description' =>'required'                                 
+            'code' => 'required',
+            'description' =>'required|unique:templates'                                 
         ]);
 
    	$template = new Template();
    	$template->code = $request->code;
    	$template->description = $request->description;
-   	$template->active = $request->active;
+   	$template->active = 1;
    	$template->save();
 
    	Session::flash('flash_message', 'Template successfully added.');
@@ -51,7 +51,6 @@ class TemplateController extends Controller
 
    public function update(Request $request,$id){
    	$template = Template::findOrFail($id);
-
    	$template->code = $request->code;
    	$template->description = $request->description;
    	$template->update();

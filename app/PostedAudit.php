@@ -26,25 +26,54 @@ class PostedAudit extends Model
     }
 
     public static function getUsers($auth_user){        
-
+        //fields na naka map sa user
         $myFields = DB::table('manager_fields')
             ->select('manager_fields.*')
             ->where('manager_fields.managers_id','=',$auth_user)
             ->get();
+
         $data = [];
         foreach ($myFields as $value) {
             $data[] =  $value->fields_id;
         }       
+        
+        //templates na naka mapped sa user
+        $myTemplates = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->where('manager_templates.managers_id','=',$auth_user)
+            ->get();
+        $datas = [];
+
+        foreach ($myTemplates as $value) {
+            $datas[] =  $value->templates_id;
+        }
+        
+        //another user na nka map sa template ng user
+        $another_user = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->whereIn('manager_templates.templates_id',$datas)
+            ->get();
+        
+        foreach ($another_user as $value) {
+            $data[] =  $value->managers_id;
+        }  
+        
         return self::select('user_id', 'users.name')
-            ->whereIn('user_id',$data)
+            ->whereIn('user_id',$data)            
             ->join('users','users.id', '=', 'posted_audits.user_id')                    
             ->groupBy('user_id')
             ->orderBy('users.name')
             ->get();
+   
     }
 
-    public static function getCustomers(){
+    public static function getCustomers($use){
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }        
         return self::select('customer_code', 'customer')
+            ->whereIn('user_id',$users)
             ->groupBy('customer')
             ->orderBy('customer')
             ->get();
@@ -65,15 +94,66 @@ class PostedAudit extends Model
             ->get();
     }
 
-    public static function getTemplates(){
+    public static function getTemplates($auth_user){
+        //get user templates
+        $myTemplates = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->where('manager_templates.managers_id','=',$auth_user)
+            ->get();
+
+        $data = [];
+
+        foreach ($myTemplates as $value) {
+            $data[] =  $value->templates_id;
+        }
+        
+        //get user fieldss        
+        $myFields = DB::table('manager_fields')
+            ->select('manager_fields.*')
+            ->where('manager_fields.managers_id','=',$auth_user)
+            ->get();
+        $datas = [];
+        foreach ($myFields as $value) {
+            $datas[] =  $value->fields_id;
+        }       
+
+        
+        //templates that mapped in tagged fields
+        $anotherTemplates = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->whereIn('managers_id',$datas)
+            ->get();
+        
+
+        foreach ($anotherTemplates as $value) {
+            $data[] =  $value->templates_id;
+        }
+    
+        $temp = DB::table('templates')
+            ->select('templates.*')
+            ->whereIn('id',$data)
+            ->get();
+
+        $tagged = [];
+
+        foreach ($temp as $value) {
+            $tagged[] =  $value->description;
+        }        
+
         return self::select('channel_code', 'template')
+            ->whereIn('template',$tagged)
             ->groupBy('channel_code')
             ->orderBy('template')
             ->get();
     }
 
-    public static function getPostedStores(){
-        return self::select('store_code', 'store_name')
+    public static function getPostedStores($use){
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }        
+        return self::select('store_code', 'store_name','user_id')
+            ->whereIn('user_id',$users)
             ->groupBy('store_code')
             ->orderBy('store_name')
             ->get();
@@ -82,6 +162,16 @@ class PostedAudit extends Model
    
 
     public static function search($request){
+         
+        $tem = [];
+        $t = DB::table('templates')
+            ->select('templates.*')
+            ->whereIn('templates.code',$request->templates)
+            ->get();    
+            foreach($t as $te){
+                $tem[] = $te->description;
+            }
+        $request->templates = $tem;
         
         $data = self::select(DB::raw('posted_audits.*, audit_stores.pjp, audit_stores.freq'))
             ->leftJoin('audit_stores', function($join){
@@ -92,7 +182,12 @@ class PostedAudit extends Model
             if(!empty($request->users)){
                     $query->whereIn('posted_audits.user_id',$request->users);
                 }
-            })
+            })                          
+            ->where(function($query) use ($request){
+            if(!empty($request->templates)){
+                    $query->whereIn('posted_audits.template',$request->templates);
+                }
+            })  
             ->where(function($query) use ($request){
             if(!empty($request->stores)){
                     $query->whereIn('posted_audits.store_code',$request->stores);
@@ -106,6 +201,11 @@ class PostedAudit extends Model
             ->where(function($query) use ($request){
             if(!empty($request->customers)){
                     $query->whereIn('posted_audits.customer_code',$request->customers);
+                }
+            })
+            ->where(function($query) use ($request){
+            if(!empty($request->templates)){
+                    $query->whereIn('posted_audits.template',$request->templates);
                 }
             })
             ->orderBy('posted_audits.updated_at','desc')
@@ -665,7 +765,7 @@ class PostedAudit extends Model
             $total_posted = $total_posted + $add;
             $counter++;
             $count++;
-        }
+        }        
         $total_average = number_format((float)$total_posted/$count,2,'.',',');
         return $total_average;
     }
@@ -694,7 +794,7 @@ class PostedAudit extends Model
             $counter++;
             $count++;
         }
-        $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        $total_average =number_format((float)$total_posted/$count,2,'.',',');
         return $total_average;
     }
 
@@ -710,71 +810,135 @@ class PostedAudit extends Model
             $count++;
         }
         $total_average = number_format((float)$total_posted/$count,2,'.',',');
+        // $total_average == 0 ? 0 :number_format((float)$total_posted/$count,2,'.',',');
         return $total_average;
     }
-    // public static function getTotalPerfectStoreAverage($customer_summaries){
-    //     $counter = 0;
-    //     $total_summary = 0.00;
-    //     $total_aves = 0.00;
-    //     $count = 0;
-    //     foreach($customer_summaries as $summary)
-    //     {
-    //         $add = $summary->ave_perfect_stores;
-    //         $total_summary = $total_summary + $add;
-    //         $counter++;
-    //         $count = $count+1;        
-    //     }            
-    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-    //     return $total_aves;
-    // }
 
-    // public static function getTotalStoresVisitedAve($customer_summaries){
-    //     $counter = 0;
-    //     $total_summary = 0.00;
-    //     $total_aves = 0.00;
-    //     $count = 0;
-    //     foreach($customer_summaries as $summary){
+    public static function searchDefault($use){
+        $templates = '';
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }        
+        $data = self::select(DB::raw('posted_audits.*, audit_stores.pjp, audit_stores.freq'))
+            ->whereIn('posted_audits.user_id',$users)
+            ->leftJoin('audit_stores', function($join){
+                $join->on('audit_stores.audit_id', '=', 'posted_audits.audit_id');
+                $join->on('audit_stores.store_code','=','posted_audits.store_code');
+            })            
+            ->orderBy('posted_audits.updated_at','desc')
+            ->get();
 
-    //         $add = $summary->visited_stores;
-    //         $total_summary = $total_summary + $add;
-    //         $counter++;
-    //         $count = $count+1;
-    //     }
-    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-    //     return $total_aves;   
-    // }
+        foreach ($data as $key => $value) {
 
-    // public static function getTotalPerfectStores($customer_summaries){
-    //     $counter = 0;
-    //     $total_summary = 0.00;
-    //     $total_aves = 0.00;
-    //     $count = 0;
-    //     foreach($customer_summaries as $summary){
+            $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+            $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+            $data[$key]->total_category =  $perfect_store['total'];
+            if($perfect_store['perfect_count'] == 0){
+                 $data[$key]->perfect_percentage =  0.00 ;
+            }else{
+                 $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
+            }
+           
+        }
+        return $data;
+    }
 
-    //         $add = $summary->perfect_stores;
-    //         $total_summary = $total_summary + $add;
-    //         $counter++;
-    //         $count = $count+1;
-    //     }
-    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-    //     return $total_aves;   
-    // }
-    // public static function getTotalPerfectStoresPercentage($customer_summaries){
-    //     $counter = 0;
-    //     $total_summary = 0.00;
-    //     $total_aves = 0.00;
-    //     $count = 0;
-    //     foreach($customer_summaries as $summary){
+     public static function getUserSummaryDefault($use){
+        $users = '';
+        $audits = '';
+        $pjps = '';        
+        $user=[];
+        foreach($use as $u) {
+            $user[]=$u->user_id;
+        }        
+        
+        $u = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('posted_audits.user_id',$user)            
+            ->groupBy('user_id')
+            ->get();            
 
-            
-    //         $ps = $summary->perfect_stores;
-    //         $vs = $summary->visited_stores;
-    //         $percentage = number_format((float)$ps/$vs,2,'.',',');
-    //         $total_summary = $total_summary + $percentage;
-    //         $counter++;
-    //         $count = $count+1;
-    //     }
-    //     $total_aves =number_format((float)$total_summary/$count,2,'.',',');
-    //     return $total_aves;   
-    // }
+        $p = [];
+
+        foreach($u as $pl){
+            $p[] =$pl->user_id; 
+        }
+
+        $users_str = "";
+        if(!empty($p)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$p). ")";
+        }
+
+        $query = sprintf('
+            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
+            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
+            from posted_audits
+            inner join users on users.id = posted_audits.user_id
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                %s
+                group by user_id, audit_id
+            ) as tbl_mapped using(user_id,audit_id)
+            left join (
+                select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
+                from `posted_audits`
+                left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+                %s
+                group by posted_audits.user_id, posted_audits.audit_id
+            ) as tbl_posted using(user_id,audit_id)
+            where tbl_posted.store_visited > 0
+            %s
+            %s 
+            %s
+            group by posted_audits.user_id, posted_audits.audit_id
+            order by audits.description, users.name',$pjps ,$pjps, $users,$audits, $users_str);
+        // $query = sprintf('
+        //     select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
+        //     COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
+        //     from posted_audits
+        //     %s            
+        //     inner join users on users.id = posted_audits.user_id
+        //     inner join audits on audits.id = posted_audits.audit_id
+        //     left join (
+        //         select user_id, audit_id, count(*) as mapped_stores from audit_stores
+        //         %s
+        //         group by user_id, audit_id
+        //     ) as tbl_mapped using(user_id,audit_id)
+        //     left join (
+        //         select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
+        //         from `posted_audits`
+        //         left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+        //         %s
+        //         group by posted_audits.user_id, posted_audits.audit_id
+        //     ) as tbl_posted using(user_id,audit_id)
+        //     where tbl_posted.store_visited > 0
+        //     %s %s
+        //     group by posted_audits.user_id, posted_audits.audit_id
+        //     order by audits.description, users.name',$users_str,$pjps ,$pjps, $users,$audits);
+        
+
+        $data = DB::select(DB::raw($query));        
+        
+        foreach ($data as $key => $value) {
+            $audit = Audit::findOrFail($value->audit_id);
+            $user = User::findOrFail($value->user_id);
+            $summary = UserSummary::getSummary($audit,$user);
+
+            $data[$key]->perfect_store = $summary->detail->perfect_store_count;
+            $pjp_target = AuditUserPjp::where('user_id', $value->user_id)
+                ->where('audit_id', $value->audit_id)
+                ->first();
+
+            $data[$key]->target = 0;
+
+            if(!empty($pjp_target)){
+                $data[$key]->target = $pjp_target->target;
+            }
+        }
+
+        return $data;
+    }
+   
 }

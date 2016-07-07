@@ -20,8 +20,9 @@ class UserSummaryReportController extends Controller
     public function index(){
         $auth_user = Auth::id(); 
     	$users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+        $use = PostedAudit::getUsers($auth_user);
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$user_summaries = PostedAudit::getUserSummary();
+    	$user_summaries = PostedAudit::getUserSummaryDefault($use);
     	return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 

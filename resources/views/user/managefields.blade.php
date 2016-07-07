@@ -20,8 +20,9 @@
 								<th>Fullname</th>
 								<th>Username</th>								
 								<th>Status</th>		
-								<th>Action</th>						
+								<th><input type="checkbox" name="checkAll" id="checkAll"> Select All</th>					
 							</tr>
+
 						</thead>
 						<tbody>							
 							@foreach($fields as $fd)								
@@ -39,16 +40,19 @@
 									@endif	
 									<td>{{ Form::open(array('route' => array('users.managefieldsupdate'))) }}                       
 										{{ Form::hidden('manager_id',$user->id)}}
-										{{ Form::hidden('fields_id',$fd->fdetails->id)}}
-										{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this field?')){return false;};")) }}
-										{{ Form::close() }}						
+										<!-- {{ Form::hidden('fields_id',$fd->fdetails->id)}} -->
+										{{ Form::checkbox('tagfields[]',$fd->fdetails['id'])}}
+										
+														
 									</tr>																
 							@endforeach					
 						</tbody>
 					</table>								  					  					
 				  	</div>
-				 	<div class="box-footer">						
-				  	</div>								
+				 	<div class="box-footer">
+				 	<p>With selected:</p>{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this field?')){return false;};")) }}
+				  	</div>	
+				  	{{ Form::close() }}									
 			  </div>
 		</div>
 		<div class="col-md-6 col-xs-6">
@@ -98,11 +102,27 @@
 
 @endsection
 @section('page-script')
-	$("#start_date,#end_date").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
-	$("#start_date,#end_date").datepicker({
-		format: 'mm/dd/yyyy',
-		calendarWeeks: true,
-	    autoclose: true,
-	    todayHighlight: true
-	});
+$('#users, #customers,#tagfields,#stores,#status, #pjps').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+ });
+ $(function () {
+    $("#checkAll").click(function () {
+        if ($("#checkAll").is(':checked')) {
+            $("input[type=checkbox]").each(function () {
+                $(this).prop("checked", true);
+            });
+
+        } else {
+            $("input[type=checkbox]").each(function () {
+                $(this).prop("checked", false);
+            });
+        }
+    });
+});
 @endsection

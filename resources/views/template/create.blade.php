@@ -25,13 +25,6 @@
 						   		{!! Form::label('description', 'Description'); !!}
 		                    	{!! Form::text('description',null,['class' => 'form-control','placeholder' => 'Description']) !!}
 							</div>
-				  		</div>
-				  		<div class="row">
-				  			<div class="form-group col-xs-6 col-md-3">
-						   		<label>
-				                  	{!! Form::checkbox('active', 1) !!} Active
-				                  </label>
-							</div>
 				  		</div>				  					
 				  	</div>
 				 	<div class="box-footer">

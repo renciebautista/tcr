@@ -15,33 +15,38 @@ use Box\Spout\Writer\WriterFactory;
 class AuditReportController extends Controller
 {
     public function index(){
-        $auth_user = Auth::id();    
-        $users = PostedAudit::getUsers($auth_user)->lists('name','user_id'); 
+        $auth_user = Auth::id();
+        $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+        $use = PostedAudit::getUsers($auth_user);        
+        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
-    	$posted_audits = PostedAudit::search([]);                
+        $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+        $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+    	$posted_audits = PostedAudit::searchDefault($use);                
         $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
-    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores', 'customers','p_store_average','osa_average','npi_average','planogram_average'));
+    	return view('auditreport.index',compact('posted_audits','users','audits', 'stores', 'customers','p_store_average','osa_average','npi_average','planogram_average','templates'));
     }
 
     public function create(Request $request){
-        $auth_user = Auth::id(); 
+        $auth_user = Auth::id();        
+        // dd($request->all());
         $posted_audits = PostedAudit::search($request);
         if($request->submit == 'process'){
             $request->flash();
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+            $use = PostedAudit::getUsers($auth_user);
+            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-            $stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
             $osa_average = PostedAudit::getOsaAverage($posted_audits);
             $npi_average = PostedAudit::getNpiAverage($posted_audits);
             $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
-            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers','p_store_average','osa_average','npi_average','planogram_average'));
+            return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers','p_store_average','osa_average','npi_average','planogram_average','templates'));
         }else{
             set_time_limit(0);
             $writer = WriterFactory::create(Type::CSV); 

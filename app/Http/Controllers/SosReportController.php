@@ -16,12 +16,13 @@ use Box\Spout\Writer\WriterFactory;
 class SosReportController extends Controller
 {
     public function index(){
-        $auth_user = Auth::id(); 
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user); 
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+    	$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+        $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
         $categories = FormCategory::getSOSCategories()->lists('category','category');
-        $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
     	$soss = [];
     	return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates','users'));
@@ -29,14 +30,15 @@ class SosReportController extends Controller
 
     public function create(Request $request){
         $auth_user = Auth::id(); 
+        $use = PostedAudit::getUsers($auth_user); 
         $soss = PostedAudit::getSos($request);
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-    		$stores = PostedAudit::getPostedStores()->lists('store_name','store_code');
-            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+    		$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $categories = FormCategory::getSOSCategories()->lists('category','category');
-            $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             
             return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates', 'users'));

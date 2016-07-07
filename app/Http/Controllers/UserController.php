@@ -226,9 +226,18 @@ class UserController extends Controller
     }
     public function managefieldsupdate(Request $request){
         
+        
         $manager = $request->get('manager_id');        
-        $fields = $request->get('fields_id');
-        $tagged = DB::table('manager_fields')->where('fields_id',$fields)->where('managers_id',$manager)->delete();        
+        $fields = $request->get('tagfields');
+        
+        if(is_array($fields)){
+            foreach($fields as $f){
+                
+                if(!empty($f)){
+                    DB::table('manager_fields')->where('fields_id',$f)->where('managers_id',$manager)->delete();  
+                }
+            }
+        }    
         Session::flash('flash_message', 'Field was successfully Untagged.');
         Session::flash('flash_class', 'alert-success');
         return redirect()->action('UserController@managefields', [$manager]);

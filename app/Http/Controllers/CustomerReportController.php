@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PostedAudit;
 use App\Audit;
-
+use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
@@ -15,9 +15,11 @@ use Box\Spout\Writer\WriterFactory;
 class CustomerReportController extends Controller
 {
     public function index(){
-    	$customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user);  
+    	$customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
         $regions = PostedAudit::getRegions()->lists('region','region_code');
-        $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $customer_summaries = PostedAudit::getCustomerSummary();
         // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
@@ -28,12 +30,14 @@ class CustomerReportController extends Controller
     }
 
     public function create(Request $request){
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user);  
         $customer_summaries = PostedAudit::getCustomerSummary($request);
         if($request->submit == 'process'){
             $request->flash();
-            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $regions = PostedAudit::getRegions()->lists('region','region_code');
-            $templates = PostedAudit::getTemplates()->lists('template','channel_code');
+            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             return view('customerreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
         }

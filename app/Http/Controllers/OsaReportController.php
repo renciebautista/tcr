@@ -11,25 +11,29 @@ use App\FormCategory;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
-
+use Auth;
 class OsaReportController extends Controller
 {
     public function index(){
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user); 
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
-        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+        $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
         $categories = FormCategory::getOSACategories()->lists('category','category');
     	$skus = [];
     	return view('osareport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
     }
 
     public function create(Request $request){
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user); 
     	$skus = PostedAudit::getOsaSku($request);
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-	    	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
-            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+	    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $categories = FormCategory::getOSACategories()->lists('category','category');
 	    	return view('osareport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{

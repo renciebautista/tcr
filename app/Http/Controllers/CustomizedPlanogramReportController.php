@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PostedAudit;
 use App\FormCategory;
-
+use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
@@ -15,9 +15,11 @@ use Box\Spout\Writer\WriterFactory;
 class CustomizedPlanogramReportController extends Controller
 {
     public function index(){
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user); 
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
-        $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+        $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
         $categories = FormCategory::getPlanoCategories()->lists('category','category');
     	$skus = [];
     	return view('customizedplanoreport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
@@ -25,11 +27,13 @@ class CustomizedPlanogramReportController extends Controller
 
     public function create(Request $request){
     	$skus = PostedAudit::getCustomizedPlanoSku($request);
+        $auth_user = Auth::id();
+        $use = PostedAudit::getUsers($auth_user); 
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-	    	$templates = PostedAudit::getTemplates()->lists('template','channel_code');
-            $customers = PostedAudit::getCustomers()->lists('customer','customer_code');
+	    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $categories = FormCategory::getPlanoCategories()->lists('category','category');
 	    	return view('customizedplanoreport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{

@@ -15,29 +15,34 @@
         <div class="box-body">
           	<div class="row">
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>User</label>
-	                {!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
-	              </div>
+	              	<div class="form-group">
+	                	<label>User</label>
+	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Store Name</label>
-	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
-	              </div>
+	              	<div class="form-group">
+	                	<label>Store Name</label>
+	               		{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Customer</label>
-	                {!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
-	              </div>
+	              	<div class="form-group">
+	                	<label>Customer</label>
+	                	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
-
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Month</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
+	            	<div class="form-group">
+	                	<label>Audit Month</label>
+	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>
+	            <div class="col-md-3">
+              		<div class="form-group">
+		                <label>Audit Template</label>
+		                {!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            
           	</div>
@@ -138,6 +143,7 @@
 								<th>User</th>
 								<th>Store Name</th>
 								<th>Customer</th>
+								<th>Audit Template</th>
 								<th>Audit Month</th>
 								<th class="right" >Perfect Store</th>
 								<th class="right">OSA %</th>
@@ -153,6 +159,7 @@
 								<td>{{ $audit->user->name }}</td>
 								<td>{{ $audit->store_name }}</td>
 								<td>{{ $audit->customer }}</td>
+								<td>{{ $audit->template }}</td>
 								<td>{{ $audit->audit->description }}</td>
 								<td class="right">{{ $audit->perfect_percentage }} %</td>
 								<td class="right">{{ $audit->osa }}%</td>
@@ -177,7 +184,7 @@
 @endsection
 
 @section('page-script')
-$('#users, #customers,#audits,#stores,#status, #pjps').multiselect({
+$('#users, #customers,#audits,#stores,#status, #pjps,#templates').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
