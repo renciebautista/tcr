@@ -49,7 +49,7 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>Audit Month</th>
@@ -91,4 +91,5 @@ $('#users,#audits').multiselect({
 	buttonClass: 'form-control',
 
  });
+$('#dt-table').dataTable();
 @endsection

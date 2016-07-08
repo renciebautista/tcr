@@ -53,7 +53,7 @@
 					<h5 class="pull-right">{{ count($customer_summaries) }} {{str_plural('record', count($customer_summaries))}} found.</h5>					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>Customer</th>
@@ -63,8 +63,8 @@
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
 								<th class="right">Perfect Stores</th>
-								<th class="right">Perfect Stores %</th>
-								<th class="right">Perfect Stores Ave</th>
+								<th class="right">% PS Doors</th>
+								<th class="right">% PS Categories</th>
 								<!-- <th class="right">Ave Category PS</th>
 								<th class="right">Ave Category Door</th>								
 								<th class="right">Ave Planogram</th> -->
@@ -78,11 +78,11 @@
 								<td>{{ $summary->region }}</td>
 								<td>{{ $summary->audit_tempalte }}</td>
 								<td>{{ $summary->audit_group }}</td>
-								<td class="right">{{ $summary->mapped_stores }}</td>
-								<td class="right">{{ $summary->visited_stores }}</td>
-								<td class="right">{{ $summary->perfect_stores }}</td>
-								<td class="right">{{ (number_format((float)$summary->perfect_stores/$summary->visited_stores,2,'.',','))*100}}%</td>
-								<td class="right">{{ $summary->ave_perfect_stores }}%</td>
+								<td align="center">{{ $summary->mapped_stores }}</td>
+								<td align="center">{{ $summary->visited_stores }}</td>
+								<td align="center">{{ $summary->perfect_stores }}</td>
+								<td align="center">{{ (number_format((float)$summary->perfect_stores/$summary->visited_stores,2,'.',','))*100}}%</td>
+								<td align="center">{{ $summary->ave_perfect_stores }}%</td>
 								<!-- <td class="right"></td>
 								<td class="right"></td> -->
 								<!-- <td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
@@ -114,4 +114,5 @@ $('#customers,#audits, #templates, #regions, #pjps').multiselect({
 	buttonClass: 'form-control',
 
  });
+$('#dt-table').dataTable();
 @endsection

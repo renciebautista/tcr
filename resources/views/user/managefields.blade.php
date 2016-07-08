@@ -41,16 +41,14 @@
 									<td>{{ Form::open(array('route' => array('users.managefieldsupdate'))) }}                       
 										{{ Form::hidden('manager_id',$user->id)}}
 										<!-- {{ Form::hidden('fields_id',$fd->fdetails->id)}} -->
-										{{ Form::checkbox('tagfields[]',$fd->fdetails['id'])}}
-										
-														
+										{{ Form::checkbox('tagfields[]',$fd->fdetails['id'])}}																							
 									</tr>																
 							@endforeach					
 						</tbody>
 					</table>								  					  					
 				  	</div>
 				 	<div class="box-footer">
-				 	<p>With selected:</p>{{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag this field?')){return false;};")) }}
+				 	<p>With selected: {{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag the selected field?')){return false;};")) }}</p>
 				  	</div>	
 				  	{{ Form::close() }}									
 			  </div>
@@ -95,6 +93,10 @@
 						</tbody>
 					</table>								  						  					  				
 				  	</div>				
+				  	<div class="box-footer">
+				 		<p>With selected: {{ Form::submit('Untag', array('class'=> 'btn btn-danger btn-xs','onclick' => "if(!confirm('Are you sure to untag the selected field?')){return false;};")) }}</p>
+				  	</div>	
+				  	{{ Form::close() }}									
 			  </div>
 		</div>
 	</div>

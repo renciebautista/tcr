@@ -14,19 +14,7 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
-	              	<div class="form-group">
-	                	<label>User</label>
-	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
-	              	</div>
-	            </div>
-	            <div class="col-md-3">
-	              	<div class="form-group">
-	                	<label>Store Name</label>
-	               		{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
-	              	</div>
-	            </div>
-	            <div class="col-md-3">
+          		<div class="col-md-3">
 	              	<div class="form-group">
 	                	<label>Customer</label>
 	                	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
@@ -38,6 +26,18 @@
 	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              	</div>
 	            </div>
+	            <div class="col-md-3">
+	              	<div class="form-group">
+	                	<label>User</label>
+	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>
+	            <div class="col-md-3">
+	              	<div class="form-group">
+	                	<label>Store Name</label>
+	               		{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	            
 	            <div class="col-md-3">
               		<div class="form-group">
 		                <label>Audit Template</label>
@@ -137,7 +137,7 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>User</th>
@@ -146,7 +146,7 @@
 								<th>Audit Template</th>
 								<th>Audit Month</th>
 								<th class="right" >Perfect Store</th>
-								<th class="right">OSA %</th>
+								<th>OSA %</th>
 								<th class="right">NPI %</th>
 								<th class="right">Planogram %</th>
 								<th >Posting Date</th>
@@ -161,12 +161,12 @@
 								<td>{{ $audit->customer }}</td>
 								<td>{{ $audit->template }}</td>
 								<td>{{ $audit->audit->description }}</td>
-								<td class="right">{{ $audit->perfect_percentage }} %</td>
-								<td class="right">{{ $audit->osa }}%</td>
-								<td class="right">{{ $audit->npi }}%</td>
-								<td class="right">{{ $audit->planogram }}%</td>
-								<td>{{ $audit->updated_at }}</td>
-								<td class="right">
+								<td align="center">{{ $audit->perfect_percentage }} %</td>
+								<td align="center">{{ $audit->osa }}%</td>
+								<td align="center">{{ $audit->npi }}%</td>
+								<td align="center">{{ $audit->planogram }}%</td>
+								<td align="center">{{ $audit->updated_at }}</td>
+								<td align="center">
 									{!! link_to_route('auditreport.download', 'Download Details', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 									{!! link_to_route('storesummaryreport.show', 'Store Summary', $audit->id, ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
@@ -193,4 +193,5 @@ $('#users, #customers,#audits,#stores,#status, #pjps,#templates').multiselect({
 	buttonClass: 'form-control',
 
  });
+ $('#dt-table').dataTable();
 @endsection

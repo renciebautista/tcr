@@ -167,7 +167,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('customerreport/{id}/download',['as' => 'customerreport.download', 'uses' => 'CustomerReportController@download']);
     Route::get('customerreport/{customer_code}/region/{region_code}/template/{channel_code}/audit/{audit_id}',['as' => 'customerreport.show', 'uses' => 'CustomerReportController@show']);
 
-    
+    	//owaa
+    Route::get('customerregionalreport',['as' => 'customerregionalreport.index', 'uses' => 'CustomerRegionalReportController@index']);
+
+
+
 
     Route::get('auditimage/{folder}/{filename}', 'Api\DownloadController@auditimage');
 

@@ -226,13 +226,20 @@ class UserController extends Controller
     }
     public function managefieldsupdate(Request $request){
         
-        
+
         $manager = $request->get('manager_id');        
         $fields = $request->get('tagfields');
         
-        if(is_array($fields)){
-            foreach($fields as $f){
-                
+        if(is_null($fields)){
+            Session::flash('flash_message', 'No row selected.');
+            Session::flash('flash_class', 'alert-danger');
+            return redirect()->action('UserController@managefields', [$manager]);    
+        }
+
+        if(is_array($fields)){            
+
+
+            foreach($fields as $f){                            
                 if(!empty($f)){
                     DB::table('manager_fields')->where('fields_id',$f)->where('managers_id',$manager)->delete();  
                 }

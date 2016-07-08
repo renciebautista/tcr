@@ -46,7 +46,7 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>User</th>
@@ -54,8 +54,11 @@
 								<th class="right">Stores Mapped</th>
 								<th class="right">PJP Target</th>
 								<th class="right">Stores Visited</th>
-								<th class="right">To be Visited</th>
+								<th class="right">PJP Compliance</th>
+								<!-- <th class="right">To be Visited</th> -->
 								<th class="right">Perfect Stores</th>
+								<th class="right">%PS Doors</th>
+								<th class="right">%PS Categories</th>								
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -65,12 +68,19 @@
 							<tr>
 								<td>{{ $summary->name }}</td>
 								<td>{{ $summary->description }}</td>
-								<td class="right">{{ $summary->mapped_stores }}</td>
-								<td class="right">{{ $summary->target }}</td>
-								<td class="right">{{ $summary->store_visited }}</td>
-								<td class="right">{{ $summary->mapped_stores -  $summary->store_visited}}</td>
-								<td class="right">{{ $summary->perfect_store }}</td>
-								<td>
+								<td align="center">{{ $summary->mapped_stores }}</td>
+								<td align="center">{{ $summary->target }}</td>
+								<td align="center">{{ $summary->store_visited }}</td>
+								@if($summary->target===0)
+									<td align="center">cannot divide by zero</td>
+								@else
+									<td align="center">{{number_format(($summary->store_visited/$summary->target) * 100,2)}}</td>									
+								@endif															
+								<!-- <td class="right">{{ $summary->mapped_stores -  $summary->store_visited}}</td> -->
+								<td align="center">{{ $summary->perfect_store }}</td>
+								<td align="center">{{ number_format(($summary->perfect_store/$summary->store_visited) * 100,2)}}%</td>
+								<td align="center"></td>								
+								<td align="center">
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
 							</tr>
@@ -96,4 +106,5 @@ $('#users,#audits, #pjps').multiselect({
 	buttonClass: 'form-control',
 
  });
+ $('#dt-table').dataTable();
 @endsection

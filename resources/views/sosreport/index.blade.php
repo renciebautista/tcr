@@ -14,18 +14,18 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Name</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            <div class="col-md-3">
+          		<div class="col-md-3">
 	              <div class="form-group">
 	                <label>Customer Name</label>
 	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Audit Name</label>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>	            
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Template</label>
@@ -104,8 +104,8 @@
 								<td>{{ $sos->name }}</td>
 								<td>{{ $sos->store_name }}</td>
 								<td>{{ $sos->category }}</td>
-								<td class="right">{{ number_format($sos->target,2) }}%</td>
-								<td class="right">
+								<td align="center">{{ number_format($sos->target,2) }}%</td>
+								<td align="center">
 									@if($sos->sos_measurement != '')
 									{{ number_format($sos->sos_measurement,2) }}%
 									@endif

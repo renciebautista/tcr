@@ -14,18 +14,18 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Month</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            <div class="col-md-3">
+          		<div class="col-md-3">
 	              <div class="form-group">
 	                <label>Customers</label>
 	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Audit Month</label>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>	            
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Template</label>
@@ -84,9 +84,9 @@
 								<td>{{ $sku->template }}</td>
 								<td>{{ $sku->category }}</td>
 								<td>{{ $sku->prompt }}</td>
-								<td class="right" >{{ $sku->store_count }}</td>
-								<td class="right" >{{ $sku->availability }}</td>
-								<td class="right" >{{ number_format($sku->osa_percent,2) }}%</td>
+								<td align="center">{{ $sku->store_count }}</td>
+								<td align="center">{{ $sku->availability }}</td>
+								<td align="center">{{ number_format($sku->osa_percent,2) }}%</td>
 								<td></td>
 							</tr>
 							<?php $cnt++; ?>

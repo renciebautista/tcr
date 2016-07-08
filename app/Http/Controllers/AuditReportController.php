@@ -49,9 +49,9 @@ class AuditReportController extends Controller
             return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers','p_store_average','osa_average','npi_average','planogram_average','templates'));
         }else{
             set_time_limit(0);
-            $writer = WriterFactory::create(Type::CSV); 
+            $writer = WriterFactory::create(Type::CSV);
             $writer->openToBrowser('Posted Audit Report.csv');
-            $writer->addRow(['audit_description', 
+            $writer->addRow(['audit_description','user',
                 'customer', 'template', 'region', 'distributor', 'store_code', 'store_name','created_at',
                 'category', 'group', 'prompt', 'answer']); 
 
@@ -69,19 +69,22 @@ class AuditReportController extends Controller
                 }
                 $skip ++;
                 $plunck_data = [];
+
                 foreach($rows as $row)
                 {
+
                     $row_data[0] = $row->audit_description;
-                    $row_data[1] = $row->customer;
-                    $row_data[2] = $row->template;
-                    $row_data[3] = $row->region;
-                    $row_data[4] = $row->distributor;
-                    $row_data[5] = $row->store_code;
-                    $row_data[6] = $row->created_at;
-                    $row_data[7] = $row->category;
-                    $row_data[8] = $row->group;
-                    $row_data[9] = $row->prompt;
-                    $row_data[10] = $row->answer;
+                    $row_data[1] = $row->name;
+                    $row_data[2] = $row->customer;
+                    $row_data[3] = $row->template;
+                    $row_data[4] = $row->region;
+                    $row_data[5] = $row->distributor;
+                    $row_data[6] = $row->store_code;
+                    $row_data[7] = $row->created_at;
+                    $row_data[8] = $row->category;
+                    $row_data[9] = $row->group;
+                    $row_data[10] = $row->prompt;
+                    $row_data[11] = $row->answer;
                     $plunck_data[] = $row_data;
                 }
 

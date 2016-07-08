@@ -769,6 +769,20 @@ class PostedAudit extends Model
         $total_average = number_format((float)$total_posted/$count,2,'.',',');
         return $total_average;
     }
+    public static function getPerfectStoreAverageInCustomerReport($posted_audits){        
+        $counter = 0;
+        $count = 0;
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->perfect_percentage;
+            $total_posted = $total_posted + $add;
+            $counter++;
+            $count++;
+        }
+        $total_average = number_format((float)$total_posted/$count,2,'.',',');        
+        return $total_average;
+    }
     public static function getOsaAverage($posted_audits){
         $counter = 0;
         $count = 0;
@@ -939,6 +953,16 @@ class PostedAudit extends Model
         }
 
         return $data;
+    }
+
+    public static function getNewUserSummary($user_summaries){
+
+        dd($user_summaries);
+        
+        foreach ($user_summaries as $usum) {
+            
+        }
+
     }
    
 }
