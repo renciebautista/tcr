@@ -161,8 +161,11 @@ class PostedAudit extends Model
 
    
 
-    public static function search($request){
-         
+    public static function search($request,$usse){         
+        $users=[];
+        foreach($usse as $u) {
+            $users[]=$u->user_id;
+        }    
         $tem = [];
         $t = DB::table('templates')
             ->select('templates.*')
@@ -208,6 +211,7 @@ class PostedAudit extends Model
                     $query->whereIn('posted_audits.template',$request->templates);
                 }
             })
+            ->whereIn('posted_audits.user_id',$users)
             ->orderBy('posted_audits.updated_at','desc')
             ->get();
 
@@ -265,10 +269,15 @@ class PostedAudit extends Model
         return $data;
     }
 
-    public static function getUserSummary($request = null){
+    public static function getUserSummary($request = null,$use){
         $users = '';
         $audits = '';
         $pjps = '';
+        $usser=[];
+        $users_str = '';
+        foreach($use as $u) {
+            $usser[]=$u->user_id;
+        }      
         if(!empty($request->users)){
             $users = "and users.id in (". implode(',', $request->get('users')) .')';
         }
@@ -283,6 +292,9 @@ class PostedAudit extends Model
                     $pjps = "where audit_stores.pjp = 0";
                 }
             }
+        }
+        if(!empty($usser)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
         }
 
         $query = sprintf('
@@ -304,9 +316,9 @@ class PostedAudit extends Model
                 group by posted_audits.user_id, posted_audits.audit_id
             ) as tbl_posted using(user_id,audit_id)
             where tbl_posted.store_visited > 0
-            %s %s
+            %s %s %s
             group by posted_audits.user_id, posted_audits.audit_id
-            order by audits.description, users.name',$pjps ,$pjps, $users,$audits);
+            order by audits.description, users.name',$pjps ,$pjps, $users,$audits,$users_str);
 
         $data = DB::select(DB::raw($query));
 
@@ -325,6 +337,15 @@ class PostedAudit extends Model
             if(!empty($pjp_target)){
                 $data[$key]->target = $pjp_target->target;
             }
+            if($value->target != 0){
+                $data[$key]->pjp_compliance = number_format(($value->store_visited/$value->target) * 100,2);    
+            }
+
+            if($value->target === 0){
+                $data[$key]->pjp_compliance = 0;   
+            }            
+
+            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);            
         }
 
         return $data;
@@ -384,12 +405,31 @@ class PostedAudit extends Model
         return $data;
     }
 
-    public static function getCustomerSummary($request = null){
+    public static function getCustomerSummary($request = null,$temp,$cust){
         $customers = '';
         $regions = '';
         $templates = '';
         $audits = '';
-        $pjps = '';
+        $pjps = '';        
+        $temps =[];
+        $custs = [];
+                
+        $temps_str = '';
+        $custs_str = '';
+
+        foreach($temp as $t) {
+            $temps[]=$t->template;
+        }  
+        foreach($cust as $c) {
+            $custs[]=$c->customer_code;
+        }          
+        if(!empty($temps)){
+            $temps_str = "and posted_audits.template in ('". implode("','", $temps) ."')";
+        }
+        if(!empty($custs)){
+            $custs_str = "and customer_code in ('". implode("','", $custs) ."')";
+        }
+
         if(!empty($request->customers)){
             $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
         }
@@ -435,10 +475,11 @@ class PostedAudit extends Model
             %s
             %s
             %s
-            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits);
+            %s
+            %s
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$temps_str,$custs_str);
 
-        $data = DB::select(DB::raw($query));
-
+        $data = DB::select(DB::raw($query));        
         // dd($data);
 
         foreach ($data as $key => $value) {
@@ -453,6 +494,7 @@ class PostedAudit extends Model
             }
             $data[$key]->perfect_stores = $perfect_stores;
             $data[$key]->ave_perfect_stores = number_format($total_perfect_store_percentage / count($stores),2);
+            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;
         }
 
         return $data;
@@ -950,19 +992,93 @@ class PostedAudit extends Model
             if(!empty($pjp_target)){
                 $data[$key]->target = $pjp_target->target;
             }
+
+            if($value->target != 0){
+                $data[$key]->pjp_compliance = number_format(($value->store_visited/$value->target) * 100,2);    
+            }
+
+            if($value->target === 0){
+                $data[$key]->pjp_compliance = 0;   
+            }            
+
+            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);            
+
+        }
+        
+        return $data;
+    }      
+     public static function getCustomerSummaryDefault($request = null){
+        $customers = '';
+        $regions = '';
+        $templates = '';
+        $audits = '';
+        $pjps = '';
+        if(!empty($request->customers)){
+            $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
+        }
+        if(!empty($request->regions)){
+            $regions = "and region_code in ('". implode("','", $request->regions) ."')";
+        }
+        if(!empty($request->templates)){
+            $templates = "and channel_code in ('". implode("','", $request->templates) ."')";
+        }
+        if(!empty($request->audits)){
+            $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
         }
 
-        return $data;
-    }
-
-    public static function getNewUserSummary($user_summaries){
-
-        dd($user_summaries);
-        
-        foreach ($user_summaries as $usum) {
+        if(!empty($request->pjps)){
+            if(count($request->pjps) == 1){
+                if($request->pjps[0] == 1){
+                    $pjps = "and pjp = 1";
+                }else{
+                    $pjps = "and pjp = 0";
+                }
+                
+            }
             
         }
 
+        // dd($pjps);
+
+        $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
+            audits.description as audit_group,
+            mapped_stores, count(*) as visited_stores,
+            (sum(osa) / count(*))  as osa_ave,
+            (sum(npi) / count(*)) as npi_ave,
+            (sum(planogram) / count(*)) as planogram_ave
+            from posted_audits
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select audit_id, channel_code, template as audit_tempalte, count(*) as mapped_stores from
+                audit_stores
+                group by audit_id, channel_code
+            ) as tbl_mapped using(channel_code,audit_id)
+            where mapped_stores > 0
+            %s
+            %s
+            %s
+            %s
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits);
+
+        $data = DB::select(DB::raw($query));        
+        // dd($data);
+
+        foreach ($data as $key => $value) {
+            $stores = self::getCustomerStores($value->audit_id,$value->channel_code,$value->region_code,$value->customer_code);
+            $perfect_stores = 0;
+            $total_perfect_store_percentage = 0;
+            foreach ($stores as $store) {
+                $total_perfect_store_percentage += $store->perfect_percentage;
+                if($store->perfect_percentage == '100.00'){
+                    $perfect_stores++;
+                }
+            }
+            $data[$key]->perfect_stores = $perfect_stores;
+            $data[$key]->ave_perfect_stores = number_format($total_perfect_store_percentage / count($stores),2);
+            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;
+        }
+
+        return $data;
+
     }
-   
 }

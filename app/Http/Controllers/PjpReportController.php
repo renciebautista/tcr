@@ -12,15 +12,18 @@ class PjpReportController extends Controller
 {
     public function index(){
         $auth_user = Auth::id(); 
+        $use = PostedAudit::getUsers($auth_user); 
     	$users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$checkins = [];
+    	$checkins =CheckIn::searchdef($use);
+
     	return view('pjpreport.frequency', compact('checkins', 'users', 'audits'));
     }
 
     public function create(Request $request){
         $auth_user = Auth::id(); 
-        $checkins = CheckIn::search($request);
+        $use = PostedAudit::getUsers($auth_user); 
+        $checkins = CheckIn::search($request,$use);
         if($request->submit == 'process'){
             $request->flash();
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');

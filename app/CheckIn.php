@@ -11,7 +11,11 @@ class CheckIn extends Model
 		'distributor_code', 'distributor', 'store_code', 'store_name', 'checkin', 
 		'lat', 'long'];
 
-	public static function search($request){
+	public static function search($request,$use){
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }    
 		return self::select(DB::raw('audits.description as audit_month, users.name, check_ins.store_name, count(*) as frequency'))
 			->where(function($query) use ($request){
             if(!empty($request->users)){
@@ -23,6 +27,7 @@ class CheckIn extends Model
                     $query->whereIn('audit_id',$request->audits);
                 }
             })
+            ->whereIn('user_id',$users)
             ->join('users', 'users.id','=', 'check_ins.user_id')
             ->join('audits', 'audits.id','=', 'check_ins.audit_id')
             ->groupBy('user_id')
@@ -31,4 +36,19 @@ class CheckIn extends Model
             ->orderBy('audit_id', 'users.name', 'check_ins.store_name')
             ->get();
 	}
+    public static function searchdef($use){
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }    
+        return self::select(DB::raw('audits.description as audit_month, users.name, check_ins.store_name, count(*) as frequency'))            
+            ->whereIn('user_id',$users)
+            ->join('users', 'users.id','=', 'check_ins.user_id')
+            ->join('audits', 'audits.id','=', 'check_ins.audit_id')
+            ->groupBy('user_id')
+            ->groupBy('store_code')
+            ->groupBy('audit_id')
+            ->orderBy('audit_id', 'users.name', 'check_ins.store_name')
+            ->get();
+    }
 }

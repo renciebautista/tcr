@@ -169,7 +169,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     	//owaa
     Route::get('customerregionalreport',['as' => 'customerregionalreport.index', 'uses' => 'CustomerRegionalReportController@index']);
-
+    Route::post('customerregionalreport',['as' => 'customerregionalreport.create', 'uses' => 'CustomerRegionalReportController@create']);
+    Route::get('customerregionalreport/{id}/download',['as' => 'customerregionalreport.download', 'uses' => 'CustomerRegionalReportController@download']);
+    Route::get('customerregionalreport/{customer_code}/region/{region_code}/template/{channel_code}/audit/{audit_id}',['as' => 'customerregionalreport.show', 'uses' => 'CustomerRegionalReportController@show']);
 
 
 

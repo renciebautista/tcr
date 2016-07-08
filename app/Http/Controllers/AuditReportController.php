@@ -33,7 +33,8 @@ class AuditReportController extends Controller
     public function create(Request $request){
         $auth_user = Auth::id();        
         // dd($request->all());
-        $posted_audits = PostedAudit::search($request);
+        $usse = PostedAudit::getUsers($auth_user);
+        $posted_audits = PostedAudit::search($request,$usse);
         if($request->submit == 'process'){
             $request->flash();
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');

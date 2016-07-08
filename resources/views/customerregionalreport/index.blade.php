@@ -7,9 +7,9 @@
 <section class="content">
 
 	<div class="box box-default">
-		{!! Form::open(array('route' => array('customerreport.create'), 'method' => 'POST')) !!}
+		{!! Form::open(array('route' => array('customerregionalreport.create'), 'method' => 'POST')) !!}
         <div class="box-header with-border">
-          	<h3 class="box-title">Customer Summary Report</h3>
+          	<h3 class="box-title">Customer Regional Summary Report</h3>
         </div>
         <div class="box-body">
           	<div class="row">
@@ -18,7 +18,14 @@
 	                <label>Customer</label>
 	                {!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
-	            </div>	            
+	            </div>
+
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Region</label>
+	                {!! Form::select('regions[]', $regions, null, array('class' => 'form-control select_form', 'id' => 'regions', 'multiple' => 'multiple')) !!}
+	            	</div>
+	            </div>
 	            <div class="col-md-3">
 	              	<div class="form-group">
 	                	<label>Audit Template</label>
@@ -49,7 +56,8 @@
 					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
-								<th>Customer</th>								
+								<th>Customer</th>
+								<th>Region</th>
 								<th>Audit Template</th>
 								<th>Audit Month</th>
 								<th class="right">Stores Mapped</th>
@@ -66,13 +74,14 @@
 						<tbody>							
 							@foreach($customer_summaries as $summary)
 							<tr>
-								<td>{{ $summary->customer }}</td>								
+								<td>{{ $summary->customer }}</td>
+								<td>{{ $summary->region }}</td>
 								<td>{{ $summary->audit_tempalte }}</td>
 								<td>{{ $summary->audit_group }}</td>
 								<td align="center">{{ $summary->mapped_stores }}</td>
 								<td align="center">{{ $summary->visited_stores }}</td>
 								<td align="center">{{ $summary->perfect_stores }}</td>
-								<td align="center">{{ $summary->ps_doors }}%</td>
+								<td align="center">{{ $summary->ps_doors}}%</td>
 								<td align="center">{{ $summary->ave_perfect_stores }}%</td>
 								<!-- <td class="right"></td>
 								<td class="right"></td> -->
@@ -80,7 +89,7 @@
 								<td class="right">{{ number_format($summary->npi_ave,2) }}%</td>
 								<td class="right">{{ number_format($summary->planogram_ave,2) }}%</td> -->
 								<td>
-									{!! link_to_action('CustomerReportController@show', 'View Stores', ['customer_code' => $summary->customer_code, 'region_code' => $summary->region_code,'channel_code' => $summary->channel_code, 'audit_id' => $summary->audit_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
+									{!! link_to_action('CustomerRegionalReportController@show', 'View Stores', ['customer_code' => $summary->customer_code, 'region_code' => $summary->region_code,'channel_code' => $summary->channel_code, 'audit_id' => $summary->audit_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>
 							</tr>
 							@endforeach

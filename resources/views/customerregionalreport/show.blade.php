@@ -17,7 +17,11 @@
                     <tr>
                         <td>Customer</td>
                         <td>{{ $customer->customer }}</td>
-                    </tr>                    
+                    </tr>
+                    <tr>
+                        <td>Region</td>
+                        <td>{{ $region->region }}</td>
+                    </tr>
                     <tr>
                         <td>Audit Template</td>
                         <td>{{ $template->template }}</td>

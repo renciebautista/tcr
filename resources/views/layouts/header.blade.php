@@ -40,6 +40,7 @@
 				  			<li>{!! link_to_route('auditreport.index','Posted Audit Report') !!}</li>
 				  			<li>{!! link_to_route('usersummaryreport.index','User Summary Report') !!}</li>
 				  			<li>{!! link_to_route('customerreport.index','Customer Summary Report') !!}</li>
+				  			<li>{!! link_to_route('customerregionalreport.index','Customer Regional Summary Report') !!}</li>
 				  			<li>{!! link_to_route('osareport.index','Per SKU OSA Report') !!}</li>
 				  			<li>{!! link_to_route('npireport.index','Per SKU NPI Report') !!}</li>
 				  			<li>{!! link_to_route('sosreport.index','SOS Report') !!}</li>

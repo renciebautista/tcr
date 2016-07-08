@@ -22,14 +22,15 @@ class UserSummaryReportController extends Controller
     	$users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
         $use = PostedAudit::getUsers($auth_user);
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$user_summaries = PostedAudit::getUserSummaryDefault($use);
-        $new_user_summaries = PostedAudit::getNewUserSummary($user_summaries);
+    	$user_summaries = PostedAudit::getUserSummaryDefault($use);     
+
     	return view('usersummaryreport.index', compact('user_summaries','users','audits'));
     }
 
     public function create(Request $request){
         $auth_user = Auth::id(); 
-        $user_summaries = PostedAudit::getUserSummary($request);
+        $use = PostedAudit::getUsers($auth_user);
+        $user_summaries = PostedAudit::getUserSummary($request,$use);
         if($request->submit == 'process'){
             $request->flash();
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
@@ -66,6 +67,7 @@ class UserSummaryReportController extends Controller
         $usersummary = UserSummary::getSummary($audit,$user);
 
     	$detail = $usersummary->detail;
+        
     	$stores = $usersummary->stores;
 
     	return view('usersummaryreport.show', compact('detail', 'stores'));

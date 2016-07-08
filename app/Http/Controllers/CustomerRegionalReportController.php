@@ -12,26 +12,24 @@ use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
 
-class CustomerReportController extends Controller
+class CustomerRegionalReportController extends Controller
 {
     public function index(){
         $auth_user = Auth::id();
         $use = PostedAudit::getUsers($auth_user);  
     	$customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $cust = PostedAudit::getCustomers($use);
-        // $regions = PostedAudit::getRegions()->lists('region','region_code');
+        $regions = PostedAudit::getRegions()->lists('region','region_code');
         $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
-        $temp = PostedAudit::getTemplates($auth_user);
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $customer_summaries = PostedAudit::getCustomerSummaryDefault();
         // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
         // $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
         // $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
         // $total_perfect_store_ave = PostedAudit::getTotalPerfectStoreAverage($customer_summaries);    
-    	return view('customerreport.index', compact('customers','templates', 'audits', 'customer_summaries'));
-    }
+    	return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
+    }    
 
-    public function create(Request $request){
+     public function create(Request $request){
         $auth_user = Auth::id();
         $use = PostedAudit::getUsers($auth_user);
         $cust = PostedAudit::getCustomers($use);  
@@ -40,28 +38,29 @@ class CustomerReportController extends Controller
         if($request->submit == 'process'){
             $request->flash();
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            // $regions = PostedAudit::getRegions()->lists('region','region_code');
+            $regions = PostedAudit::getRegions()->lists('region','region_code');
             $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-            return view('customerreport.index', compact('customers','templates', 'audits', 'customer_summaries'));
+            return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
         }
         else{
             set_time_limit(0);
             $writer = WriterFactory::create(Type::CSV); 
-            $writer->openToBrowser('Customer Summary Report.csv');
-            $writer->addRow(['customer', 'audit_template', 'audit_month', 'stores_mapped', 'stores_visited', 'perfect_store', 'ave_osa', 'ave_npi', 'ave_planogram']); 
+            $writer->openToBrowser('Customer Regional Summary Report.csv');
+            $writer->addRow(['customer', 'region', 'audit_template', 'audit_month', 'stores_mapped', 'stores_visited', 'perfect_store', 'ave_osa', 'ave_npi', 'ave_planogram']); 
 
             foreach($customer_summaries as $row)
             {
-                $row_data[0] = $row->customer;                
-                $row_data[1] = $row->audit_tempalte;
-                $row_data[2] = $row->audit_group;
-                $row_data[3] = $row->mapped_stores;
-                $row_data[4] = $row->visited_stores;
-                $row_data[5] = $row->perfect_stores;
-                $row_data[6] = number_format($row->osa_ave,2);
-                $row_data[7] = number_format($row->npi_ave,2);
-                $row_data[8] = number_format($row->planogram_ave,2);
+                $row_data[0] = $row->customer;
+                $row_data[1] = $row->region;
+                $row_data[2] = $row->audit_tempalte;
+                $row_data[3] = $row->audit_group;
+                $row_data[4] = $row->mapped_stores;
+                $row_data[5] = $row->visited_stores;
+                $row_data[6] = $row->perfect_stores;
+                $row_data[7] = number_format($row->osa_ave,2);
+                $row_data[8] = number_format($row->npi_ave,2);
+                $row_data[9] = number_format($row->planogram_ave,2);
                 $writer->addRow($row_data); // add multiple rows at a time
             }   
             $writer->close();
@@ -84,9 +83,9 @@ class CustomerReportController extends Controller
 
 
         $customer = PostedAudit::getCustomer($customer_code,$audit_id);
-        // $region = PostedAudit::getRegion($region_code,$audit_id);
+        $region = PostedAudit::getRegion($region_code,$audit_id);
         $template = PostedAudit::getTemplate($channel_code,$audit_id);
-        return view('customerreport.show',compact('posted_audits', 'customer', 'template', 'audit','p_store_average','osa_average','npi_average','planogram_average'));
+        return view('customerregionalreport.show',compact('posted_audits', 'customer', 'region', 'template', 'audit','p_store_average','osa_average','npi_average','planogram_average'));
 
     }
 }

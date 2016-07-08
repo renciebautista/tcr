@@ -9,7 +9,7 @@
 	<div class="box box-default">
 		{!! Form::open(array('route' => array('usersummaryreport.create'), 'method' => 'POST')) !!}
         <div class="box-header with-border">
-          	<h3 class="box-title">User Summary Report Filters</h3>
+          	<h3 class="box-title">User Summary Report</h3>
         </div>
         <div class="box-body">
           	<div class="row">
@@ -70,15 +70,10 @@
 								<td>{{ $summary->description }}</td>
 								<td align="center">{{ $summary->mapped_stores }}</td>
 								<td align="center">{{ $summary->target }}</td>
-								<td align="center">{{ $summary->store_visited }}</td>
-								@if($summary->target===0)
-									<td align="center">cannot divide by zero</td>
-								@else
-									<td align="center">{{number_format(($summary->store_visited/$summary->target) * 100,2)}}</td>									
-								@endif															
-								<!-- <td class="right">{{ $summary->mapped_stores -  $summary->store_visited}}</td> -->
+								<td align="center">{{ $summary->store_visited }}</td>								
+								<td align="center">{{ $summary->pjp_compliance}}%</td>																							
 								<td align="center">{{ $summary->perfect_store }}</td>
-								<td align="center">{{ number_format(($summary->perfect_store/$summary->store_visited) * 100,2)}}%</td>
+								<td align="center">{{ $summary->ps_doors }}%</td>
 								<td align="center"></td>								
 								<td align="center">
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
