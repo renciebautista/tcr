@@ -807,8 +807,18 @@ class PostedAudit extends Model
             $total_posted = $total_posted + $add;
             $counter++;
             $count++;
-        }        
-        $total_average = number_format(($total_posted/$count),2,'.',',');
+        }                
+
+        
+        
+        if($count ===0)
+        {
+            $total_average = 0;
+
+        }            
+        else{
+            $total_average = number_format(($total_posted/$count),2,'.',',');
+        }
         return $total_average;
     }
     public static function getPerfectStoreAverageInCustomerReport($posted_audits){        
@@ -822,7 +832,15 @@ class PostedAudit extends Model
             $counter++;
             $count++;
         }
-        $total_average = number_format(($total_posted/$count),2,'.',',');        
+         if($count ===0)
+        {
+            $total_average = 0;
+
+        } 
+        else{
+            $total_average = number_format(($total_posted/$count),2,'.',',');     
+        }
+               
         return $total_average;
     }
     public static function getOsaAverage($posted_audits){
@@ -836,7 +854,14 @@ class PostedAudit extends Model
             $counter++;
             $count++;
         }
+           if($count ===0)
+        {
+            $total_average = 0;
+
+        } 
+        else{
         $total_average = number_format(($total_posted/$count),2,'.',',');
+        }
         return $total_average;
     }
     public static function getNpiAverage($posted_audits){
@@ -850,7 +875,14 @@ class PostedAudit extends Model
             $counter++;
             $count++;
         }
+        if($count ===0)
+        {
+            $total_average = 0;
+
+        } 
+        else{        
         $total_average =number_format(($total_posted/$count),2,'.',',');
+        }
         return $total_average;
     }
 
@@ -865,7 +897,14 @@ class PostedAudit extends Model
             $counter++;
             $count++;
         }
+        if($count ===0)
+        {
+            $total_average = 0;
+
+        } 
+        else{        
         $total_average = number_format(($total_posted/$count),2,'.',',');
+    }
         // $total_average == 0 ? 0 :number_format((float)$total_posted/$count,2,'.',',');
         return $total_average;
     }
