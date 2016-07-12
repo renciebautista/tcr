@@ -109,6 +109,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		
 	    Route::resource('audits', 'AuditController');
 
+
 	    Route::resource('users', 'UserController' );
 	    Route::get('users/{id}/updatestatus',['as'=>'users.updatestatus','uses'=>'UserController@updatestatus']);
 	    Route::get('users/{id}/managefields',['as'=>'users.managefields','uses'=>'UserController@managefields']);
@@ -142,13 +143,21 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::post('auditreport',['as' => 'auditreport.create', 'uses' => 'AuditReportController@create']);
     Route::get('auditreport/{id}/download',['as' => 'auditreport.download', 'uses' => 'AuditReportController@download']);
+    Route::get('auditreport/filter', 'AuditReportController@filter');
+    Route::get('auditreport/alluserfilter', 'AuditReportController@alluserfilter');
+    Route::get('auditreport/storefilter', 'AuditReportController@storefilter');
+    Route::get('auditreport/allstorefilter', 'AuditReportController@allstorefilter');
+    Route::get('auditreport/templatesfilter', 'AuditReportController@templatesfilter');
+    Route::get('auditreport/alltemplatesfilter', 'AuditReportController@alltemplatesfilter');
+
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
     Route::post('usersummaryreport',['as' => 'usersummaryreport.create', 'uses' => 'UserSummaryReportController@create']);
     Route::get('usersummaryreport/{audit_id}/user/{user_id}',['as' => 'usersummaryreport.show', 'uses' => 'UserSummaryReportController@show']);
     Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 
-    Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);
+    Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);    
     Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);
+    Route::get('osareport/categoriesfilter', 'OsaReportController@categoriesfilter');
 
     Route::get('sosreport',['as' => 'sosreport.index', 'uses' => 'SosReportController@index']);
     Route::post('sosreport',['as' => 'sosreport.create', 'uses' => 'SosReportController@create']);

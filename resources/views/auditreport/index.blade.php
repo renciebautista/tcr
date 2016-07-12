@@ -193,5 +193,5 @@ $('#users, #customers,#audits,#stores,#status, #pjps,#templates').multiselect({
 	buttonClass: 'form-control',
 
  });
- $('#dt-table').dataTable();
+ $('#dt-table').dataTable(); 
 @endsection

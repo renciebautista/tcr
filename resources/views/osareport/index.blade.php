@@ -126,6 +126,5 @@ $('#audits,#templates, #categories, #customers').multiselect({
 	buttonClass: 'form-control',
 
  });
-
  $('#dt-table').dataTable();
 @endsection
