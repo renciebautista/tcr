@@ -87,4 +87,17 @@ class FormCategory extends Model
             ->orderBy('category')
             ->get();
     }
+
+    public static function getCategoriesFilter($cus){
+        $custom = [];
+        foreach($cus as $c){
+            $custom[]=$c;
+        }
+        return self::select('category', 'category')
+            ->where('osa', 1)
+            ->whereIn('customer_code',$custom)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
 }   

@@ -12,6 +12,8 @@ use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
 use Auth;
+use Input;
+use Response;
 class OsaReportController extends Controller
 {
     public function index(){
@@ -57,4 +59,13 @@ class OsaReportController extends Controller
             $writer->close();
         }
     }
+     public function categoriesfilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::getCategoriesFilter($cus)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
 }

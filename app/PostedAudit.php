@@ -1081,4 +1081,100 @@ class PostedAudit extends Model
         return $data;
 
     }
+
+    public static function getsfilters($auth_user,$cus){
+        //fields na naka map sa user
+        $myFields = DB::table('manager_fields')
+            ->select('manager_fields.*')
+            ->where('manager_fields.managers_id','=',$auth_user)
+            ->get();
+
+        $data = [];
+        foreach ($myFields as $value) {
+            $data[] =  $value->fields_id;
+        }       
+        
+        //templates na naka mapped sa user
+        $myTemplates = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->where('manager_templates.managers_id','=',$auth_user)
+            ->get();
+        $datas = [];
+
+        foreach ($myTemplates as $value) {
+            $datas[] =  $value->templates_id;
+        }
+        
+        // //another user na nka map sa template ng user
+        // $another_user = DB::table('manager_templates')
+        //     ->select('manager_templates.*')
+        //     ->whereIn('manager_templates.templates_id',$datas)
+        //     ->get();
+        
+        // foreach ($another_user as $value) {
+        //     $data[] =  $value->managers_id;
+        // }
+        $custom = [];  
+        foreach($cus as $c){
+            $custom = $c;
+        }
+        return self::select('user_id', 'users.name','customer_code')
+            ->whereIn('user_id',$data)
+            ->whereIn('customer_code',$custom)      
+            ->join('users','users.id', '=', 'posted_audits.user_id')                    
+            ->groupBy('user_id')
+            ->orderBy('users.name')
+            ->get();
+    }
+    public static function getsstorefilters($cus,$use){
+        $users=[];
+        foreach($use as $u) {
+            $users[]=$u->user_id;
+        }        
+        $custom = [];
+        foreach($cus as $c){
+            $custom = $c;
+        }
+        return self::select('store_code', 'store_name','user_id')
+            ->whereIn('user_id',$users)
+            ->whereIn('customer_code',$custom)
+            ->groupBy('store_code')
+            ->orderBy('store_name')
+            ->get();
+    }
+    public static function getstemplatefilters($auth_user,$cus){
+        //get user templates
+        $myTemplates = DB::table('manager_templates')
+            ->select('manager_templates.*')
+            ->where('manager_templates.managers_id','=',$auth_user)
+            ->get();
+
+        $data = [];
+
+        foreach ($myTemplates as $value) {
+            $data[] =  $value->templates_id;
+        }            
+                
+        $temp = DB::table('templates')
+            ->select('templates.*')
+            ->whereIn('id',$data)
+            ->get();
+
+        $tagged = [];
+
+        foreach ($temp as $value) {
+            $tagged[] =  $value->description;
+        }        
+        $custom = [];
+        foreach($cus as $c){
+            $custom[] = $c;
+        }
+        return self::select('channel_code', 'template')
+            ->whereIn('template',$tagged)
+            ->whereIn('customer_code',$custom)
+            ->groupBy('channel_code')
+            ->orderBy('template')
+            ->get();
+    }
+   
 }

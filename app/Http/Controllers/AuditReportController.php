@@ -11,7 +11,8 @@ use App\PostedAuditDetail;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
-
+use Input;
+use Response;
 class AuditReportController extends Controller
 {
     public function index(){
@@ -120,4 +121,55 @@ class AuditReportController extends Controller
 
         });
     }
+
+    public function filter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){            
+            $users = PostedAudit::getsfilters($auth_user,$cus)->lists('name','user_id');
+            return Response::json($users);
+        }            
+        
+    }  
+    public function alluserfilter(){
+        $auth_user = Auth::id();        
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+            return Response::json($users);                
+    }    
+    public function storefilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            return Response::json($stores);
+        }                    
+    }    
+    public function allstorefilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $stores = PostedAudit::getsstorefilters($cus,$use)->lists('store_name','store_code');
+            return Response::json($stores);
+        }                    
+    }    
+    public function templatesfilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+            return Response::json($templates);
+        }                    
+    }    
+    public function alltemplatesfilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+            return Response::json($templates);
+        }                    
+    }    
 }
