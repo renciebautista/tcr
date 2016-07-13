@@ -85,5 +85,20 @@ class User extends Model implements AuthenticatableContract,
         }
         return 'In-active';
     }
+
+    public static function getUsername($name){
+        return DB::table('users')
+            ->select('id')
+            ->where('username',$name)
+            ->first();
+        
+    }
+    public static function getMappedname($mapped_name){
+        return DB::table('users')
+            ->select('id')
+            ->where('username',$mapped_name)
+            ->first();
+        
+    }
     
 }

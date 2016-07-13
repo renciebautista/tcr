@@ -161,6 +161,7 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
 
 
+
     ],
 
     /*
@@ -212,6 +213,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Paginate' => App\Helpers\Paginate::class,
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
+        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
     ],
 

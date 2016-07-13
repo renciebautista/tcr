@@ -7,6 +7,7 @@
 <section class="content">
 	<div class="row menu pull-right">
 		<div class="col-xs-12">
+			{!! link_to_route('import_user_mapping.index','Add User Mapping',array(),['class' => 'btn btn-primary']) !!}
 			{!! link_to_route('users.create','New User',array(),['class' => 'btn btn-primary']) !!}
 		</div>
 	</div>

@@ -110,6 +110,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	    Route::resource('audits', 'AuditController');
 
 
+	    Route::resource('import_user_mapping', 'ImportUserMappingController' );
 	    Route::resource('users', 'UserController' );
 	    Route::get('users/{id}/updatestatus',['as'=>'users.updatestatus','uses'=>'UserController@updatestatus']);
 	    Route::get('users/{id}/managefields',['as'=>'users.managefields','uses'=>'UserController@managefields']);
