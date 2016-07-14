@@ -15,8 +15,8 @@ class ManagerTemplates extends Model
 
 	public static function getMappedtemplate($mapped_template){
 
-		return self::select('manager_templates.*','templates.code','templates.description','templates.id')			
-			->join('templates','templates.id','=','manager_templates.templates_id')
+		return DB::table('templates')
+			->select('templates.id')
 			->where('templates.code',$mapped_template)
 			->first();		
 	}
