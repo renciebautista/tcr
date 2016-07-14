@@ -56,9 +56,11 @@
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Utilities <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
 				  			<li>{!! link_to_route('export.index','Export Store') !!}</li>
+				  			<li>{!! link_to_route('export_template','Export Template') !!}</li>
 				  		</ul>
 
 					</li>
+
 					@endif
 
 

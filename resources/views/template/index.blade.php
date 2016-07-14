@@ -7,6 +7,7 @@
 <section class="content">
 	<div class="row menu pull-right">
 		<div class="col-xs-12">
+			{!! link_to_route('import_masstemplate.index','Upload Templates',array(),['class' => 'btn btn-primary']) !!}
 			{!! link_to_route('templatemaintenance.create','New Template',array(),['class' => 'btn btn-primary']) !!}
 		</div>
 	</div>

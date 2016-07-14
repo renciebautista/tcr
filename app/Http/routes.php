@@ -111,8 +111,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	    Route::resource('export', 'ExportController');
 	    Route::get('export.export_xlsx',['as'=>'export.export_xlsx','uses'=>'ExportController@exportxlsx']);
 	    Route::get('export.export_csv',['as'=>'export.export_csv','uses'=>'ExportController@exportcsv']);
+	    Route::get('export_template',['as'=>'export_template','uses'=>'ExportController@template']);
+	    Route::get('export_template_now',['as'=>'export_template_now','uses'=>'ExportController@template_now']);
 
 	    Route::resource('import_user_mapping', 'ImportUserMappingController' );
+	    Route::resource('import_template_mapping', 'ImportTemplateMappingController' );
+	    Route::resource('import_masstemplate', 'ImportMassTemplateController');	    
+
 	    Route::resource('users', 'UserController' );
 	    Route::get('users/{id}/updatestatus',['as'=>'users.updatestatus','uses'=>'UserController@updatestatus']);
 	    Route::get('users/{id}/managefields',['as'=>'users.managefields','uses'=>'UserController@managefields']);

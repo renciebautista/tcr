@@ -297,4 +297,13 @@ class AuditTemplate extends Model
         }
   
     }
+
+    public static function export_template(){
+
+        return self::select('audit_templates.*','audits.id','audits.description as des')
+            ->join('audits','audits.id','=','audit_templates.audit_id')
+            ->groupBy('channel_code')
+            ->orderBy('audits.id')
+            ->get();
+    }
 }

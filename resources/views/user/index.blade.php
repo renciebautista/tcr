@@ -8,6 +8,7 @@
 	<div class="row menu pull-right">
 		<div class="col-xs-12">
 			{!! link_to_route('import_user_mapping.index','Add User Mapping',array(),['class' => 'btn btn-primary']) !!}
+			{!! link_to_route('import_template_mapping.index','Add Template Mapping',array(),['class' => 'btn btn-primary']) !!}
 			{!! link_to_route('users.create','New User',array(),['class' => 'btn btn-primary']) !!}
 		</div>
 	</div>
@@ -21,7 +22,7 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>Fullname</th>
@@ -64,4 +65,8 @@
 	</div>
 </section>
 
+@endsection
+
+@section('page-script')
+ $('#dt-table').dataTable(); 
 @endsection

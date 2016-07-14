@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Excel;
 use App\AuditStore;
+use App\AuditTemplate;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\Style\StyleBuilder;
@@ -124,6 +125,56 @@ class ExportController extends Controller
 		$sheet = $writer->getCurrentSheet();
 		$sheet->setName('STORES');
 		$writer->close();  
+    }
+
+    public function template(){
+    	return view('export.template');
+    }
+    public function template_now(){
+
+    	$filename = "Audit Template";
+    	$stores = AuditTemplate::export_template();	    
+    	set_time_limit(0); 				
+		
+		$writer = WriterFactory::create(Type::XLSX);		
+		$writer->openToBrowser($filename.'.xlsx'); 	
+
+		$style_title = (new StyleBuilder())           
+           ->setFontSize(16)
+           ->setFontName('Calibri')
+           ->setFontColor(Color::BLACK)           
+           ->build();
+
+       $style_header = (new StyleBuilder())           
+           ->setFontSize(14)
+           ->setFontName('Calibri')
+           ->setFontColor(Color::BLACK)           
+           ->build();	
+
+        $style_details = (new StyleBuilder())           
+           ->setFontSize(11)
+           ->setFontName('Calibri')
+           ->setFontColor(Color::BLACK)           
+           ->build();	
+		$writer->addRowWithStyle(array('','','','','','','','','AUDIT TEMPLATES'),$style_title);
+		$writer->addRowWithStyle(array('Month','Channel Code','Description','Template Type'),$style_header);
+		$writer->addRow(array(''));		
+		foreach ($stores as $s) {	
+			$details[0] = $s->des;				
+			$details[1] = $s->channel_code;
+			$details[2] = $s->description;
+			if($s->template_type === 1){
+				$details[3] = "MT";				
+			}
+			elseif($s->template_type === 2){
+				$details[3] = "DT";	
+			}
+			$writer->addRowWithStyle($details,$style_details);
+		}
+		$sheet = $writer->getCurrentSheet();
+		$sheet->setName('AUDIT TEMPLATES');
+		$writer->close();  
+
     }
 }
 
