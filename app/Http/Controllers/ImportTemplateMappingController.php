@@ -48,7 +48,7 @@ class ImportTemplateMappingController extends Controller
 						if(!empty($mapped_id)){							
 							$map_tempalates = ManagerTemplates::Insert([
 								'managers_id' =>$user_id->id,
-								'tempalates_id' =>$mapped_id->id,
+								'templates_id' =>$mapped_id->id,
 								]);
 						}
 					}										
