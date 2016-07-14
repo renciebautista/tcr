@@ -21,7 +21,7 @@
 					
 				</div><!-- /.box-header -->
 				<div class="box-body table-responsive no-padding">
-					<table class="table table-hover table-striped">
+					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
 								<th>Code</th>
@@ -56,5 +56,7 @@
 		</div>
 	</div>
 </section>
-
+@endsection
+@section('page-script')
+ $('#dt-table').dataTable(); 
 @endsection

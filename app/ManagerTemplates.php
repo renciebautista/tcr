@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use DB;
 class ManagerTemplates extends Model
 {
     protected $table ="manager_templates";
