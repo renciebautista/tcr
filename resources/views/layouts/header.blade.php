@@ -33,7 +33,7 @@
 				  		</ul>
 
 					</li>
-					@endif
+					@endif					
 					<li class="dropdown">
 				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <span class="caret"></span></a>
 				  		<ul class="dropdown-menu" role="menu">
@@ -49,10 +49,17 @@
 				  			@if(Entrust::hasRole('admin'))
 				  			<li>{!! link_to_route('deviceerror.index','Device Error Report') !!}</li>
 				  			@endif
-				  		</ul>
-				  		
+				  		</ul>				  		
 					</li>
-					
+					@if(Entrust::hasRole('admin'))
+					<li class="dropdown">
+				  		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Utilities <span class="caret"></span></a>
+				  		<ul class="dropdown-menu" role="menu">
+				  			<li>{!! link_to_route('export.index','Export Store') !!}</li>
+				  		</ul>
+
+					</li>
+					@endif
 
 
 					

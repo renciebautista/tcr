@@ -108,7 +108,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		Route::get('audits/{id}/enrollments',['as' => 'audits.enrollments', 'uses' => 'AuditEnrollmentController@index']);
 		
 	    Route::resource('audits', 'AuditController');
-
+	    Route::resource('export', 'ExportController');
+	    Route::get('export.export_xlsx',['as'=>'export.export_xlsx','uses'=>'ExportController@exportxlsx']);
+	    Route::get('export.export_csv',['as'=>'export.export_csv','uses'=>'ExportController@exportcsv']);
 
 	    Route::resource('import_user_mapping', 'ImportUserMappingController' );
 	    Route::resource('users', 'UserController' );

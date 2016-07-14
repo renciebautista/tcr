@@ -286,4 +286,13 @@ class AuditStore extends Model
             ->paginate(100)
             ->appends(['search' => $request->search]);
     }
+
+    public static function exportStore(){
+
+    	return self::select('audits.description','users.name','audit_stores.*')
+    		->join('users','users.id','=','audit_stores.user_id')
+    		->join('audits','audits.id','=','audit_stores.audit_id')
+    		->orderBy('audits.id','asc')
+    		->get();
+    }
 }
