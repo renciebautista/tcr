@@ -18,7 +18,8 @@ class AuditReportController extends Controller
     public function index(){
         $auth_user = Auth::id();
         $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-        $use = PostedAudit::getUsers($auth_user);        
+        $use = PostedAudit::getUsers($auth_user);   
+
         $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
@@ -32,8 +33,7 @@ class AuditReportController extends Controller
     }
 
     public function create(Request $request){
-        $auth_user = Auth::id();        
-        // dd($request->all());
+        $auth_user = Auth::id();                
         $usse = PostedAudit::getUsers($auth_user);
         $posted_audits = PostedAudit::search($request,$usse);
         if($request->submit == 'process'){
@@ -141,7 +141,7 @@ class AuditReportController extends Controller
         $cus = Input::all();        
         if(is_array($cus)){           
             $use = PostedAudit::getUsers($auth_user);         
-            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            $stores = PostedAudit::getStoresfilter($use,$cus)->lists('store_name','store_code');
             return Response::json($stores);
         }                    
     }    
@@ -150,14 +150,24 @@ class AuditReportController extends Controller
         $cus = Input::all();        
         if(is_array($cus)){           
             $use = PostedAudit::getUsers($auth_user);         
-            $stores = PostedAudit::getsstorefilters($cus,$use)->lists('store_name','store_code');
+            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            return Response::json($stores);
+        }                    
+    }    
+    public function userstorefilter(){
+        $auth_user = Auth::id();
+        $userfilt = Input::all();
+        
+        if(is_array($userfilt)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $stores = PostedAudit::getUserStoresfilter($use,$userfilt)->lists('store_name','store_code');            
             return Response::json($stores);
         }                    
     }    
     public function templatesfilter(){
         $auth_user = Auth::id();
         $cus = Input::all();        
-        if(is_array($cus)){           
+        if(is_array($cus)){        
             $use = PostedAudit::getUsers($auth_user);         
             $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
             return Response::json($templates);

@@ -11,17 +11,19 @@ use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
-
+use Input;
+use Session;
+use Response;
 class CustomerRegionalReportController extends Controller
 {
     public function index(){
         $auth_user = Auth::id();
         $use = PostedAudit::getUsers($auth_user);  
     	$customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $regions = PostedAudit::getRegions()->lists('region','region_code');
+        $regions = PostedAudit::getRegions($use)->lists('region','region_code');
         $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $customer_summaries = PostedAudit::getCustomerSummaryDefault();
+        $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
         // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
         // $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
         // $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
@@ -34,11 +36,11 @@ class CustomerRegionalReportController extends Controller
         $use = PostedAudit::getUsers($auth_user);
         $cust = PostedAudit::getCustomers($use);  
         $temp = PostedAudit::getTemplates($auth_user);
-        $customer_summaries = PostedAudit::getCustomerSummary($request,$temp,$cust);
+        $customer_summaries = PostedAudit::getCustomerSummary($request,$temp,$cust,$use);
         if($request->submit == 'process'){
             $request->flash();
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $regions = PostedAudit::getRegions()->lists('region','region_code');
+            $regions = PostedAudit::getRegions($use)->lists('region','region_code');
             $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
@@ -88,4 +90,19 @@ class CustomerRegionalReportController extends Controller
         return view('customerregionalreport.show',compact('posted_audits', 'customer', 'region', 'template', 'audit','p_store_average','osa_average','npi_average','planogram_average'));
 
     }
+    public function allregionsfilter(){
+            $auth_user = Auth::id();        
+            $use = PostedAudit::getUsers($auth_user);  
+            $regions = PostedAudit::getRegions($use)->lists('region','region_code');
+            return Response::json($regions);                
+    }    
+    public function regionsfilter(){
+        $auth_user = Auth::id();
+        $cus = Input::all();        
+        if(is_array($cus)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $stores = PostedAudit::getRegionsfilter($use,$cus)->lists('region','region_code');
+            return Response::json($stores);
+        }                    
+    }    
 }

@@ -152,9 +152,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('auditreport',['as' => 'auditreport.create', 'uses' => 'AuditReportController@create']);
     Route::get('auditreport/{id}/download',['as' => 'auditreport.download', 'uses' => 'AuditReportController@download']);
     Route::get('auditreport/filter', 'AuditReportController@filter');
+    
     Route::get('auditreport/alluserfilter', 'AuditReportController@alluserfilter');
     Route::get('auditreport/storefilter', 'AuditReportController@storefilter');
     Route::get('auditreport/allstorefilter', 'AuditReportController@allstorefilter');
+    Route::get('auditreport/userstorefilter', 'AuditReportController@userstorefilter');
     Route::get('auditreport/templatesfilter', 'AuditReportController@templatesfilter');
     Route::get('auditreport/alltemplatesfilter', 'AuditReportController@alltemplatesfilter');
 
@@ -166,15 +168,25 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);    
     Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);
     Route::get('osareport/categoriesfilter', 'OsaReportController@categoriesfilter');
+    Route::get('osareport/allcategoryfilter', 'OsaReportController@allcategoryfilter');
+    Route::get('osareport/categoryfilter', 'OsaReportController@categoryfilter');
+    // Route::get('customerregionalreport/regionsfilter', 'CustomerRegionalReportController@regionsfilter');
+    // Route::get('customerregionalreport/allregionsfilter', 'CustomerRegionalReportController@allregionsfilter');
 
     Route::get('sosreport',['as' => 'sosreport.index', 'uses' => 'SosReportController@index']);
     Route::post('sosreport',['as' => 'sosreport.create', 'uses' => 'SosReportController@create']);
+    Route::get('sosreport/allcategoryfilter', 'SosReportController@allcategoryfilter');
+    Route::get('sosreport/categoryfilter', 'SosReportController@categoryfilter');
 
     Route::get('npireport',['as' => 'npireport.index', 'uses' => 'NpiReportController@index']);
     Route::post('npireport',['as' => 'npireport.create', 'uses' => 'NpiReportController@create']);
+    Route::get('npireport/allcategoryfilter', 'NpiReportController@allcategoryfilter');
+    Route::get('npireport/categoryfilter', 'NpiReportController@categoryfilter');
 
     Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
     Route::post('customizedplanoreport',['as' => 'customizedplanoreport.create', 'uses' => 'CustomizedPlanogramReportController@create']);
+    Route::get('customizedplanoreport/allcategoryfilter', 'CustomizedPlanogramReportController@allcategoryfilter');
+    Route::get('customizedplanoreport/categoryfilter', 'CustomizedPlanogramReportController@categoryfilter');
 
     Route::get('pjpreport',['as' => 'pjpreport.index', 'uses' => 'PjpReportController@index']);
     Route::post('pjpreport',['as' => 'pjpreport.create', 'uses' => 'PjpReportController@create']);
@@ -189,7 +201,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('customerregionalreport',['as' => 'customerregionalreport.create', 'uses' => 'CustomerRegionalReportController@create']);
     Route::get('customerregionalreport/{id}/download',['as' => 'customerregionalreport.download', 'uses' => 'CustomerRegionalReportController@download']);
     Route::get('customerregionalreport/{customer_code}/region/{region_code}/template/{channel_code}/audit/{audit_id}',['as' => 'customerregionalreport.show', 'uses' => 'CustomerRegionalReportController@show']);
-
+    Route::get('customerregionalreport/regionsfilter', 'CustomerRegionalReportController@regionsfilter');
+    Route::get('customerregionalreport/allregionsfilter', 'CustomerRegionalReportController@allregionsfilter');
 
 
     Route::get('auditimage/{folder}/{filename}', 'Api\DownloadController@auditimage');

@@ -29,7 +29,7 @@
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Template</label>
-	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates_npi', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	             <div class="col-md-3">
@@ -117,7 +117,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#templates, #categories, #customers').multiselect({
+$('#audits,#templates_npi, #categories, #customers').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

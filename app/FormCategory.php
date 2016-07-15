@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\AuditTemplateCategory;
-
+use DB;
 class FormCategory extends Model
 {
     protected $fillable = ['audit_id','category', 'sos', 'second_display', 'osa', 'custom', 'perfect_store'];
@@ -56,33 +56,265 @@ class FormCategory extends Model
             ->get();
     }
 
-    public static function getSOSCategories(){
+    public static function getSOSCategories($use){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('user_id',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
         return self::select('category', 'category')
             ->where('sos', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+    public static function SosCatFilter($use,$tem){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];                
+
+        $channel = DB::table('posted_audits')
+            ->select('posted_audits.id')
+            ->whereIn('channel_code',$tem)
+            ->whereIn('user_id',$user_id)
+            ->get();    
+        $audid = [];    
+        foreach($channel as $ch)
+        {
+            $audid[] = $ch->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
+            ->groupBy('category')
+            ->get();
+        $cat =[];
+
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }
+
+        return self::select('category', 'category')
+            ->where('sos', 1)
+            ->whereIn('category',$cat)
             ->groupBy('category')
             ->orderBy('category')
             ->get();
     }
 
-    public static function getOSACategories(){
+    public static function getOSACategories($use){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('user_id',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
         return self::select('category', 'category')
             ->where('osa', 1)
+            ->whereIn('category',$cat)
             ->groupBy('category')
             ->orderBy('category')
             ->get();
     }
 
-    public static function getNPICategories(){
+    public static function OsaCatFilter($use,$tem){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];                
+
+        $channel = DB::table('posted_audits')
+            ->select('posted_audits.id')
+            ->whereIn('channel_code',$tem)
+            ->whereIn('user_id',$user_id)
+            ->get();    
+        $audid = [];    
+        foreach($channel as $ch)
+        {
+            $audid[] = $ch->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
+            ->groupBy('category')
+            ->get();
+        $cat =[];
+
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }
+
+        return self::select('category', 'category')
+            ->where('osa', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+    public static function getNPICategories($use){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('user_id',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
         return self::select('category', 'category')
             ->where('npi', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+    public static function NpiCatFilter($use,$tem){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];                
+
+        $channel = DB::table('posted_audits')
+            ->select('posted_audits.id')
+            ->whereIn('channel_code',$tem)
+            ->whereIn('user_id',$user_id)
+            ->get();    
+        $audid = [];    
+        foreach($channel as $ch)
+        {
+            $audid[] = $ch->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
+            ->groupBy('category')
+            ->get();
+        $cat =[];
+
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }
+
+        return self::select('category', 'category')
+            ->where('npi', 1)
+            ->whereIn('category',$cat)
             ->groupBy('category')
             ->orderBy('category')
             ->get();
     }
 
-    public static function getPlanoCategories(){
+    public static function getPlanoCategories($use){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('user_id',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
         return self::select('category', 'category')
             ->where('plano', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+    public static function PlaCatFilter($use,$tem){
+        $user_id =[];
+        foreach($use as $c){
+            $user_id[]=$c->user_id;
+        }
+        $category_id = [];                
+
+        $channel = DB::table('posted_audits')
+            ->select('posted_audits.id')
+            ->whereIn('channel_code',$tem)
+            ->whereIn('user_id',$user_id)
+            ->get();    
+        $audid = [];    
+        foreach($channel as $ch)
+        {
+            $audid[] = $ch->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
+            ->groupBy('category')
+            ->get();
+        $cat =[];
+
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }
+
+        return self::select('category', 'category')
+            ->where('plano', 1)
+            ->whereIn('category',$cat)
             ->groupBy('category')
             ->orderBy('category')
             ->get();
@@ -92,7 +324,7 @@ class FormCategory extends Model
         $custom = [];
         foreach($cus as $c){
             $custom[]=$c;
-        }
+        }        
         return self::select('category', 'category')
             ->where('osa', 1)
             ->whereIn('customer_code',$custom)

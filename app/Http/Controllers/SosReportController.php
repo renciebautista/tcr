@@ -12,7 +12,9 @@ use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
-
+use Input;
+use Response;
+use Session;
 class SosReportController extends Controller
 {
     public function index(){
@@ -21,7 +23,7 @@ class SosReportController extends Controller
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
         $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $categories = FormCategory::getSOSCategories()->lists('category','category');
+        $categories = FormCategory::getSOSCategories($use)->lists('category','category');
         $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
     	$soss = [];
@@ -31,13 +33,13 @@ class SosReportController extends Controller
     public function create(Request $request){
         $auth_user = Auth::id(); 
         $use = PostedAudit::getUsers($auth_user); 
-        $soss = PostedAudit::getSos($request);
+        $soss = PostedAudit::getSos($request,$use);
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
     		$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $categories = FormCategory::getSOSCategories()->lists('category','category');
+            $categories = FormCategory::getSOSCategories($use)->lists('category','category');
             $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             
@@ -75,4 +77,23 @@ class SosReportController extends Controller
         }
         
     }
+    public function allcategoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();
+
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::getSOSCategories($use)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
+    public function categoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();                
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::SosCatFilter($use,$tem)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
 }

@@ -110,6 +110,8 @@
     	<script src="{{ asset ("/plugins/dataTables/jquery.dataTables.js") }}"></script>
     	<script src="{{ asset ("/plugins/dataTables/dataTables.bootstrap.js") }}"></script>
     	
+
+    	
 		<script type="text/javascript">
 			$(document).ready(function() {
 				@section('page-script')
@@ -118,10 +120,7 @@
 			});
 		</script>
 		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			
-	             
-	        
+		jQuery(document).ready(function($) {				             	       
 		    $('#customers').change(function(){			 
 
 		    	$.getJSON("{{ url('auditreport/filter')}}",
@@ -178,6 +177,40 @@
 							    buttonWidth: '100%',
 								buttonClass: 'form-control',
 							 });					
+					    });				
+					    $.getJSON("{{ url('customerregionalreport/allregionsfilter')}}",				         
+				        function(data) {		        			         	
+		                	$('#regions').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#regions').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#regions").trigger("change");                						
+							$("#regions").multiselect('destroy');
+							$("#regions").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });				
+					    $.getJSON("{{ url('osareport/allcategoryfilter')}}",				         
+				        function(data) {		        			         	
+		                	$('#categories').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
 					    });							
 				    }
 				    else{
@@ -198,8 +231,7 @@
 							    buttonWidth: '100%',
 								buttonClass: 'form-control',
 							 });					
-					    });
-				    			
+					    });				    	
 				        $.getJSON("{{ url('auditreport/storefilter')}}",
 				         { option: $('#customers').val() }, 
 				        function(data) {		        			         	
@@ -219,16 +251,63 @@
 							 });					
 					    });
 
-					    $.getJSON("{{ url('auditreport/templatesfilter')}}",
-				         { option: $('#customers').val() }, 
-				        function(data) {		        			         	
-		                	$('#templates').empty();
+					  //   $.getJSON("{{ url('auditreport/templatesfilter')}}",
+				   //       { option: $('#customers').val() }, 
+				   //      function(data) {		        			         	
+		     //            	$('#templates').empty();
+		     //            	$.each(data, function(index, value) {
+		     //                $('#templates').append('<option value="' + index +'">' + value + '</option>');
+				   //      });
+		     //            	$("#templates").trigger("change");                						
+							// $("#templates").multiselect('destroy');
+							// $("#templates").multiselect({
+							//  	maxHeight: 200,
+							//     includeSelectAllOption: true,
+							//     enableCaseInsensitiveFiltering: true,
+							//     enableFiltering: true,
+							//     buttonWidth: '100%',
+							// 	buttonClass: 'form-control',
+							//  });					
+					  //   });	
+					    $.getJSON("{{ url('customerregionalreport/regionsfilter')}}",
+				        { option: $('#customers').val() },					        
+					        function(data) {		        			         	
+		                	$('#regions').empty();
 		                	$.each(data, function(index, value) {
-		                    $('#templates').append('<option value="' + index +'">' + value + '</option>');
+		                    $('#regions').append('<option value="' + index +'">' + value + '</option>');
+				        	});
+		                	$("#regions").trigger("change");                						
+							$("#regions").multiselect('destroy');
+							$("#regions").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							});					
+				    	});						    								  
+				    }
+				});					        
+			});			
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {				             	       
+		    $('#users').change(function(){			 
+		    	$.getJSON("{{ url('auditreport/userstorefilter')}}",
+		    	{ option: $('#users').val() }, 
+		    	function(json){
+				    if ( json.length == 0 ) {				        				    	
+					    $.getJSON("{{ url('auditreport/allstorefilter')}}",				         
+				        function(data) {		        			         	
+		                	$('#stores').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
 				        });
-		                	$("#templates").trigger("change");                						
-							$("#templates").multiselect('destroy');
-							$("#templates").multiselect({
+		                	$("#stores").trigger("change");                						
+							$("#stores").multiselect('destroy');
+							$("#stores").multiselect({
 							 	maxHeight: 200,
 							    includeSelectAllOption: true,
 							    enableCaseInsensitiveFiltering: true,
@@ -236,9 +315,225 @@
 							    buttonWidth: '100%',
 								buttonClass: 'form-control',
 							 });					
-					    });							   
+					    });					    
 				    }
-				});					        
+				    else{    			   
+				        $.getJSON("{{ url('auditreport/userstorefilter')}}",
+				        { option: $('#users').val() },					        
+					        function(data) {		        			         	
+		                	$('#stores').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
+				        	});
+		                	$("#stores").trigger("change");                						
+							$("#stores").multiselect('destroy');
+							$("#stores").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							});					
+				    	});					    
+		 			}
+				});
+			});
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {				             	       
+		    $('#templates').change(function(){			 
+		    	$.getJSON("{{ url('osareport/categoryfilter')}}",
+		    	{ option: $('#templates').val() }, 
+		    	function(json){
+				    if ( json.length == 0 ) {				        				    	
+					    $.getJSON("{{ url('osareport/allcategoryfilter')}}",					         
+				        function(data) {		        			         	
+		                	$('#categories').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });					    
+				    }
+				    else{    			   
+				        $.getJSON("{{ url('osareport/categoryfilter')}}",	
+				        { option: $('#templates').val() }, 			         
+						function(data) {		        			         	
+							$('#categories').empty();
+							$.each(data, function(index, value) {
+						    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+						});
+							$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+						});			
+		 			}
+				});
+			});
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {				             	       
+		    $('#templates_npi').change(function(){			 
+		    	$.getJSON("{{ url('npireport/categoryfilter')}}",
+		    	{ option: $('#templates_npi').val() }, 
+		    	function(json){
+				    if ( json.length == 0 ) {				        				    	
+					    $.getJSON("{{ url('npireport/allcategoryfilter')}}",					         
+				        function(data) {		        			         	
+		                	$('#categories').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });					    
+				    }
+				    else{    			   
+				        $.getJSON("{{ url('npireport/categoryfilter')}}",	
+				        { option: $('#templates_npi').val() }, 			         
+						function(data) {		        			         	
+							$('#categories').empty();
+							$.each(data, function(index, value) {
+						    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+						});
+							$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+						});			
+		 			}
+				});
+			});
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {				             	       
+		    $('#templates_sos').change(function(){			 
+		    	$.getJSON("{{ url('sosreport/categoryfilter')}}",
+		    	{ option: $('#templates_sos').val() }, 
+		    	function(json){
+				    if ( json.length == 0 ) {				        				    	
+					    $.getJSON("{{ url('sosreport/allcategoryfilter')}}",					         
+				        function(data) {		        			         	
+		                	$('#categories').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });					    
+				    }
+				    else{    			   
+				        $.getJSON("{{ url('sosreport/categoryfilter')}}",	
+				        { option: $('#templates_sos').val() }, 			         
+						function(data) {		        			         	
+							$('#categories').empty();
+							$.each(data, function(index, value) {
+						    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+						});
+							$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+						});			
+		 			}
+				});
+			});
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {				             	       
+		    $('#templates_pla').change(function(){			 
+		    	$.getJSON("{{ url('customizedplanoreport/categoryfilter')}}",
+		    	{ option: $('#templates_pla').val() }, 
+		    	function(json){
+				    if ( json.length == 0 ) {				        				    	
+					    $.getJSON("{{ url('customizedplanoreport/allcategoryfilter')}}",					         
+				        function(data) {		        			         	
+		                	$('#categories').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });					    
+				    }
+				    else{    			   
+				        $.getJSON("{{ url('customizedplanoreport/categoryfilter')}}",	
+				        { option: $('#templates_pla').val() }, 			         
+						function(data) {		        			         	
+							$('#categories').empty();
+							$.each(data, function(index, value) {
+						    $('#categories').append('<option value="' + index +'">' + value + '</option>');
+						});
+							$("#categories").trigger("change");                						
+							$("#categories").multiselect('destroy');
+							$("#categories").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+						});			
+		 			}
+				});
 			});
 		});
 		</script> 							

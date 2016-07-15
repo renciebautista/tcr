@@ -11,6 +11,9 @@ use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
+use Input;
+use Response;
+use Session;
 
 class NpiReportController extends Controller
 {
@@ -20,7 +23,7 @@ class NpiReportController extends Controller
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $categories = FormCategory::getSOSCategories()->lists('category','category');
+        $categories = FormCategory::getNPICategories($use)->lists('category','category');
     	$skus = [];
     	return view('npireport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
     }
@@ -28,13 +31,13 @@ class NpiReportController extends Controller
     public function create(Request $request){
         $auth_user = Auth::id();
         $use = PostedAudit::getUsers($auth_user); 
-    	$skus = PostedAudit::getNpiSku($request);
+    	$skus = PostedAudit::getNpiSku($request,$use);
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
 	    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $categories = FormCategory::getSOSCategories()->lists('category','category');
+            $categories = FormCategory::getNPICategories($use)->lists('category','category');
 	    	return view('npireport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{
             set_time_limit(0);
@@ -57,4 +60,23 @@ class NpiReportController extends Controller
             $writer->close();
         }
     }
+    public function allcategoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();
+
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::getNPICategories($use)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
+    public function categoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();                
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::NpiCatFilter($use,$tem)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
 }

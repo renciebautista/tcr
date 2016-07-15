@@ -22,7 +22,7 @@ class OsaReportController extends Controller
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
     	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $categories = FormCategory::getOSACategories()->lists('category','category');
+        $categories = FormCategory::getOSACategories($use)->lists('category','category');
     	$skus = [];
     	return view('osareport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
     }
@@ -30,13 +30,13 @@ class OsaReportController extends Controller
     public function create(Request $request){
         $auth_user = Auth::id();
         $use = PostedAudit::getUsers($auth_user); 
-    	$skus = PostedAudit::getOsaSku($request);
+    	$skus = PostedAudit::getOsaSku($request,$use);
         if($request->submit == 'process'){
             $request->flash();
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
 	    	$templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $categories = FormCategory::getOSACategories()->lists('category','category');
+            $categories = FormCategory::getOSACategories($use)->lists('category','category');
 	    	return view('osareport.index', compact('audits','templates', 'skus', 'customers', 'categories'));
         }else{
             set_time_limit(0);
@@ -59,12 +59,31 @@ class OsaReportController extends Controller
             $writer->close();
         }
     }
-     public function categoriesfilter(){
+    public function categoriesfilter(){
         $auth_user = Auth::id();
         $cus = Input::all();        
         if(is_array($cus)){           
             $use = PostedAudit::getUsers($auth_user);         
             $categories = FormCategory::getCategoriesFilter($cus)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
+    public function allcategoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();
+
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::getOSACategories($use)->lists('category','category');
+            return Response::json($categories);
+        }                    
+    }       
+    public function categoryfilter(){
+        $auth_user = Auth::id();
+        $tem = Input::all();                
+        if(is_array($tem)){           
+            $use = PostedAudit::getUsers($auth_user);         
+            $categories = FormCategory::OsaCatFilter($use,$tem)->lists('category','category');
             return Response::json($categories);
         }                    
     }       

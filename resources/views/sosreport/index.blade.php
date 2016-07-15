@@ -29,29 +29,28 @@
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Audit Template</label>
-	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates_sos', 'multiple' => 'multiple')) !!}
 	              </div>
+	            </div>
+	            <div class="col-md-3">
+	              <div class="form-group">
+	                <label>Category</label>
+	                {!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>	            
+          	</div>
+          	<div class="row">	            
+	            <div class="col-md-3">
+	             	<div class="form-group">
+	                	<label>User</label>
+	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            <div class="col-md-3">
 	              <div class="form-group">
 	                <label>Store Name</label>
 	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
 	              </div>
-	            </div>
-          	</div>
-
-          	<div class="row">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Category</label>
-	                {!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            <div class="col-md-3">
-	             	<div class="form-group">
-	                	<label>User</label>
-	                	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
-	              	</div>
 	            </div>
 	            <div class="col-md-3">
 	              
@@ -145,7 +144,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#stores, #categories, #customers, #templates, #users').multiselect({
+$('#audits,#stores, #categories, #customers, #templates_sos, #users').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,

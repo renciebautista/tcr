@@ -36,7 +36,7 @@ class PostedAudit extends Model
         foreach ($myFields as $value) {
             $data[] =  $value->fields_id;
         }       
-        
+        //owaa
         //templates na naka mapped sa user
         $myTemplates = DB::table('manager_templates')
             ->select('manager_templates.*')
@@ -47,15 +47,23 @@ class PostedAudit extends Model
         foreach ($myTemplates as $value) {
             $datas[] =  $value->templates_id;
         }
-        
-        //another user na nka map sa template ng user
-        $another_user = DB::table('manager_templates')
-            ->select('manager_templates.*')
-            ->whereIn('manager_templates.templates_id',$datas)
+        //template description
+        $temp_desc = DB::table('templates')
+            ->select('templates.*')
+            ->whereIn('templates.id',$datas)            
             ->get();
-        
+        $tdes =[];
+        foreach($temp_desc as $td){ 
+            $tdes[]=$td->description;            
+        }
+
+        //another user na nka map sa template ng user
+        $another_user = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('posted_audits.template',$tdes)
+            ->get();         
         foreach ($another_user as $value) {
-            $data[] =  $value->managers_id;
+            $data[] =  $value->user_id;
         }  
         
         return self::select('user_id', 'users.name')
@@ -87,8 +95,31 @@ class PostedAudit extends Model
             ->get();
     }
 
-    public static function getRegions(){
+    public static function getRegions($use){
+        $user = [];
+        foreach($use as $u){
+            $user[]=$u->user_id;
+        }
         return self::select('region_code', 'region')
+            ->whereIn('user_id',$user)
+            ->groupBy('region_code')
+            ->orderBy('region')
+            ->get();
+    }
+
+    public static function getRegionsfilter($use,$cus){
+        $user = [];
+        foreach($use as $u){
+            $user[]=$u->user_id;
+        }
+        $custom = [];
+        
+        foreach($cus as $c){
+            $custom[]=$c;
+        }                
+        return self::select('region_code', 'region')
+            ->whereIn('user_id',$user)
+            ->whereIn('customer_code',$custom)
             ->groupBy('region_code')
             ->orderBy('region')
             ->get();
@@ -106,7 +137,7 @@ class PostedAudit extends Model
         foreach ($myTemplates as $value) {
             $data[] =  $value->templates_id;
         }
-        
+        //owa
         //get user fieldss        
         $myFields = DB::table('manager_fields')
             ->select('manager_fields.*')
@@ -117,25 +148,18 @@ class PostedAudit extends Model
             $datas[] =  $value->fields_id;
         }       
 
-        
-        //templates that mapped in tagged fields
-        $anotherTemplates = DB::table('manager_templates')
-            ->select('manager_templates.*')
-            ->whereIn('managers_id',$datas)
-            ->get();
-        
-
-        foreach ($anotherTemplates as $value) {
-            $data[] =  $value->templates_id;
-        }
-    
+        $anotherTemplates = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('posted_audits.user_id',$datas)
+            ->get();        
+        $tagged = [];
+            foreach($anotherTemplates as $at){
+                $tagged[] =  $at->template;
+            }                
         $temp = DB::table('templates')
             ->select('templates.*')
             ->whereIn('id',$data)
-            ->get();
-
-        $tagged = [];
-
+            ->get();        
         foreach ($temp as $value) {
             $tagged[] =  $value->description;
         }        
@@ -151,7 +175,7 @@ class PostedAudit extends Model
         $users=[];
         foreach($use as $u) {
             $users[]=$u->user_id;
-        }        
+        }          
         return self::select('store_code', 'store_name','user_id')
             ->whereIn('user_id',$users)
             ->groupBy('store_code')
@@ -159,7 +183,33 @@ class PostedAudit extends Model
             ->get();
     }
 
-   
+    public static function getStoresfilter($use,$cus){
+        $users=[];
+        foreach($use as $u) {
+            $users[] = $u->user_id;
+        }          
+        $cust = [];
+        foreach($cus as $c){
+            $cust[] = $c;
+        }
+        return self::select('store_code', 'store_name','user_id')
+            ->whereIn('user_id',$users)
+            ->whereIn('customer_code',$cust)
+            ->groupBy('store_code')
+            ->orderBy('store_name')
+            ->get();
+    }
+    public static function getUserStoresfilter($use,$userfilt){        
+        $usfil=[];
+        foreach($userfilt as $u){
+            $usfil[] = $u;
+        }
+        return self::select('store_code', 'store_name','user_id')
+            ->whereIn('user_id',$usfil)            
+            ->groupBy('store_code')
+            ->orderBy('store_name')
+            ->get();
+    }   
 
     public static function search($request,$usse){         
         $users=[];
@@ -405,17 +455,22 @@ class PostedAudit extends Model
         return $data;
     }
 
-    public static function getCustomerSummary($request = null,$temp,$cust){
+    public static function getCustomerSummary($request = null,$temp,$cust,$use){
         $customers = '';
         $regions = '';
         $templates = '';
         $audits = '';
         $pjps = '';        
         $temps =[];
-        $custs = [];
-                
+        $custs = [];                
         $temps_str = '';
         $custs_str = '';
+        $uid = '';
+        $user_id = [];
+
+        foreach($use as $u){
+            $user_id[]=$u->user_id;
+        }
 
         foreach($temp as $t) {
             $temps[]=$t->template;
@@ -441,6 +496,9 @@ class PostedAudit extends Model
         }
         if(!empty($request->audits)){
             $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
+        }
+        if(!empty($user_id)){
+            $uid = "and posted_audits.user_id in (". implode(",",$user_id). ")";
         }
 
         if(!empty($request->pjps)){
@@ -477,7 +535,8 @@ class PostedAudit extends Model
             %s
             %s
             %s
-            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$temps_str,$custs_str);
+            %s
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$temps_str,$custs_str,$uid);
 
         $data = DB::select(DB::raw($query));        
         // dd($data);
@@ -522,7 +581,7 @@ class PostedAudit extends Model
             ->first();
     }
 
-    public static function getOsaSku($request){
+    public static function getOsaSku($request,$use){
         $audits = '';
         if(!empty($request->audits)){
             $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
@@ -554,7 +613,16 @@ class PostedAudit extends Model
         if(!empty($osa_desc)){
             $osas = "and posted_audit_details.group in ('". implode("','", $osa_desc)  ."')";
         }
-        
+        //owaowa
+        $usser = [];
+        $users_str = '';
+        foreach($use as $u)
+        {
+            $usser[]=$u->user_id;
+        }
+        if(!empty($usser)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
+        }
         $query = sprintf('
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
             category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
@@ -575,13 +643,14 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$osas,$audits,$templates, $customers, $categories);
+            order by osa_percent, audit_id, template',$osas,$audits,$templates, $customers, $categories,$users_str);
 
         return DB::select(DB::raw($query));
     }
 
-    public static function getNpiSku($request){
+    public static function getNpiSku($request,$use){
         $audits = '';
         if(!empty($request->audits)){
             $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
@@ -612,7 +681,15 @@ class PostedAudit extends Model
         if(!empty($npi_desc)){
             $npis = "and posted_audit_details.group in ('". implode("','", $npi_desc)  ."')";
         }
-        
+        $usser = [];
+        $users_str = '';
+        foreach($use as $u)
+        {
+            $usser[]=$u->user_id;
+        }
+        if(!empty($usser)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
+        }
         $query = sprintf('
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
             category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
@@ -633,8 +710,9 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$npis,$audits,$templates, $categories, $customers);
+            order by osa_percent, audit_id, template',$npis,$audits,$templates, $categories, $customers,$users_str);
 
         return DB::select(DB::raw($query));
     }
@@ -670,7 +748,15 @@ class PostedAudit extends Model
         if(!empty($plano_desc)){
             $planos = "and posted_audit_details.group in ('". implode("','", $plano_desc)  ."')";
         }
-
+        $usser = [];
+        $users_str = '';
+        foreach($use as $u)
+        {
+            $usser[]=$u->user_id;
+        }
+        if(!empty($usser)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
+        }
         // dd($plano_desc);
         
         $query = sprintf('
@@ -693,13 +779,14 @@ class PostedAudit extends Model
             %s
             %s
             %s
+            %s
             group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers);
+            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers,$users_str);
 
         return DB::select(DB::raw($query));
     }
 
-    public static function getSos($request = null){
+    public static function getSos($request = null,$use){
         // dd($request->all());
         $audits = '';
         if(!empty($request->audits)){
@@ -743,6 +830,15 @@ class PostedAudit extends Model
         if(!empty($soss)){
             $soss = "and posted_audit_details.group in ('". implode("','", $sos_desc)  ."')";
         }
+        $usser = [];
+        $users_str = '';
+        foreach($use as $u)
+        {
+            $usser[]=$u->user_id;
+        }
+        if(!empty($usser)){            
+            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
+        }
 
         $query = sprintf("
             select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement,
@@ -759,7 +855,8 @@ class PostedAudit extends Model
             %s
             %s
             %s
-            order by audit_id, store_name, category", $soss,$audits, $customers, $templates, $stores, $categories, $users);
+            %s
+            order by audit_id, store_name, category", $soss,$audits, $customers, $templates, $stores, $categories, $users,$users_str);
 
         // dd($query);
 
@@ -1046,7 +1143,7 @@ class PostedAudit extends Model
         
         return $data;
     }      
-     public static function getCustomerSummaryDefault($request = null){
+     public static function getCustomerSummaryDefault($use){
         $customers = '';
         $regions = '';
         $templates = '';
@@ -1076,7 +1173,15 @@ class PostedAudit extends Model
             }
             
         }
+        $custom = '';
+        $c = [];        
+        foreach($use as $u){
+            $c[]=$u->user_id;
+        }        
 
+        if(!empty($c)){
+            $custom = "and posted_audits.user_id in (". implode(",",$c). ")";
+        }
         // dd($pjps);
 
         $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
@@ -1092,13 +1197,14 @@ class PostedAudit extends Model
                 audit_stores
                 group by audit_id, channel_code
             ) as tbl_mapped using(channel_code,audit_id)
-            where mapped_stores > 0
+            where mapped_stores > 0            
             %s
             %s
             %s
             %s
-            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits);
-
+            %s
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$custom);
+        
         $data = DB::select(DB::raw($query));        
         // dd($data);
 
@@ -1131,8 +1237,7 @@ class PostedAudit extends Model
         $data = [];
         foreach ($myFields as $value) {
             $data[] =  $value->fields_id;
-        }       
-        
+        }        
         //templates na naka mapped sa user
         $myTemplates = DB::table('manager_templates')
             ->select('manager_templates.*')
@@ -1143,16 +1248,22 @@ class PostedAudit extends Model
         foreach ($myTemplates as $value) {
             $datas[] =  $value->templates_id;
         }
-        
-        // //another user na nka map sa template ng user
-        // $another_user = DB::table('manager_templates')
-        //     ->select('manager_templates.*')
-        //     ->whereIn('manager_templates.templates_id',$datas)
-        //     ->get();
-        
-        // foreach ($another_user as $value) {
-        //     $data[] =  $value->managers_id;
-        // }
+        $temp_desc = DB::table('templates')
+            ->select('templates.*')
+            ->whereIn('templates.id',$datas)            
+            ->get();
+        $tdes =[];
+        foreach($temp_desc as $td){ 
+            $tdes[]=$td->description;            
+        }
+        $another_user = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('posted_audits.template',$tdes)
+            ->get();         
+        foreach ($another_user as $value) {
+            $data[] =  $value->user_id;
+        }  
+                
         $custom = [];  
         foreach($cus as $c){
             $custom = $c;
@@ -1163,7 +1274,7 @@ class PostedAudit extends Model
             ->join('users','users.id', '=', 'posted_audits.user_id')                    
             ->groupBy('user_id')
             ->orderBy('users.name')
-            ->get();
+            ->get();                
     }
     public static function getsstorefilters($cus,$use){
         $users=[];
@@ -1193,14 +1304,28 @@ class PostedAudit extends Model
         foreach ($myTemplates as $value) {
             $data[] =  $value->templates_id;
         }            
-                
+
+        $myFields = DB::table('manager_fields')
+            ->select('manager_fields.*')
+            ->where('manager_fields.managers_id','=',$auth_user)
+            ->get();
+        $datas = [];
+        foreach ($myFields as $value) {
+            $datas[] =  $value->fields_id;
+        }       
+        $anotherTemplates = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('posted_audits.user_id',$datas)
+            ->get();   
+        $tagged = [];
+
+        foreach($anotherTemplates as $at){
+                $tagged[] =  $at->template;
+            }                  
         $temp = DB::table('templates')
             ->select('templates.*')
             ->whereIn('id',$data)
             ->get();
-
-        $tagged = [];
-
         foreach ($temp as $value) {
             $tagged[] =  $value->description;
         }        
