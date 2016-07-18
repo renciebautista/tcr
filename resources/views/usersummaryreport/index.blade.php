@@ -35,7 +35,80 @@
         </div>
         {{  Form::close() }}
     </div>
-
+    <div class="row">
+		<div class="col-lg-3 col-xs-6">	
+			@if($p_store_average >=65)
+				<div class="small-box bg-green">
+			@elseif($p_store_average >=50 && $p_store_average < 65)
+				<div class="small-box bg-yellow">
+			@elseif($p_store_average < 50 )					
+				<div class="small-box bg-red">
+			@endif					
+				<div class="inner">
+					<h3>{{$p_store_average}}<sup style="font-size: 20px"></sup></h3>
+					<p>PS Category Average</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-arrow-graph-up-right"></i>
+				</div>
+				<a href="#" class="small-box-footer"></a>
+			</div>
+		</div>	
+		<div class="col-lg-3 col-xs-6">	
+			@if($osa_average >=65)
+				<div class="small-box bg-green">
+			@elseif($osa_average >=50 && $osa_average < 65)
+				<div class="small-box bg-yellow">
+			@elseif($osa_average < 50 )					
+				<div class="small-box bg-red">
+			@endif					
+				<div class="inner">
+					<h3>{{$osa_average}}<sup style="font-size: 20px"></sup></h3>
+					<p>OSA Average</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-ios-pricetag"></i>					
+				</div>
+				<a href="#" class="small-box-footer"></a>
+			</div>
+		</div>	
+		<div class="col-lg-3 col-xs-6">	
+			@if($npi_average >=65)
+				<div class="small-box bg-green">
+			@elseif($npi_average >=50 && $npi_average < 65)
+				<div class="small-box bg-yellow">
+			@elseif($npi_average < 50 )					
+				<div class="small-box bg-red">
+			@endif								
+				<div class="inner">
+					<h3>{{$npi_average}}<sup style="font-size: 20px"></sup></h3>
+					<p>NPI Average</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-pie-graph"></i>					
+				</div>
+				<a href="#" class="small-box-footer"></a>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xs-6">	
+			@if($planogram_average >=65)
+				<div class="small-box bg-green">
+			@elseif($planogram_average >=50 && $planogram_average < 65)
+				<div class="small-box bg-yellow">
+			@elseif($planogram_average < 50 )					
+				<div class="small-box bg-red">
+			@endif					
+				<div class="inner">
+					<h3>{{$planogram_average}}<sup style="font-size: 20px"></sup></h3>
+					<p>Planogram Average</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-stats-bars"></i>
+				</div>
+				<a href="#" class="small-box-footer"></a>
+			</div>
+		</div>
+	</div>
 
 
 	<div class="row">
@@ -58,7 +131,10 @@
 								<!-- <th class="right">To be Visited</th> -->
 								<th class="right">Perfect Stores</th>
 								<th class="right">%PS Doors</th>
-								<th class="right">%PS Categories</th>								
+								<th class="right">%PS Categories</th>
+								<th class="right">OSA Ave</th>
+								<th class="right">NPI Ave</th>
+								<th class="right">Planogram Ave</th>								
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -74,7 +150,10 @@
 								<td align="center">{{ $summary->pjp_compliance}}%</td>																							
 								<td align="center">{{ $summary->perfect_store }}</td>
 								<td align="center">{{ $summary->ps_doors }}%</td>
-								<td align="center"></td>								
+								<td align="center">{{ $summary->ps_cat}}</td>	
+								<td align="center">{{ $summary->osa }}</td>	
+								<td align="center">{{ $summary->npi }}</td>	
+								<td align="center">{{ $summary->planogram }}</td>																
 								<td align="center">
 									{!! link_to_action('UserSummaryReportController@show', 'View Stores', ['audit_id' => $summary->audit_id, 'user_id' => $summary->user_id], ['class' => 'btn btn-xs btn btn-primary']) !!}
 								</td>

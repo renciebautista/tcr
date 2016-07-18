@@ -87,7 +87,7 @@
 								<td align="center">{{ $sku->store_count }}</td>
 								<td align="center">{{ $sku->availability }}</td>
 								<td align="center">{{ number_format($sku->osa_percent,2) }}%</td>
-								<td></td>
+								<td> </td>
 							</tr>
 							<?php $cnt++; ?>
 							@endforeach

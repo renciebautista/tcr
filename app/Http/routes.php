@@ -170,6 +170,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('osareport/categoriesfilter', 'OsaReportController@categoriesfilter');
     Route::get('osareport/allcategoryfilter', 'OsaReportController@allcategoryfilter');
     Route::get('osareport/categoryfilter', 'OsaReportController@categoryfilter');
+    Route::get('osareport/viewstores', ['as' => 'osareport/viewstores', 'uses'=>'OsaReportController@getstoresinOSA']);
     // Route::get('customerregionalreport/regionsfilter', 'CustomerRegionalReportController@regionsfilter');
     // Route::get('customerregionalreport/allregionsfilter', 'CustomerRegionalReportController@allregionsfilter');
 

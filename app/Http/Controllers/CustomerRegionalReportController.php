@@ -24,11 +24,16 @@ class CustomerRegionalReportController extends Controller
         $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
         $audits = PostedAudit::getAudits()->lists('description','audit_id');
         $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
+        $posted_audits = $customer_summaries;
+        $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
+        $osa_average = PostedAudit::getOsaAverage($posted_audits);
+        $npi_average = PostedAudit::getNpiAverage($posted_audits);
+        $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
         // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
         // $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
         // $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
         // $total_perfect_store_ave = PostedAudit::getTotalPerfectStoreAverage($customer_summaries);    
-    	return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
+    	return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','p_store_average','osa_average','npi_average','planogram_average'));
     }    
 
      public function create(Request $request){
@@ -37,13 +42,18 @@ class CustomerRegionalReportController extends Controller
         $cust = PostedAudit::getCustomers($use);  
         $temp = PostedAudit::getTemplates($auth_user);
         $customer_summaries = PostedAudit::getCustomerSummary($request,$temp,$cust,$use);
+        $posted_audits = $customer_summaries;
+        $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
+        $osa_average = PostedAudit::getOsaAverage($posted_audits);
+        $npi_average = PostedAudit::getNpiAverage($posted_audits);
+        $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
         if($request->submit == 'process'){
             $request->flash();
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             $regions = PostedAudit::getRegions($use)->lists('region','region_code');
             $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-            return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries'));
+            return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','p_store_average','npi_average','osa_average','planogram_average'));
         }
         else{
             set_time_limit(0);

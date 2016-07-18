@@ -346,10 +346,13 @@ class PostedAudit extends Model
         if(!empty($usser)){            
             $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
         }
-
+        
         $query = sprintf('
             select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
-            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
+            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited,
+            (sum(osa) / count(*))  as osa_ave,
+            (sum(npi) / count(*)) as npi_ave,
+            (sum(planogram) / count(*)) as planogram_ave
             from posted_audits
             inner join users on users.id = posted_audits.user_id
             inner join audits on audits.id = posted_audits.audit_id
@@ -394,8 +397,15 @@ class PostedAudit extends Model
             if($value->target === 0){
                 $data[$key]->pjp_compliance = 0;   
             }            
-
-            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);            
+            $audit = Audit::findOrFail($value->audit_id);
+            $user = User::findOrFail($value->user_id);
+            $usersummary = UserSummary::getSummary($audit,$user);                        
+            $detail = $usersummary->detail;
+            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);             
+            $data[$key]->ps_cat = number_format((float)$detail->category_door_per,2,'.',',');
+            $data[$key]->osa = number_format((float)$value->osa_ave,2,'.',',');
+            $data[$key]->npi = number_format((float)$value->npi_ave,2,'.',',');
+            $data[$key]->planogram = number_format((float)$value->planogram_ave,2,'.',',');
         }
 
         return $data;
@@ -553,7 +563,11 @@ class PostedAudit extends Model
             }
             $data[$key]->perfect_stores = $perfect_stores;
             $data[$key]->ave_perfect_stores = number_format($total_perfect_store_percentage / count($stores),2);
-            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;
+            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;            
+            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;            
+            $data[$key]->osa = number_format((float)$value->osa_ave,2,'.',',');
+            $data[$key]->npi = number_format((float)$value->npi_ave,2,'.',',');
+            $data[$key]->planogram = number_format((float)$value->planogram_ave,2,'.',',');
         }
 
         return $data;
@@ -650,6 +664,32 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query));
     }
 
+    public static function OsaStoresNotAvail($detail){
+        $temp = $detail['template'];
+        $cat = $detail['category'];
+        $cust = $detail['customer'];          
+        
+         $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer != "AVAILABLE ON SHELF"            
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template');
+
+        return DB::select(DB::raw($query));
+    }
+
     public static function getNpiSku($request,$use){
         $audits = '';
         if(!empty($request->audits)){
@@ -717,7 +757,7 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query));
     }
 
-    public static function getCustomizedPlanoSku($request){
+    public static function getCustomizedPlanoSku($request,$use){
         $audits = '';
         if(!empty($request->audits)){
             $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
@@ -924,7 +964,29 @@ class PostedAudit extends Model
         $total_posted = 0.00;
         $total_average = 0.00;
         foreach($posted_audits as $posted){
-            $add = $posted->perfect_percentage;
+            $add = $posted->ave_perfect_stores;
+            $total_posted = $total_posted + $add;
+            $counter++;
+            $count++;
+        }
+         if($count ===0)
+        {
+            $total_average = 0;
+
+        } 
+        else{
+            $total_average = number_format(($total_posted/$count),2,'.',',');     
+        }
+               
+        return $total_average;
+    }
+    public static function getPerfectStoreAverageInUserReport($posted_audits){        
+        $counter = 0;
+        $count = 0;
+        $total_posted = 0.00;
+        $total_average = 0.00;
+        foreach($posted_audits as $posted){
+            $add = $posted->ps_cat;
             $total_posted = $total_posted + $add;
             $counter++;
             $count++;
@@ -1019,8 +1081,7 @@ class PostedAudit extends Model
                 $join->on('audit_stores.store_code','=','posted_audits.store_code');
             })            
             ->orderBy('posted_audits.updated_at','desc')
-            ->get();
-
+            ->get();        
         foreach ($data as $key => $value) {
 
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
@@ -1060,11 +1121,13 @@ class PostedAudit extends Model
         $users_str = "";
         if(!empty($p)){            
             $users_str = " and posted_audits.user_id in (". implode(",",$p). ")";
-        }
-
+        }                
         $query = sprintf('
-            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
-            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
+            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,            
+            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited,
+            (sum(osa) / count(*))  as osa_ave,
+            (sum(npi) / count(*)) as npi_ave,
+            (sum(planogram) / count(*)) as planogram_ave
             from posted_audits
             inner join users on users.id = posted_audits.user_id
             inner join audits on audits.id = posted_audits.audit_id
@@ -1110,7 +1173,7 @@ class PostedAudit extends Model
         //     group by posted_audits.user_id, posted_audits.audit_id
         //     order by audits.description, users.name',$users_str,$pjps ,$pjps, $users,$audits);
         
-
+    
         $data = DB::select(DB::raw($query));        
         
         foreach ($data as $key => $value) {
@@ -1136,11 +1199,16 @@ class PostedAudit extends Model
             if($value->target === 0){
                 $data[$key]->pjp_compliance = 0;   
             }            
-
-            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);            
-
-        }
-        
+            $audit = Audit::findOrFail($value->audit_id);
+            $user = User::findOrFail($value->user_id);
+            $usersummary = UserSummary::getSummary($audit,$user);                        
+            $detail = $usersummary->detail;
+            $data[$key]->ps_doors = number_format(($value->perfect_store/$value->store_visited) * 100,2);             
+            $data[$key]->ps_cat = number_format((float)$detail->category_door_per,2,'.',',');
+            $data[$key]->osa = number_format((float)$value->osa_ave,2,'.',',');
+            $data[$key]->npi = number_format((float)$value->npi_ave,2,'.',',');
+            $data[$key]->planogram = number_format((float)$value->planogram_ave,2,'.',',');
+        }        
         return $data;
     }      
      public static function getCustomerSummaryDefault($use){
@@ -1220,7 +1288,10 @@ class PostedAudit extends Model
             }
             $data[$key]->perfect_stores = $perfect_stores;
             $data[$key]->ave_perfect_stores = number_format($total_perfect_store_percentage / count($stores),2);
-            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;
+            $data[$key]->ps_doors = number_format((float)$value->perfect_stores/$value->visited_stores,2,'.',',')*100;            
+            $data[$key]->osa = number_format((float)$value->osa_ave,2,'.',',');
+            $data[$key]->npi = number_format((float)$value->npi_ave,2,'.',',');
+            $data[$key]->planogram = number_format((float)$value->planogram_ave,2,'.',',');
         }
 
         return $data;

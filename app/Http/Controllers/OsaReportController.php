@@ -86,5 +86,13 @@ class OsaReportController extends Controller
             $categories = FormCategory::OsaCatFilter($use,$tem)->lists('category','category');
             return Response::json($categories);
         }                    
-    }       
+    }    
+
+    public function getstoresinOSA(Request $request){
+        $details = $request->all();
+        if(is_array($details)){
+            $osaStore = PostedAudit::OsaStoresNotAvail($details);
+        }
+    }   
+
 }
