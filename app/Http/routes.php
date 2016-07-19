@@ -33,7 +33,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('auth/logout', 'Auth\AuthController@getLogout');
 	// Route::get('auth/register', 'Auth\AuthController@getRegister');
 	Route::post('auth/login', 'Auth\AuthController@postLogin');
-
+	
 	Route::group(array('prefix' => 'api'), function()
 	{
 	   	Route::get('auth', 'Api\AuthController@auth');

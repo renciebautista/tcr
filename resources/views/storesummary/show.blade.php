@@ -54,7 +54,7 @@
                 </table>
             </div>
             <div class="col-xs-12">
-                {!! link_to_action('UserSummaryReportController@show', 'Back', ['audit_id' => $store->audit_id, 'user_id' => $store->user_id], ['class' => 'btn btn-default']) !!}
+                <a href="javascript:history.back()" ><button type="button" class="btn btn-default">Back</button></a>
             </div>
         </div>
     </div>

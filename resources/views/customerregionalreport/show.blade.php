@@ -34,7 +34,7 @@
                 </table>
             </div>
             <div class="col-xs-12">
-                {!! link_to_action('CustomerReportController@index', 'Back', [], ['class' => 'btn btn-default']) !!}
+                <a href="javascript:history.back()" ><button type="button" class="btn btn-default">Back</button></a>
             </div>
         </div>
     </div>
