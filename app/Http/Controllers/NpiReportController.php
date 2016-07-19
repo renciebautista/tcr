@@ -79,4 +79,11 @@ class NpiReportController extends Controller
             return Response::json($categories);
         }                    
     }       
+    public function getstoresinNPI(Request $request){
+        $details = $request->all();
+        if(is_array($details)){
+            $npiStore = PostedAudit::NpiStoresNotAvail($details);            
+            return view('npireport.show',compact('npiStore','details'));
+        }        
+    }   
 }

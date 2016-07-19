@@ -81,4 +81,11 @@ class CustomizedPlanogramReportController extends Controller
             return Response::json($categories);
         }                    
     }       
+    public function getstoresinPLANO(Request $request){
+        $details = $request->all();
+        if(is_array($details)){
+            $planoStore = PostedAudit::PlanoStoresNotAvail($details);                        
+            return view('customizedplanoreport.show',compact('planoStore','details'));
+        }        
+    }   
 }

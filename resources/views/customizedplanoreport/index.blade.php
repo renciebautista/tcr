@@ -87,7 +87,7 @@
 								<td align="center">{{ $sku->store_count }}</td>
 								<td align="center">{{ $sku->availability }}</td>
 								<td align="center">{{ number_format($sku->osa_percent,2) }}%</td>
-								<td></td>
+								<td>{!! link_to_action('CustomizedPlanogramReportController@getstoresinPLANO', 'View Stores', ['customer' => $sku->customer, 'template' => $sku->template,'category' => $sku->category,'prompt' => $sku->prompt,'description'=>$sku->description], ['class' => 'btn btn-xs btn btn-primary']) !!}</td>
 							</tr>
 							<?php $cnt++; ?>
 							@endforeach

@@ -664,30 +664,34 @@ class PostedAudit extends Model
         return DB::select(DB::raw($query));
     }
 
-    public static function OsaStoresNotAvail($detail){
-        $temp = $detail['template'];
-        $cat = $detail['category'];
-        $cust = $detail['customer'];          
-        
-         $query = sprintf('
-            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
-            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
-            count(posted_audit_details.prompt)  as availability,
-            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
-            posted_audits.customer
-            from posted_audit_details
-            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
-            join audits on audits.id = posted_audits.audit_id
-            join(
-                select audit_id,channel_code, count(*) as store_count from posted_audits
-                group by audit_id,channel_code
-            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
-            where posted_audit_details.type = "CONDITIONAL"
-            and posted_audit_details.answer != "AVAILABLE ON SHELF"            
-            group by prompt,posted_audits.channel_code
-            order by osa_percent, audit_id, template');
+    public static function OsaStoresNotAvail($detail){                
+        $cat_str = $detail['category'];
+        $cust_str = $detail['customer'];    
+        $temp_str =  $detail['template'];
+        $sku_str =  $detail['prompt'];
+        $des_str = $detail['description'];        
+        $osas = '';
+        $osa_desc = [];
+        $formgroups = FormGroup::where('osa',1)->get();
+        foreach ($formgroups as $group) {
+            $osa_desc[] = $group->group_desc;
+        }
+        return DB::table('posted_audits')
+            ->select('posted_audits.template','posted_audits.store_name','posted_audit_details.*','posted_audits.customer','posted_audits.id','posted_audits.channel_code','audits.*')
+            ->join('posted_audit_details','posted_audit_details.posted_audit_id','=','posted_audits.id')
+            ->join('audits','audits.id','=','posted_audits.audit_id')
+            ->where('posted_audit_details.type' ,"CONDITIONAL")
+            ->where('posted_audit_details.answer','!=',"AVAILABLE ON SHELF")
+            ->where('posted_audits.template',$temp_str)
+            ->where('posted_audits.customer',$cust_str)
+            ->where('posted_audit_details.category',$cat_str)
+            ->where('posted_audit_details.prompt',$sku_str)
+            ->where('audits.description',$des_str)
+            ->whereIn('posted_audit_details.group',$osa_desc)
+            ->groupBy('store_name')
+            ->orderBy('posted_audits.id')
+            ->get();
 
-        return DB::select(DB::raw($query));
     }
 
     public static function getNpiSku($request,$use){
@@ -755,6 +759,35 @@ class PostedAudit extends Model
             order by osa_percent, audit_id, template',$npis,$audits,$templates, $categories, $customers,$users_str);
 
         return DB::select(DB::raw($query));
+    }
+    public static function NpiStoresNotAvail($detail){                
+        $cat_str = $detail['category'];
+        $cust_str = $detail['customer'];    
+        $temp_str =  $detail['template'];
+        $sku_str =  $detail['prompt'];
+        $des_str = $detail['description'];        
+        $npis = '';
+        $npi_desc = [];
+        $formgroups = FormGroup::where('npi',1)->get();
+        foreach ($formgroups as $group) {
+            $npi_desc[] = $group->group_desc;
+        }
+        return DB::table('posted_audits')
+            ->select('posted_audits.template','posted_audits.store_name','posted_audit_details.*','posted_audits.customer','posted_audits.id','posted_audits.channel_code','audits.*')
+            ->join('posted_audit_details','posted_audit_details.posted_audit_id','=','posted_audits.id')
+            ->join('audits','audits.id','=','posted_audits.audit_id')
+            ->where('posted_audit_details.type' ,"CONDITIONAL")
+            ->where('posted_audit_details.answer','!=',"AVAILABLE ON SHELF")
+            ->where('posted_audits.template',$temp_str)
+            ->where('posted_audits.customer',$cust_str)
+            ->where('posted_audit_details.category',$cat_str)
+            ->where('posted_audit_details.prompt',$sku_str)
+            ->where('audits.description',$des_str)
+            ->whereIn('posted_audit_details.group',$npi_desc)
+            ->groupBy('store_name')
+            ->orderBy('posted_audits.id')
+            ->get();
+
     }
 
     public static function getCustomizedPlanoSku($request,$use){
@@ -824,6 +857,35 @@ class PostedAudit extends Model
             order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers,$users_str);
 
         return DB::select(DB::raw($query));
+    }
+    public static function PlanoStoresNotAvail($detail){                
+        $cat_str = $detail['category'];
+        $cust_str = $detail['customer'];    
+        $temp_str =  $detail['template'];
+        $sku_str =  $detail['prompt'];
+        $des_str = $detail['description'];        
+        $planos = '';
+        $plano_desc = [];
+        $formgroups = FormGroup::where('plano',1)->get();
+        foreach ($formgroups as $group) {
+            $plano_desc[] = $group->group_desc;
+        }
+        return DB::table('posted_audits')
+            ->select('posted_audits.template','posted_audits.store_name','posted_audit_details.*','posted_audits.customer','posted_audits.id','posted_audits.channel_code','audits.*')
+            ->join('posted_audit_details','posted_audit_details.posted_audit_id','=','posted_audits.id')
+            ->join('audits','audits.id','=','posted_audits.audit_id')
+            ->where('posted_audit_details.type' ,"CONDITIONAL")
+            ->where('posted_audit_details.answer','!=',"IMPLEMENTED")
+            ->where('posted_audits.template',$temp_str)
+            ->where('posted_audits.customer',$cust_str)
+            ->where('posted_audit_details.category',$cat_str)
+            ->where('posted_audit_details.prompt',$sku_str)
+            ->where('audits.description',$des_str)
+            ->whereIn('posted_audit_details.group',$plano_desc)
+            ->groupBy('store_name')
+            ->orderBy('posted_audits.id')
+            ->get();
+
     }
 
     public static function getSos($request = null,$use){

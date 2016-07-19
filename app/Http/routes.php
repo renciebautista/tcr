@@ -183,11 +183,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('npireport',['as' => 'npireport.create', 'uses' => 'NpiReportController@create']);
     Route::get('npireport/allcategoryfilter', 'NpiReportController@allcategoryfilter');
     Route::get('npireport/categoryfilter', 'NpiReportController@categoryfilter');
+    Route::get('npireport/viewstores', ['as' => 'npireport/viewstores', 'uses'=>'NpiReportController@getstoresinNPI']);
 
     Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
     Route::post('customizedplanoreport',['as' => 'customizedplanoreport.create', 'uses' => 'CustomizedPlanogramReportController@create']);
     Route::get('customizedplanoreport/allcategoryfilter', 'CustomizedPlanogramReportController@allcategoryfilter');
     Route::get('customizedplanoreport/categoryfilter', 'CustomizedPlanogramReportController@categoryfilter');
+   	Route::get('customizedplanoreport/viewstores', ['as' => 'customizedplanoreport/viewstores', 'uses'=>'CustomizedPlanogramReportController@getstoresinPLANO']);
 
     Route::get('pjpreport',['as' => 'pjpreport.index', 'uses' => 'PjpReportController@index']);
     Route::post('pjpreport',['as' => 'pjpreport.create', 'uses' => 'PjpReportController@create']);

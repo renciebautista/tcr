@@ -89,10 +89,11 @@ class OsaReportController extends Controller
     }    
 
     public function getstoresinOSA(Request $request){
-        $details = $request->all();
+        $details = $request->all();        
         if(is_array($details)){
-            $osaStore = PostedAudit::OsaStoresNotAvail($details);
-        }
+            $osaStore = PostedAudit::OsaStoresNotAvail($details);            
+            return view('osareport.show',compact('osaStore','details'));
+        }        
     }   
 
 }

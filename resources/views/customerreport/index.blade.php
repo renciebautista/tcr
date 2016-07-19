@@ -49,7 +49,7 @@
 				<div class="small-box bg-red">
 			@endif					
 				<div class="inner">
-					<h3>{{$p_store_average}}<sup style="font-size: 20px"></sup></h3>
+					<h3>{{$p_store_average}}<sup style="font-size: 20px">%</sup></h3>
 					<p>PS Category Average</p>
 				</div>
 				<div class="icon">
@@ -67,7 +67,7 @@
 				<div class="small-box bg-red">
 			@endif					
 				<div class="inner">
-					<h3>{{$osa_average}}<sup style="font-size: 20px"></sup></h3>
+					<h3>{{$osa_average}}<sup style="font-size: 20px">%</sup></h3>
 					<p>OSA Average</p>
 				</div>
 				<div class="icon">
@@ -85,7 +85,7 @@
 				<div class="small-box bg-red">
 			@endif								
 				<div class="inner">
-					<h3>{{$npi_average}}<sup style="font-size: 20px"></sup></h3>
+					<h3>{{$npi_average}}<sup style="font-size: 20px">%</sup></h3>
 					<p>NPI Average</p>
 				</div>
 				<div class="icon">
@@ -103,7 +103,7 @@
 				<div class="small-box bg-red">
 			@endif					
 				<div class="inner">
-					<h3>{{$planogram_average}}<sup style="font-size: 20px"></sup></h3>
+					<h3>{{$planogram_average}}<sup style="font-size: 20px">%</sup></h3>
 					<p>Planogram Average</p>
 				</div>
 				<div class="icon">
@@ -124,7 +124,7 @@
 						<thead>
 							<tr>
 								<th>Customer</th>								
-								<th>Audit Template</th>
+								<!-- <th>Audit Template</th> -->
 								<th>Audit Month</th>
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
@@ -145,7 +145,7 @@
 							@foreach($customer_summaries as $summary)
 							<tr>
 								<td>{{ $summary->customer }}</td>								
-								<td>{{ $summary->audit_tempalte }}</td>
+								<!-- <td>{{ $summary->audit_tempalte }}</td> -->
 								<td>{{ $summary->audit_group }}</td>
 								<td align="center">{{ $summary->mapped_stores }}</td>
 								<td align="center">{{ $summary->visited_stores }}</td>
