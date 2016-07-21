@@ -101,18 +101,26 @@ class CustomerRegionalReportController extends Controller
 
     }
     public function allregionsfilter(){
-            $auth_user = Auth::id();        
-            $use = PostedAudit::getUsers($auth_user);  
-            $regions = PostedAudit::getRegions($use)->lists('region','region_code');
-            return Response::json($regions);                
+            $auth_user = Auth::id();      
+            $id = $auth_user;
+            $role = Role::myroleid($id);     
+            if($role->role_id === 4){
+                $use = PostedAudit::getUsers($auth_user);  
+                $regions = PostedAudit::getRegions($use)->lists('region','region_code');
+                return Response::json($regions);                    
+            }            
     }    
     public function regionsfilter(){
         $auth_user = Auth::id();
         $cus = Input::all();        
+        $id = $auth_user;
+        $role = Role::myroleid($id);     
         if(is_array($cus)){           
-            $use = PostedAudit::getUsers($auth_user);         
-            $stores = PostedAudit::getRegionsfilter($use,$cus)->lists('region','region_code');
-            return Response::json($stores);
+            if($role->role_id === 4){
+                $use = PostedAudit::getUsers($auth_user);         
+                $stores = PostedAudit::getRegionsfilter($use,$cus)->lists('region','region_code');
+                return Response::json($stores);
+            }            
         }                    
     }    
 }

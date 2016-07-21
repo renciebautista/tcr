@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('SOS type table seeded!');
         $this->call('EnrollmentTypeTableSeeder');
         $this->command->info('Enrollment type table seeded!');
+        $this->call('RoleTableSeeder');
+        $this->command->info('Role table seeded!');
     	DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

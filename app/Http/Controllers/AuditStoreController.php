@@ -26,6 +26,7 @@ class AuditStoreController extends Controller
     }
 
     public function store(Request $request, $id){
+        set_time_limit(0);
     	if ($request->hasFile('file')){
             $file_path = $request->file('file')->move(storage_path().'/uploads/temp/',$request->file('file')->getClientOriginalName());
             

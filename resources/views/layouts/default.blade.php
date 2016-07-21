@@ -251,24 +251,24 @@
 							 });					
 					    });
 
-					  //   $.getJSON("{{ url('auditreport/templatesfilter')}}",
-				   //       { option: $('#customers').val() }, 
-				   //      function(data) {		        			         	
-		     //            	$('#templates').empty();
-		     //            	$.each(data, function(index, value) {
-		     //                $('#templates').append('<option value="' + index +'">' + value + '</option>');
-				   //      });
-		     //            	$("#templates").trigger("change");                						
-							// $("#templates").multiselect('destroy');
-							// $("#templates").multiselect({
-							//  	maxHeight: 200,
-							//     includeSelectAllOption: true,
-							//     enableCaseInsensitiveFiltering: true,
-							//     enableFiltering: true,
-							//     buttonWidth: '100%',
-							// 	buttonClass: 'form-control',
-							//  });					
-					  //   });	
+					    $.getJSON("{{ url('auditreport/templatesfilter')}}",
+				         { option: $('#customers').val() }, 
+				        function(data) {		        			         	
+		                	$('#templates').empty();
+		                	$.each(data, function(index, value) {
+		                    $('#templates').append('<option value="' + index +'">' + value + '</option>');
+				        });
+		                	$("#templates").trigger("change");                						
+							$("#templates").multiselect('destroy');
+							$("#templates").multiselect({
+							 	maxHeight: 200,
+							    includeSelectAllOption: true,
+							    enableCaseInsensitiveFiltering: true,
+							    enableFiltering: true,
+							    buttonWidth: '100%',
+								buttonClass: 'form-control',
+							 });					
+					    });	
 					    $.getJSON("{{ url('customerregionalreport/regionsfilter')}}",
 				        { option: $('#customers').val() },					        
 					        function(data) {		        			         	

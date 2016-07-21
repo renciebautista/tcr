@@ -115,13 +115,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $user = User::findOrFail($id);
         $role = Role::findOrFail($request->role);
         $user->email = $request->email;        
 
         $role_user = DB::table('role_user')->where('user_id',$id);
-        $role_user->delete();
-           
+        $role_user->delete();        
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         $user->roles()->attach($role);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -154,10 +154,14 @@ class UserController extends Controller
 
     public function managefields($id){
 
-        $user = User::where('id',$id)->first();        
+        $user = User::where('id',$id)->first();
+        $role = DB::table('role_user')
+            ->select('role_id')
+            ->where('user_id',$id)
+            ->first(); 
         $fields = ManagerFields::where('managers_id',$id)->get();                 
         $templates = ManagerTemplates::where('managers_id',$id)->get();                 
-        return view('user.managefields',compact('user','fields','templates'));
+        return view('user.managefields',compact('user','fields','templates','role'));
     }
     public function managefields_create($id){        
         $manager = User::where('id',$id)->first();

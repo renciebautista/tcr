@@ -6,6 +6,7 @@
 
 <section class="content">
 	<div class="row">
+		@if($role->role_id === 4)
 		<div class="col-md-6 col-xs-6">
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -53,6 +54,7 @@
 				  	{{ Form::close() }}									
 			  </div>
 		</div>
+		@elseif($role->role_id === 3)
 		<div class="col-md-6 col-xs-6">
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -99,6 +101,7 @@
 				  	{{ Form::close() }}									
 			  </div>
 		</div>
+		@endif
 	</div>
 </section>
 

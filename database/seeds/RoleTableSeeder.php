@@ -28,8 +28,14 @@ class RoleTableSeeder extends Seeder
 		$field->save();
 
 		$field = new Role();
-		$field->name         = 'manager';
-		$field->display_name = 'Manager Personel'; // optional
+		$field->name         = 'manager mt';
+		$field->display_name = 'Manager Personel for MT'; // optional
+		$field->description  = 'User is allowed to view reports only'; // optional
+		$field->save();
+
+		$field = new Role();
+		$field->name         = 'manager mag';
+		$field->display_name = 'Manager Personel for MAG'; // optional
 		$field->description  = 'User is allowed to view reports only'; // optional
 		$field->save();
     }
