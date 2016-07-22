@@ -174,14 +174,14 @@ class AuditReportController extends Controller
                 return Response::json($users);
             }       
             if($role->role_id === 1 || $role->role_id === 2){
-                if(empty($template)){
-                    $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                    return Response::json($users);
-                }
-                else{
+                // if(empty($template)){
+                //     $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+                //     return Response::json($users);
+                // }
+                // else{
                     $users = PostedAudit::getUserAF($template,$customer)->lists('name','user_id');
                     return Response::json($users);
-                }                
+                // }                
             }        
     }  
 
@@ -263,15 +263,15 @@ class AuditReportController extends Controller
         //         return Response::json($stores);
         //     }
         // }       
-        if(empty($user)){
-            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-            return Response::json($stores); 
-        }
-        else{
+        // if(empty($user)){
+        //     $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+        //     return Response::json($stores); 
+        // }
+        // else{
 
             $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
             return Response::json($stores);    
-        }        
+        // }        
     }    
 
     public function templatesfilter(){
@@ -285,15 +285,15 @@ class AuditReportController extends Controller
             return Response::json($templates);
         }
         if($role->role_id === 1 || $role->role_id === 2){            
-            if(empty($cus)){
-                $use = PostedAudit::getUsers($auth_user);
-                $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-                return Response::json($templates);
-            }
-            else{
+            // if(empty($cus)){
+            //     $use = PostedAudit::getUsers($auth_user);
+            //     $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
+            //     return Response::json($templates);
+            // }
+            // else{
                 $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
                 return Response::json($templates);    
-            }
+            // }
             
         }     
     } 
@@ -317,14 +317,14 @@ class AuditReportController extends Controller
         //         return Response::json($templates);
         //     }
         //     else{
-            if(empty($store)){
-                 $audits = PostedAudit::getAudits()->lists('description','audit_id');
-                 return Response::json($audits);
-            }
-            else{
+            // if(empty($store)){
+            //      $audits = PostedAudit::getAudits()->lists('description','audit_id');
+            //      return Response::json($audits);
+            // }
+            // else{
                 $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
                 return Response::json($audits);    
-            }
+            // }
                 
             // }
             

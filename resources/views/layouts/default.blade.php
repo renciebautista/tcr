@@ -120,7 +120,13 @@
 			});
 		</script>
 		<script type="text/javascript">
-		jQuery(document).ready(function($) {				             	       
+		jQuery(document).ready(function($) {	
+			
+			var template = $('#templates').val();
+		    var customer = $('#customers').val();
+		    var user = $('#users').val();
+		    var store = $('#stores').val();			             	       
+
 		    $('#customers').change(function(){			 		    			   			 
 			    $.getJSON("{{ url('auditreport/templatesfilter')}}",
 		         { option: $('#customers').val() }, 
@@ -139,7 +145,65 @@
 					    buttonWidth: '100%',
 						buttonClass: 'form-control',
 					 });					
-			    });						    				    							       
+			    });
+			    $.getJSON("{{ url('auditreport/filter')}}",
+								
+		        { option: template,customer }, 
+
+		        function(data) {		        			         	
+                	$('#users').empty();
+                	$.each(data, function(index, value) {
+                   		$('#users').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#users").trigger("change");                						
+					$("#users").multiselect('destroy');
+					$("#users").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });
+			    $.getJSON("{{ url('auditreport/userstorefilter')}}",
+		        { option: user, customer, template },					        
+			        function(data) {		        			         	
+	            	$('#stores').empty();
+	            	$.each(data, function(index, value) {
+	                	$('#stores').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+	            	$("#stores").trigger("change");                						
+					$("#stores").multiselect('destroy');
+					$("#stores").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					});					
+		    	});
+
+		    	$.getJSON("{{ url('auditreport/monthfilter')}}",
+		        { option: store,template,customer,user }, 
+
+		        function(data) {		        			         	
+                	$('#audits').empty();
+                	$.each(data, function(index, value) {
+                   		$('#audits').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#audits").trigger("change");                						
+					$("#audits").multiselect('destroy');
+					$("#audits").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });														    				    							       
 			});			
 		});
 		</script> 							
@@ -179,7 +243,9 @@
 		    $('#templates').change(function(){	
 
 		    	var template = $('#templates').val();
-		    	var customer = $('#customers').val();
+			    var customer = $('#customers').val();
+			    var user = $('#users').val();
+			    var store = $('#stores').val();	
 
 	    		$.getJSON("{{ url('auditreport/filter')}}",
 		        { option: template,customer }, 
@@ -199,12 +265,51 @@
 					    buttonWidth: '100%',
 						buttonClass: 'form-control',
 					 });					
-			    });							   
+			    });
+			    $.getJSON("{{ url('auditreport/userstorefilter')}}",
+		        { option: user, customer, template },					        
+			        function(data) {		        			         	
+	            	$('#stores').empty();
+	            	$.each(data, function(index, value) {
+	                	$('#stores').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+	            	$("#stores").trigger("change");                						
+					$("#stores").multiselect('destroy');
+					$("#stores").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					});					
+		    	});
+
+		    	$.getJSON("{{ url('auditreport/monthfilter')}}",
+		        { option: store,template,customer,user }, 
+
+		        function(data) {		        			         	
+                	$('#audits').empty();
+                	$.each(data, function(index, value) {
+                   		$('#audits').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#audits").trigger("change");                						
+					$("#audits").multiselect('destroy');
+					$("#audits").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });														    							   
 			});
 		});
 		</script> 							
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {	
+			
 		    $('#stores').change(function(){	
 
 		    	var template = $('#templates').val();
@@ -230,7 +335,27 @@
 					    buttonWidth: '100%',
 						buttonClass: 'form-control',
 					 });					
-			    });							   
+			    });
+
+			    $.getJSON("{{ url('auditreport/monthfilter')}}",
+		        { option: store,template,customer,user }, 
+
+		        function(data) {		        			         	
+                	$('#audits').empty();
+                	$.each(data, function(index, value) {
+                   		$('#audits').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#audits").trigger("change");                						
+					$("#audits").multiselect('destroy');
+					$("#audits").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });													   
 			});
 		});
 		</script> 							

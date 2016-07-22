@@ -57,29 +57,50 @@ class PostedAudit extends Model
                 ->get();
         }
     }
-    public static function getUserAF($template,$customer){        
-        $temp = [];        
-        foreach($template as $t){
-            $temp[] = $t;
+    public static function getUserAF($template,$customer){  
+        if(!empty($template) AND !empty($customer)){
+            $temp = [];        
+            foreach($template as $t){
+                $temp[] = $t;
+            }
+            $templates = DB::table('templates')
+                ->whereIn('templates.code',$temp)
+                ->get();
+            $tmp = [];
+            $customer_code = [];
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+            foreach($templates as $tp){
+                $tmp [] =$tp->description;
+            }
+            return self::select('user_id', 'users.name')   
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('posted_audits.template',$tmp)
+                ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                ->groupBy('user_id')
+                ->orderBy('users.name')
+                ->get();        
         }
-        $templates = DB::table('templates')
-            ->whereIn('templates.code',$temp)
-            ->get();
-        $tmp = [];
-        $customer_code = [];
-        foreach($customer as $c){
-            $customer_code[] = $c;
+        if(!empty($customer)){
+            $customer_code = [];
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }            
+            return self::select('user_id', 'users.name')   
+                ->whereIn('customer_code',$customer_code)
+                ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                ->groupBy('user_id')
+                ->orderBy('users.name')
+                ->get();        
         }
-        foreach($templates as $tp){
-            $tmp [] =$tp->description;
+        if(empty($customer)){                
+            return self::select('user_id', 'users.name')                   
+                ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                ->groupBy('user_id')
+                ->orderBy('users.name')
+                ->get();        
         }
-        return self::select('user_id', 'users.name')   
-            ->whereIn('customer_code',$customer_code)
-            ->whereIn('posted_audits.template',$tmp)
-            ->join('users','users.id', '=', 'posted_audits.user_id')                    
-            ->groupBy('user_id')
-            ->orderBy('users.name')
-            ->get();        
     }
         //------------------------------------>OLD FILTERING<-----------------------------//
         //fields na naka map sa user
@@ -411,72 +432,192 @@ class PostedAudit extends Model
             ->get();
     }
     public static function getStoresfilterAF($customer,$template,$user){
-        $users=[];        
-        foreach($user as $u) {
-            $users[] = $u;
-        }          
+        if(!empty($user) && !empty($template) && !empty($customer)){
+            $users=[];        
+            foreach($user as $u) {
+                $users[] = $u;
+            }          
 
-        $customer_code = [];
+            $customer_code = [];
 
-        foreach($customer as $c){
-            $customer_code[] = $c;
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+            $temp = DB::table('templates')
+                ->whereIn('templates.code',$template)
+                ->get();
+            $templates = [];
+
+            foreach($temp as $t){
+                $templates[] = $t->description;
+            }
+
+            return self::select('store_code', 'store_name','user_id')
+                ->whereIn('user_id',$users)
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)            
+                ->groupBy('store_code')
+                ->orderBy('store_name')
+                ->get();
         }
-        $temp = DB::table('templates')
-            ->whereIn('templates.code',$template)
-            ->get();
-        $templates = [];
+        if(!empty($customer) AND !empty($template)){
+            $customer_code = [];
 
-        foreach($temp as $t){
-            $templates[] = $t->description;
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+            $temp = DB::table('templates')
+                ->whereIn('templates.code',$template)
+                ->get();
+            $templates = [];
+
+            foreach($temp as $t){
+                $templates[] = $t->description;
+            }
+
+            return self::select('store_code', 'store_name','user_id')                
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)            
+                ->groupBy('store_code')
+                ->orderBy('store_name')
+                ->get();
         }
+        if(!empty($customer)){
+            $customer_code = [];
 
-        return self::select('store_code', 'store_name','user_id')
-            ->whereIn('user_id',$users)
-            ->whereIn('customer_code',$customer_code)
-            ->whereIn('template',$templates)            
-            ->groupBy('store_code')
-            ->orderBy('store_name')
-            ->get();
-    }
-     public static function getauditfiltersAF($store,$customer,$template,$user){
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }           
 
-        $users=[];        
-        foreach($user as $u) {
-            $users[] = $u;
-        }          
-
-        $customer_code = [];
-
-        foreach($customer as $c){
-            $customer_code[] = $c;
+            return self::select('store_code', 'store_name','user_id')                
+                ->whereIn('customer_code',$customer_code)                         
+                ->groupBy('store_code')
+                ->orderBy('store_name')
+                ->get();
         }
-       
-        $temp = DB::table('templates')
-            ->whereIn('templates.code',$template)
-            ->get();
-        $templates = [];
-
-        foreach($temp as $t){
-            $templates[] = $t->description;
+        if(empty($customer)){
+            return self::select('store_code', 'store_name','user_id')                                    
+                ->groupBy('store_code')
+                ->orderBy('store_name')
+                ->get();
         }
         
-        $stores = [];
+    }
+     public static function getauditfiltersAF($store,$customer,$template,$user){
+        if(!empty($customer) && !empty($template) && !empty($user) && !empty($store)){
+            $users=[];        
+            foreach($user as $u) {
+                $users[] = $u;
+            }          
 
-        foreach($store as $s){
-            $stores[]= $s;
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+           
+            $temp = DB::table('templates')
+                ->whereIn('templates.code',$template)
+                ->get();
+            $templates = [];
+
+            foreach($temp as $t){
+                $templates[] = $t->description;
+            }
+            
+            $stores = [];
+
+            foreach($store as $s){
+                $stores[]= $s;
+            }
+
+             return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('user_id',$users)
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)    
+                ->whereIn('store_code',$stores)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template) && !empty($user)){
+            $users=[];        
+            foreach($user as $u) {
+                $users[] = $u;
+            }          
+
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+           
+            $temp = DB::table('templates')
+                ->whereIn('templates.code',$template)
+                ->get();
+            $templates = [];
+
+            foreach($temp as $t){
+                $templates[] = $t->description;
+            }        
+
+             return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('user_id',$users)
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)                    
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template)){
+
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+           
+            $temp = DB::table('templates')
+                ->whereIn('templates.code',$template)
+                ->get();
+            $templates = [];
+
+            foreach($temp as $t){
+                $templates[] = $t->description;
+            }        
+
+             return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')                
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)                    
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();        
+        }
+        if(!empty($customer)){
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }                     
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')                
+                ->whereIn('customer_code',$customer_code)                        
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();  
+        }
+        if(empty($customer)){
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')                                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();  
         }
 
-
-         return self::select('audit_id', 'audits.description','posted_audits.*')
-            ->join('audits','audits.id', '=', 'posted_audits.audit_id')
-            ->whereIn('user_id',$users)
-            ->whereIn('customer_code',$customer_code)
-            ->whereIn('template',$templates)    
-            ->whereIn('store_code',$stores)
-            ->groupBy('audit_id')
-            ->orderBy('audits.id')
-            ->get();
-
+        
 
             
     }
@@ -1972,15 +2113,24 @@ class PostedAudit extends Model
                 ->get();
         }
         if($role->role_id === 1 || $role->role_id === 2){
-            $custom = [];
-            foreach($cus as $c){
-                $custom[] = $c;
-            }           
-            return self::select('channel_code', 'template')                        
-                ->whereIn('customer_code',$custom)
-                ->groupBy('template')
-                ->orderBy('template')
-                ->get();
+            if(!empty($cus)){
+                $custom = [];
+                foreach($cus as $c){
+                    $custom[] = $c;
+                }           
+                return self::select('channel_code', 'template')                        
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('template')
+                    ->orderBy('template')
+                    ->get();
+            }
+            if(empty($cus)){
+                return self::select('channel_code', 'template')                                            
+                    ->groupBy('template')
+                    ->orderBy('template')
+                    ->get();
+            }
+            
         }
     }
    
