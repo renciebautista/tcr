@@ -21,9 +21,9 @@
 	              	</div>
 	            </div>
 	            <div class="col-md-3">
-	            	<div class="form-group">
-	                	<label>Audit Month</label>
-	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+              		<div class="form-group">
+		                <label>Audit Template</label>
+		                {!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
 	              	</div>
 	            </div>
 	            <div class="col-md-3">
@@ -37,14 +37,13 @@
 	                	<label>Store Name</label>
 	               		{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
 	              	</div>
-	            </div>	            
+	            </div>	        
 	            <div class="col-md-3">
-              		<div class="form-group">
-		                <label>Audit Template</label>
-		                {!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	            	<div class="form-group">
+	                	<label>Audit Month</label>
+	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
 	              	</div>
-	            </div>
-	            
+	            </div>	                	            	            
           	</div>
         </div>
 
