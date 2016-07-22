@@ -17,7 +17,6 @@ use App\Role;
 class AuditReportController extends Controller
 {
     public function index(){
-        set_time_limit(0);
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);        
@@ -56,7 +55,6 @@ class AuditReportController extends Controller
     }
 
     public function create(Request $request){
-        set_time_limit(0);
         $auth_user = Auth::id();   
         $id = $auth_user;
         $role = Role::myroleid($id);        
