@@ -159,6 +159,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('auditreport/userstorefilter', 'AuditReportController@userstorefilter');
     Route::get('auditreport/templatesfilter', 'AuditReportController@templatesfilter');
     Route::get('auditreport/alltemplatesfilter', 'AuditReportController@alltemplatesfilter');
+    Route::get('auditreport/monthfilter', 'AuditReportController@monthfilter');
 
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
     Route::post('usersummaryreport',['as' => 'usersummaryreport.create', 'uses' => 'UserSummaryReportController@create']);

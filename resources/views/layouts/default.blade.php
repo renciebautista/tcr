@@ -121,272 +121,116 @@
 		</script>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {				             	       
-		    $('#customers').change(function(){			 
-
-		    	$.getJSON("{{ url('auditreport/filter')}}",
-		    	{ option: $('#customers').val() }, 
-		    	function(json){
-				    if ( json.length == 0 ) {
-				        $.getJSON("{{ url('auditreport/alluserfilter')}}",				          
-				        function(data) {		        			         	
-		                	$('#users').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#users').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#users").trigger("change");                						
-							$("#users").multiselect('destroy');
-							$("#users").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });
-					    $.getJSON("{{ url('auditreport/allstorefilter')}}",				         
-				        function(data) {		        			         	
-		                	$('#stores').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#stores").trigger("change");                						
-							$("#stores").multiselect('destroy');
-							$("#stores").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });
-					    $.getJSON("{{ url('auditreport/alltemplatesfilter')}}",				         
-				        function(data) {		        			         	
-		                	$('#templates').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#templates').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#templates").trigger("change");                						
-							$("#templates").multiselect('destroy');
-							$("#templates").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });				
-					    $.getJSON("{{ url('customerregionalreport/allregionsfilter')}}",				         
-				        function(data) {		        			         	
-		                	$('#regions').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#regions').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#regions").trigger("change");                						
-							$("#regions").multiselect('destroy');
-							$("#regions").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });				
-					    $.getJSON("{{ url('osareport/allcategoryfilter')}}",				         
-				        function(data) {		        			         	
-		                	$('#categories').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#categories").trigger("change");                						
-							$("#categories").multiselect('destroy');
-							$("#categories").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });							
-				    }
-				    else{
-					    $.getJSON("{{ url('auditreport/filter')}}",
-				         { option: $('#customers').val() }, 
-				        function(data) {		        			         	
-		                	$('#users').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#users').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#users").trigger("change");                						
-							$("#users").multiselect('destroy');
-							$("#users").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });				    	
-				        $.getJSON("{{ url('auditreport/storefilter')}}",
-				         { option: $('#customers').val() }, 
-				        function(data) {		        			         	
-		                	$('#stores').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#stores").trigger("change");                						
-							$("#stores").multiselect('destroy');
-							$("#stores").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });
-
-					    $.getJSON("{{ url('auditreport/templatesfilter')}}",
-				         { option: $('#customers').val() }, 
-				        function(data) {		        			         	
-		                	$('#templates').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#templates').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#templates").trigger("change");                						
-							$("#templates").multiselect('destroy');
-							$("#templates").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });	
-					    $.getJSON("{{ url('customerregionalreport/regionsfilter')}}",
-				        { option: $('#customers').val() },					        
-					        function(data) {		        			         	
-		                	$('#regions').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#regions').append('<option value="' + index +'">' + value + '</option>');
-				        	});
-		                	$("#regions").trigger("change");                						
-							$("#regions").multiselect('destroy');
-							$("#regions").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							});					
-				    	});						    								  
-				    }
-				});					        
+		    $('#customers').change(function(){			 		    			   			 
+			    $.getJSON("{{ url('auditreport/templatesfilter')}}",
+		         { option: $('#customers').val() }, 
+		        function(data) {		        			         	
+                	$('#templates').empty();
+                	$.each(data, function(index, value) {
+                    $('#templates').append('<option value="' + index +'">' + value + '</option>');
+		        });
+                	$("#templates").trigger("change");                						
+					$("#templates").multiselect('destroy');
+					$("#templates").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });						    				    							       
 			});			
 		});
 		</script> 							
 		<script type="text/javascript">
-		jQuery(document).ready(function($) {				             	       
-		    $('#users').change(function(){			 
-		    	$.getJSON("{{ url('auditreport/userstorefilter')}}",
-		    	{ option: $('#users').val() }, 
-		    	function(json){
-				    if ( json.length == 0 ) {				        				    	
-					    $.getJSON("{{ url('auditreport/allstorefilter')}}",				         
-				        function(data) {		        			         	
-		                	$('#stores').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#stores").trigger("change");                						
-							$("#stores").multiselect('destroy');
-							$("#stores").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });					    
-				    }
-				    else{    			   
-				        $.getJSON("{{ url('auditreport/userstorefilter')}}",
-				        { option: $('#users').val() },					        
-					        function(data) {		        			         	
-		                	$('#stores').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#stores').append('<option value="' + index +'">' + value + '</option>');
-				        	});
-		                	$("#stores").trigger("change");                						
-							$("#stores").multiselect('destroy');
-							$("#stores").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							});					
-				    	});					    
-		 			}
-				});
+		jQuery(document).ready(function($) {		
+
+		    $('#users').change(function(){	
+
+		    	var template = $('#templates').val();
+		    	var customer = $('#customers').val();	
+		    	var user = $('#users').val();		   
+
+		        $.getJSON("{{ url('auditreport/userstorefilter')}}",
+		        { option: user, customer, template },					        
+			        function(data) {		        			         	
+	            	$('#stores').empty();
+	            	$.each(data, function(index, value) {
+	                	$('#stores').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+	            	$("#stores").trigger("change");                						
+					$("#stores").multiselect('destroy');
+					$("#stores").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					});					
+		    	});					    
+		 							
 			});
 		});
 		</script> 							
 		<script type="text/javascript">
-		jQuery(document).ready(function($) {				             	       
-		    $('#templates').change(function(){			 
-		    	$.getJSON("{{ url('osareport/categoryfilter')}}",
-		    	{ option: $('#templates').val() }, 
-		    	function(json){
-				    if ( json.length == 0 ) {				        				    	
-					    $.getJSON("{{ url('osareport/allcategoryfilter')}}",					         
-				        function(data) {		        			         	
-		                	$('#categories').empty();
-		                	$.each(data, function(index, value) {
-		                    $('#categories').append('<option value="' + index +'">' + value + '</option>');
-				        });
-		                	$("#categories").trigger("change");                						
-							$("#categories").multiselect('destroy');
-							$("#categories").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-					    });					    
-				    }
-				    else{    			   
-				        $.getJSON("{{ url('osareport/categoryfilter')}}",	
-				        { option: $('#templates').val() }, 			         
-						function(data) {		        			         	
-							$('#categories').empty();
-							$.each(data, function(index, value) {
-						    $('#categories').append('<option value="' + index +'">' + value + '</option>');
-						});
-							$("#categories").trigger("change");                						
-							$("#categories").multiselect('destroy');
-							$("#categories").multiselect({
-							 	maxHeight: 200,
-							    includeSelectAllOption: true,
-							    enableCaseInsensitiveFiltering: true,
-							    enableFiltering: true,
-							    buttonWidth: '100%',
-								buttonClass: 'form-control',
-							 });					
-						});			
-		 			}
-				});
+		jQuery(document).ready(function($) {	
+		    $('#templates').change(function(){	
+
+		    	var template = $('#templates').val();
+		    	var customer = $('#customers').val();
+
+	    		$.getJSON("{{ url('auditreport/filter')}}",
+		        { option: template,customer }, 
+
+		        function(data) {		        			         	
+                	$('#users').empty();
+                	$.each(data, function(index, value) {
+                   		$('#users').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#users").trigger("change");                						
+					$("#users").multiselect('destroy');
+					$("#users").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });							   
+			});
+		});
+		</script> 							
+		<script type="text/javascript">
+		jQuery(document).ready(function($) {	
+		    $('#stores').change(function(){	
+
+		    	var template = $('#templates').val();
+		    	var customer = $('#customers').val();
+		    	var user = $('#users').val();
+		    	var store = $('#stores').val();
+
+	    		$.getJSON("{{ url('auditreport/monthfilter')}}",
+		        { option: store,template,customer,user }, 
+
+		        function(data) {		        			         	
+                	$('#audits').empty();
+                	$.each(data, function(index, value) {
+                   		$('#audits').append('<option value="' + index +'">' + value + '</option>');
+		        	});
+                	$("#audits").trigger("change");                						
+					$("#audits").multiselect('destroy');
+					$("#audits").multiselect({
+					 	maxHeight: 200,
+					    includeSelectAllOption: true,
+					    enableCaseInsensitiveFiltering: true,
+					    enableFiltering: true,
+					    buttonWidth: '100%',
+						buttonClass: 'form-control',
+					 });					
+			    });							   
 			});
 		});
 		</script> 							
