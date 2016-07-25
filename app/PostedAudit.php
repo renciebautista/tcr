@@ -94,19 +94,79 @@ class PostedAudit extends Model
                 ->get();        
         }
         if(!empty($customer)){
+
             $customer_code = [];
+            
             foreach($customer as $c){
                 $customer_code[] = $c;
-            }            
-            return self::select('user_id', 'users.name')   
-                ->whereIn('customer_code',$customer_code)
+            }        
+
+            if($role->role_id === 4){
+
+                $myFields = DB::table('manager_fields')
+                    ->select('manager_fields.*')
+                    ->where('manager_fields.managers_id','=',$auth_user)
+                    ->get();
+
+                $data = [];
+
+                foreach ($myFields as $value) {
+
+                    $data[] =  $value->fields_id;
+
+                }   
+               
+                return self::select('user_id', 'users.name')   
+                    ->whereIn('user_id',$data)
+                    ->whereIn('customer_code',$customer_code)
+                    ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                    ->groupBy('user_id')
+                    ->orderBy('users.name')
+                    ->get();                    
+
+            }
+            if($role->role_id === 3){
+
+                 $myTemplates = DB::table('manager_templates')
+                ->join('templates', 'templates.id', '=', 'manager_templates.templates_id')
+                ->where('manager_templates.managers_id','=',$auth_user)
+                ->get();    
+
+                $tdes =[];
+                
+                foreach($myTemplates as $td){ 
+                    $tdes[]=$td->description;            
+                }  
+
+                return self::select('user_id', 'users.name')   
+                    ->whereIn('template',$tdes)
+                    ->whereIn('customer_code',$customer_code)
+                    ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                    ->groupBy('user_id')
+                    ->orderBy('users.name')
+                    ->get();            
+            }  
+            else{
+
+                return self::select('user_id', 'users.name')                       
+                    ->whereIn('customer_code',$customer_code)
+                    ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                    ->groupBy('user_id')
+                    ->orderBy('users.name')
+                    ->get();     
+            }
+            
+        }
+        if(empty($customer)){      
+
+            if($role->role_id === 1 || $role->role_id === 2){
+
+            return self::select('user_id', 'users.name')                   
                 ->join('users','users.id', '=', 'posted_audits.user_id')                    
                 ->groupBy('user_id')
                 ->orderBy('users.name')
                 ->get();        
-        }
-        if(empty($customer)){      
-
+            }
             if($role->role_id === 3){
 
                 $myTemplates = DB::table('manager_templates')
@@ -126,14 +186,28 @@ class PostedAudit extends Model
                     ->groupBy('user_id')
                     ->orderBy('users.name')
                     ->get();              
-            }      
-            if($role->role_id === 1 || $role->role_id === 2){
+            }                  
+            if($role->role_id === 4){
 
-            return self::select('user_id', 'users.name')                   
-                ->join('users','users.id', '=', 'posted_audits.user_id')                    
-                ->groupBy('user_id')
-                ->orderBy('users.name')
-                ->get();        
+                $myFields = DB::table('manager_fields')
+                    ->select('manager_fields.*')
+                    ->where('manager_fields.managers_id','=',$auth_user)
+                    ->get();
+
+                $data = [];
+
+                foreach ($myFields as $value) {
+
+                    $data[] =  $value->fields_id;
+
+                }   
+               
+                return self::select('user_id', 'users.name','customer_code')
+                    ->whereIn('user_id',$data)
+                    ->join('users','users.id', '=', 'posted_audits.user_id')                    
+                    ->groupBy('user_id')
+                    ->orderBy('users.name')
+                    ->get();                
             }
         }
     }
@@ -401,23 +475,7 @@ class PostedAudit extends Model
             ->orderBy('store_name')
             ->get();
     }
-
-    public static function getStoresfilter($use,$cus){
-        $users=[];
-        foreach($use as $u) {
-            $users[] = $u->user_id;
-        }          
-        $cust = [];
-        foreach($cus as $c){
-            $cust[] = $c;
-        }
-        return self::select('store_code', 'store_name','user_id')
-            ->whereIn('user_id',$users)
-            ->whereIn('customer_code',$cust)
-            ->groupBy('store_code')
-            ->orderBy('store_name')
-            ->get();
-    }
+    
     public static function getStoresfilterAF($customer,$template,$user){
 
         $auth_user = Auth::id();
@@ -454,41 +512,135 @@ class PostedAudit extends Model
                 ->orderBy('store_name')
                 ->get();
         }
-        
+
         if(!empty($customer) AND !empty($template)){
-            $customer_code = [];
 
-            foreach($customer as $c){
-                $customer_code[] = $c;
+            if($role->role_id === 4){
+                $customer_code = [];
+
+                foreach($customer as $c){
+                    $customer_code[] = $c;
+                }
+
+                $temp = DB::table('templates')
+                    ->whereIn('templates.code',$template)
+                    ->get();
+                $templates = [];
+
+                foreach($temp as $t){
+                    $templates[] = $t->description;
+                }
+
+                $myFields = DB::table('manager_fields')                
+                    ->where('manager_fields.managers_id','=',$auth_user)
+                    ->get();    
+
+                    $tdes =[];
+                    
+                    foreach($myFields as $td){ 
+                        $tdes[]=$td->fields_id;            
+                    }
+
+                return self::select('store_code', 'store_name','user_id')                
+                    ->whereIn('customer_code',$customer_code)
+                    ->whereIn('template',$templates)     
+                    ->whereIn('user_id',$tdes)       
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();
             }
-            $temp = DB::table('templates')
-                ->whereIn('templates.code',$template)
-                ->get();
-            $templates = [];
+            else{
 
-            foreach($temp as $t){
-                $templates[] = $t->description;
+
+                $customer_code = [];
+
+                foreach($customer as $c){
+                    $customer_code[] = $c;
+                }
+
+                $temp = DB::table('templates')
+                    ->whereIn('templates.code',$template)
+                    ->get();
+                $templates = [];
+
+                foreach($temp as $t){
+                    $templates[] = $t->description;
+                }            
+
+                return self::select('store_code', 'store_name','user_id')                
+                    ->whereIn('customer_code',$customer_code)
+                    ->whereIn('template',$templates)                         
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();
             }
-
-            return self::select('store_code', 'store_name','user_id')                
-                ->whereIn('customer_code',$customer_code)
-                ->whereIn('template',$templates)            
-                ->groupBy('store_code')
-                ->orderBy('store_name')
-                ->get();
         }
         if(!empty($customer)){
-            $customer_code = [];
 
-            foreach($customer as $c){
-                $customer_code[] = $c;
-            }           
+            if($role->role_id === 4){
 
-            return self::select('store_code', 'store_name','user_id')                
-                ->whereIn('customer_code',$customer_code)                         
-                ->groupBy('store_code')
-                ->orderBy('store_name')
-                ->get();
+                $customer_code = [];
+
+                foreach($customer as $c){
+                    $customer_code[] = $c;
+                }           
+
+                $myFields = DB::table('manager_fields')                
+                    ->where('manager_fields.managers_id','=',$auth_user)
+                    ->get();    
+
+                $tdes =[];
+                
+                foreach($myFields as $td){ 
+                    $tdes[]=$td->fields_id;            
+                }
+
+                return self::select('store_code', 'store_name','user_id')                
+                    ->whereIn('customer_code',$customer_code)     
+                    ->whereIn('user_id',$tdes)
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();    
+            }
+            if($role->role_id === 3){
+
+                $customer_code = [];
+
+                foreach($customer as $c){
+                    $customer_code[] = $c;
+                }           
+
+                $temp = DB::table('templates')
+                    ->whereIn('templates.code',$template)
+                    ->get();
+
+                $templates = [];
+
+                foreach($temp as $t){
+                    $templates[] = $t->description;
+                }
+
+                return self::select('store_code', 'store_name','user_id')                
+                    ->whereIn('customer_code',$customer_code)     
+                    ->whereIn('template',$templates)
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();    
+            }
+            else{
+
+                $customer_code = [];
+
+                foreach($customer as $c){
+                    $customer_code[] = $c;
+                }                       
+
+                return self::select('store_code', 'store_name','user_id')                
+                    ->whereIn('customer_code',$customer_code)                       
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();
+            }
         }
         if(empty($customer)){
 
@@ -522,6 +674,21 @@ class PostedAudit extends Model
             }
             if($role->role_id === 4){
 
+                $myFields = DB::table('manager_fields')                
+                ->where('manager_fields.managers_id','=',$auth_user)
+                ->get();    
+
+                $tdes =[];
+                
+                foreach($myFields as $td){ 
+                    $tdes[]=$td->fields_id;            
+                }
+
+                return self::select('store_code', 'store_name','user_id')                                    
+                    ->whereIn('user_id',$tdes)
+                    ->groupBy('store_code')
+                    ->orderBy('store_name')
+                    ->get();
             }
         }
         
@@ -641,18 +808,7 @@ class PostedAudit extends Model
         }
             
     }
-    public static function getUserStoresfilter($use,$userfilt){        
-        $usfil=[];
-        foreach($userfilt as $u){
-            $usfil[] = $u;
-        }
-        return self::select('store_code', 'store_name','user_id')
-            ->whereIn('user_id',$usfil)            
-            ->groupBy('store_code')
-            ->orderBy('store_name')
-            ->get();
-    }      
-
+    
     public static function search($request,$usse){         
         $auth_user = Auth::id();
         $role = DB::table('role_user')
@@ -1975,56 +2131,6 @@ class PostedAudit extends Model
         return $data;
 
     }
-
-    public static function getsfilters($auth_user,$cus){
-        //fields na naka map sa user
-        $myFields = DB::table('manager_fields')
-            ->select('manager_fields.*')
-            ->where('manager_fields.managers_id','=',$auth_user)
-            ->get();
-
-        $data = [];
-        foreach ($myFields as $value) {
-            $data[] =  $value->fields_id;
-        }        
-        //templates na naka mapped sa user
-        $myTemplates = DB::table('manager_templates')
-            ->select('manager_templates.*')
-            ->where('manager_templates.managers_id','=',$auth_user)
-            ->get();
-        $datas = [];
-
-        foreach ($myTemplates as $value) {
-            $datas[] =  $value->templates_id;
-        }
-        $temp_desc = DB::table('templates')
-            ->select('templates.*')
-            ->whereIn('templates.id',$datas)            
-            ->get();
-        $tdes =[];
-        foreach($temp_desc as $td){ 
-            $tdes[]=$td->description;            
-        }
-        $another_user = DB::table('posted_audits')
-            ->select('posted_audits.*')
-            ->whereIn('posted_audits.template',$tdes)
-            ->get();         
-        foreach ($another_user as $value) {
-            $data[] =  $value->user_id;
-        }  
-                
-        $custom = [];  
-        foreach($cus as $c){
-            $custom = $c;
-        }
-        return self::select('user_id', 'users.name','customer_code')
-            ->whereIn('user_id',$data)
-            ->whereIn('customer_code',$custom)      
-            ->join('users','users.id', '=', 'posted_audits.user_id')                    
-            ->groupBy('user_id')
-            ->orderBy('users.name')
-            ->get();                
-    }
    
     public static function getsstorefilters($cus,$use){
         $users=[];
@@ -2043,10 +2149,32 @@ class PostedAudit extends Model
             ->get();
     }
     public static function getstemplatefilters($auth_user,$cus){
+        
         $role = DB::table('role_user')
             ->select('role_id')
             ->where('user_id',$auth_user)
             ->first(); 
+
+        if($role->role_id === 1 || $role->role_id === 2){
+            if(!empty($cus)){
+                $custom = [];
+                foreach($cus as $c){
+                    $custom[] = $c;
+                }           
+                return self::select('channel_code', 'template')                        
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('template')
+                    ->orderBy('template')
+                    ->get();
+            }
+            if(empty($cus)){
+                return self::select('channel_code', 'template')                                            
+                    ->groupBy('template')
+                    ->orderBy('template')
+                    ->get();
+            }
+            
+        }
         if($role->role_id === 3){
             if(!empty($cus)){
 
@@ -2071,11 +2199,14 @@ class PostedAudit extends Model
                     ->get();
             }
             if(empty($cus)){
-                 $myTemplates = DB::table('manager_templates')
+
+                $myTemplates = DB::table('manager_templates')
                     ->join('templates', 'templates.id', '=', 'manager_templates.templates_id')
                     ->where('manager_templates.managers_id','=',$auth_user)
                     ->get();                   
+
                 $temp = [];
+
                 foreach($myTemplates as $c){
                     $temp[] = $c->description;
                 }
@@ -2087,26 +2218,53 @@ class PostedAudit extends Model
                     ->get();
             }
         }
-        if($role->role_id === 1 || $role->role_id === 2){
+        if($role->role_id === 4){
+
             if(!empty($cus)){
+                
+                $myfields = DB::table('manager_fields')
+                    ->where('managers_id',$auth_user)                    
+                    ->get();
+                
+                $users = [];
+
+                foreach($myfields as $mf){
+                    $users[] = $mf->fields_id;
+                }
+
                 $custom = [];
+                
                 foreach($cus as $c){
                     $custom[] = $c;
-                }           
-                return self::select('channel_code', 'template')                        
+                }
+
+                return self::select('channel_code', 'template')
+                    ->whereIn('user_id',$users)            
                     ->whereIn('customer_code',$custom)
                     ->groupBy('template')
                     ->orderBy('template')
                     ->get();
             }
             if(empty($cus)){
-                return self::select('channel_code', 'template')                                            
+               
+                $myfields = DB::table('manager_fields')
+                    ->where('managers_id',$auth_user)                    
+                    ->get();
+                
+                $users = [];
+
+                foreach($myfields as $mf){
+                    $users[] = $mf->fields_id;
+                }
+                
+                return self::select('channel_code', 'template')
+                    ->whereIn('user_id',$users)                    
                     ->groupBy('template')
                     ->orderBy('template')
                     ->get();
             }
-            
         }
+        
     }
    
 }
