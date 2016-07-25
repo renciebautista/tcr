@@ -74,32 +74,69 @@ class AuditReportController extends Controller
             $request->flash();
             if($role->role_id === 4){   
 
-                $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                $use = PostedAudit::getUsers($auth_user);
-                $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-                $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+                $customer = $request->get('customers');
+                $cus = $customer;
+                $template = $request->get('templates');
+                $user = $request->get('users');
+                $store = $request->get('stores');
+                $month = $request->get('audits');
+
+                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+                $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+                $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+                $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
+
+                // $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+                // $use = PostedAudit::getUsers($auth_user);
+                // $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
+                // $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
                 $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             }
             if($role->role_id === 3){                
-                $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code'); 
+
+                // $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code'); 
                 $temp = PostedAudit::getTemplatesMT($auth_user);
-                $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');
-                $use = PostedAudit::getUsersMT($temp);   
-                $stores = PostedAudit::getPostedStoresMT($use)->lists('store_name','store_code');
+                // $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');
+                // $use = PostedAudit::getUsersMT($temp);   
+                // $stores = PostedAudit::getPostedStoresMT($use)->lists('store_name','store_code');
                 $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+                $customer = $request->get('customers');
+                $cus = $customer;
+                $template = $request->get('templates');
+                $user = $request->get('users');
+                $store = $request->get('stores');
+                $month = $request->get('audits');
+
+                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+                $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+                $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+                $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
             }
-            if($role->role_id != 3 || $role->role_id !=4){
-                $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                $use = PostedAudit::getUsers($auth_user);
-                $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
-                $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+            if($role->role_id == 1 || $role->role_id == 2){
+                $customer = $request->get('customers');
+                $cus = $customer;
+                $template = $request->get('templates');
+                $user = $request->get('users');
+                $store = $request->get('stores');
+                $month = $request->get('audits');
+
+                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+                $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+                $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+                $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
+
+                 $use = PostedAudit::getUsers($auth_user);
+                // $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
+                // $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
                 $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');               
             }
-            $audits = PostedAudit::getAudits()->lists('description','audit_id');            
+
+            // $audits = PostedAudit::getAudits()->lists('description','audit_id');            
             $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
             $osa_average = PostedAudit::getOsaAverage($posted_audits);
             $npi_average = PostedAudit::getNpiAverage($posted_audits);
             $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+
             return view('auditreport.index',compact('posted_audits','users','audits', 'status','stores','customers','p_store_average','osa_average','npi_average','planogram_average','templates'));
         }else{
             set_time_limit(0);
@@ -164,68 +201,36 @@ class AuditReportController extends Controller
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
-        $customer = Input::get('customer');
-        $template = Input::get('option');                                 
+        $customer = Input::get('customers');
+        $template = Input::get('templates');                                 
         
         $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
         return Response::json($users);                            
     }  
-
-    public function alluserfilter(){
-        $auth_user = Auth::id();        
-        $id = $auth_user;
-        $role = Role::myroleid($id);   
-            if($role->role_id === 4){
-                $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                return Response::json($users);                
-            }
-            if($role->role_id === 3){
-                $temp = PostedAudit::getTemplatesMT($auth_user);
-                $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');
-                return Response::json($users);                
-            }
-    }  
-
-    public function storefilter(){
-        $auth_user = Auth::id();
-        $id = $auth_user;
-        $role = Role::myroleid($id);   
-        $user = Input::get('option');        
-        $template = Input::get('template');
-        $customer = Input::get('customer');
     
-            $use = PostedAudit::getUsers($auth_user);         
-            $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
-            return Response::json($stores);        
-    }    
 
-    // public function allstorefilter(){
+    // public function storefilter(){
     //     $auth_user = Auth::id();
     //     $id = $auth_user;
     //     $role = Role::myroleid($id);   
-    //     $cus = Input::all();        
-    //     if(is_array($cus)){           
-    //         if($role->role_id === 4){
-    //             $use = PostedAudit::getUsers($auth_user);         
-    //             $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-    //             return Response::json($stores);
-    //         }
-    //         if($role->role_id === 3){
-    //             $temp = PostedAudit::getTemplatesMT($auth_user);                
-    //             $stores = PostedAudit::getPostedStoresMT($temp)->lists('store_name','store_code');
-    //             return Response::json($stores);
-    //         }
-    //     }                    
-    // }   
+    //     $user = Input::get('users');        
+    //     $template = Input::get('templates');
+    //     $customer = Input::get('customers');
 
+    //     $use = PostedAudit::getUsers($auth_user);         
+    //     $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+    //     return Response::json($stores);        
+    // }    
+
+   
     public function userstorefilter(){
 
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);           
-        $customer = Input::get('customer');
-        $user = Input::get('option');
-        $template = Input::get('template');
+        $customer = Input::get('customers');
+        $user = Input::get('users');
+        $template = Input::get('templates');
         $use = PostedAudit::getUsers($auth_user); 
 
         $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
@@ -237,19 +242,20 @@ class AuditReportController extends Controller
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
-        $cus = Input::get('option');               
+        $cus = Input::get('customers');               
               
         $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
         return Response::json($templates);           
     } 
+
     public function monthfilter(){
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
-        $store = Input::get('option');
-        $customer = Input::get('customer');
-        $template = Input::get('template');
-        $user = Input::get('user');
+        $store = Input::get('stores');
+        $customer = Input::get('customers');
+        $template = Input::get('templates');
+        $user = Input::get('users');
         
         $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
         return Response::json($audits);        

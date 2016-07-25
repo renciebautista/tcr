@@ -151,15 +151,15 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('auditreport',['as' => 'auditreport.index', 'uses' => 'AuditReportController@index']);
     Route::post('auditreport',['as' => 'auditreport.create', 'uses' => 'AuditReportController@create']);
     Route::get('auditreport/{id}/download',['as' => 'auditreport.download', 'uses' => 'AuditReportController@download']);
-    Route::get('auditreport/filter', 'AuditReportController@filter');
+    Route::post('auditreport/filter', 'AuditReportController@filter');
     
-    Route::get('auditreport/alluserfilter', 'AuditReportController@alluserfilter');
-    Route::get('auditreport/storefilter', 'AuditReportController@storefilter');
-    Route::get('auditreport/allstorefilter', 'AuditReportController@allstorefilter');
-    Route::get('auditreport/userstorefilter', 'AuditReportController@userstorefilter');
-    Route::get('auditreport/templatesfilter', 'AuditReportController@templatesfilter');
-    Route::get('auditreport/alltemplatesfilter', 'AuditReportController@alltemplatesfilter');
-    Route::get('auditreport/monthfilter', 'AuditReportController@monthfilter');
+    // Route::get('auditreport/alluserfilter', 'AuditReportController@alluserfilter');
+    // Route::get('auditreport/storefilter', 'AuditReportController@storefilter');
+    // Route::get('auditreport/allstorefilter', 'AuditReportController@allstorefilter');
+    Route::post('auditreport/userstorefilter', 'AuditReportController@userstorefilter');
+    Route::post('auditreport/templatesfilter', 'AuditReportController@templatesfilter');
+    // Route::get('auditreport/alltemplatesfilter', 'AuditReportController@alltemplatesfilter');
+    Route::post('auditreport/monthfilter', 'AuditReportController@monthfilter');
 
     Route::get('usersummaryreport',['as' => 'usersummaryreport.index', 'uses' => 'UserSummaryReportController@index']);
     Route::post('usersummaryreport',['as' => 'usersummaryreport.create', 'uses' => 'UserSummaryReportController@create']);

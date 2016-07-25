@@ -183,7 +183,66 @@
 @endsection
 
 @section('page-script')
-$('#users, #customers,#audits,#stores,#status, #pjps,#templates').multiselect({
+
+$('#customers').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/templatesfilter",
+		success: function(data){			
+			$('select#templates').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#templates'));
+			});
+		$('select#templates').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/filter",
+		success: function(data){			
+			$('select#users').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#users'));
+			});
+		$('select#users').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#templates').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -191,6 +250,112 @@ $('#users, #customers,#audits,#stores,#status, #pjps,#templates').multiselect({
     buttonWidth: '100%',
 	buttonClass: 'form-control',
 
- });
+}).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../auditreport/filter",
+		success: function(data){			
+			$('select#users').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#users'));
+			});
+		$('select#users').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#users').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){		
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#stores').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){			
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected')), stores: GetSelectValues($('select#stores :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#audits').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+});
+
  $('#dt-table').dataTable(); 
 @endsection
