@@ -160,29 +160,21 @@ class AuditReportController extends Controller
     }
 
     public function filter(){
+
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
         $customer = Input::get('customer');
-        $template = Input::get('option');        
-            if($role->role_id === 4){
-                $users = PostedAudit::getsfilters($auth_user,$cus)->lists('name','user_id');
-                return Response::json($users);
-            }
-            if($role->role_id === 3){
-                $users = PostedAudit::getsfiltersMT($auth_user,$cus)->lists('name','user_id');
-                return Response::json($users);
-            }       
-            if($role->role_id === 1 || $role->role_id === 2){
-                // if(empty($template)){
-                //     $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                //     return Response::json($users);
-                // }
-                // else{
-                    $users = PostedAudit::getUserAF($template,$customer)->lists('name','user_id');
-                    return Response::json($users);
-                // }                
-            }        
+        $template = Input::get('option');            
+
+            // if($role->role_id === 4){
+            //     //MAG
+            //     $users = PostedAudit::getsfilters($auth_user,$cus)->lists('name','user_id');
+            //     return Response::json($users);
+
+            // }                                    
+            $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+            return Response::json($users);                            
     }  
 
     public function alluserfilter(){
@@ -244,8 +236,7 @@ class AuditReportController extends Controller
     public function userstorefilter(){
         $auth_user = Auth::id();
         $id = $auth_user;
-        $role = Role::myroleid($id);   
-        $userfilt = Input::all();
+        $role = Role::myroleid($id);           
         $customer = Input::get('customer');
         $user = Input::get('option');
         $template = Input::get('template');
@@ -255,49 +246,22 @@ class AuditReportController extends Controller
         //         $use = PostedAudit::getUsers($auth_user);         
         //         $stores = PostedAudit::getUserStoresfilter($use,$userfilt)->lists('store_name','store_code');            
         //         return Response::json($stores);
-        //     }
-        //     if($role->role_id === 3){  
-        //         $temp = PostedAudit::getTemplatesMT($auth_user);
-        //         $use = PostedAudit::getUsersMT($temp);         
-        //         $stores = PostedAudit::getUserStoresfilterMT($temp,$userfilt)->lists('store_name','store_code');
-        //         return Response::json($stores);
-        //     }
-        // }       
-        // if(empty($user)){
-        //     $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-        //     return Response::json($stores); 
-        // }
-        // else{
-
-            $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
-            return Response::json($stores);    
-        // }        
+        //     }    
+        $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+        return Response::json($stores);            
     }    
 
     public function templatesfilter(){
+
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
         $cus = Input::get('option');               
-        if($role->role_id === 3){       
-            $use = PostedAudit::getUsers($auth_user);         
-            $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
-            return Response::json($templates);
-        }
-        if($role->role_id === 1 || $role->role_id === 2){            
-            // if(empty($cus)){
-            //     $use = PostedAudit::getUsers($auth_user);
-            //     $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-            //     return Response::json($templates);
-            // }
-            // else{
-                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
-                return Response::json($templates);    
-            // }
-            
-        }     
+              
+        $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+        return Response::json($templates);           
     } 
-     public function monthfilter(){
+    public function monthfilter(){
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);   
@@ -305,47 +269,10 @@ class AuditReportController extends Controller
         $customer = Input::get('customer');
         $template = Input::get('template');
         $user = Input::get('user');
-        // if($role->role_id === 3){       
-        //     $use = PostedAudit::getUsers($auth_user);         
-        //     $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
-        //     return Response::json($templates);
-        // }
-        // if($role->role_id === 1 || $role->role_id === 2){            
-        //     if(empty($cus)){
-        //         $use = PostedAudit::getUsers($auth_user);
-        //         $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-        //         return Response::json($templates);
-        //     }
-        //     else{
-            // if(empty($store)){
-            //      $audits = PostedAudit::getAudits()->lists('description','audit_id');
-            //      return Response::json($audits);
-            // }
-            // else{
-                $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
-                return Response::json($audits);    
-            // }
-                
-            // }
+        
+        $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
+        return Response::json($audits);        
             
         
-    }    
-    // public function alltemplatesfilter(){
-    //     $auth_user = Auth::id();
-    //     $id = $auth_user;
-    //     $role = Role::myroleid($id);   
-    //     $cus = Input::all();        
-    //     if(is_array($cus)){   
-    //         if($role->role_id === 3){        
-    //             $use = PostedAudit::getUsers($auth_user);         
-    //             $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code');
-    //             return Response::json($templates);
-    //         }
-    //         if($role->role_id === 1 || $role->role_id === 2){                
-    //             $use = PostedAudit::getUsers($auth_user);
-    //             $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-    //             return Response::json($templates);
-    //         }
-    //     }                    
-    // }    
+    }        
 }
