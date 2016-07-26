@@ -100,5 +100,13 @@ class User extends Model implements AuthenticatableContract,
             ->first();
         
     }
+
+    public static function allUsers(){
+
+        return self::select('id','name')      
+                ->where('name','!=',"admin")          
+                ->orderBy('name')
+                ->get();        
+    }
     
 }

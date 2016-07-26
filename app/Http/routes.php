@@ -109,6 +109,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 		
 	    Route::resource('audits', 'AuditController');
 	    Route::resource('export', 'ExportController');
+	    Route::resource('remap', 'RemapController');
+	    
 	    Route::get('export.export_xlsx',['as'=>'export.export_xlsx','uses'=>'ExportController@exportxlsx']);
 	    Route::get('export.export_csv',['as'=>'export.export_csv','uses'=>'ExportController@exportcsv']);
 	    Route::get('export_template',['as'=>'export_template','uses'=>'ExportController@template']);

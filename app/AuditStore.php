@@ -295,4 +295,16 @@ class AuditStore extends Model
     		->orderBy('audits.id','asc')
     		->get();
     }
+
+    public static function remapToNew($user_id,$new_user_id){
+
+    	$old =  self::select('audit_stores.id','audit_stores.user_id','channel_code')
+    		->where('user_id',$user_id)    		
+    		->get();
+    	
+    	foreach($old as $o){
+    		$o->user_id = $new_user_id;
+    		$o->update();    	
+    	}
+    }
 }

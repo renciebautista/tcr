@@ -57,6 +57,7 @@
 				  		<ul class="dropdown-menu" role="menu">
 				  			<li>{!! link_to_route('export.index','Export Store') !!}</li>
 				  			<li>{!! link_to_route('export_template','Export Template') !!}</li>
+				  			<li>{!! link_to_route('remap.index','Remap User') !!}</li>
 				  		</ul>
 
 					</li>

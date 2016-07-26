@@ -1020,7 +1020,7 @@ class PostedAudit extends Model
         }
         
     }
-     public static function getauditfiltersAF($store,$customer,$template,$user){
+    public static function getauditfiltersAF($store,$customer,$template,$user){
         if(!empty($customer) && !empty($template) && !empty($user) && !empty($store)){
             $users=[];        
             foreach($user as $u) {
@@ -2615,7 +2615,7 @@ class PostedAudit extends Model
             %s
             %s
             %s
-            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$custom);
+            group by customer, audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$custom);
         
         $data = DB::select(DB::raw($query));        
         // dd($data);
@@ -2775,6 +2775,17 @@ class PostedAudit extends Model
             }
         }
         
+    }
+    public static function remapToNew($user_id,$new_user_id){
+
+        $old =  self::select('id','user_id')
+            ->where('user_id',$user_id)         
+            ->get();
+        
+        foreach($old as $o){
+            $o->user_id = $new_user_id;
+            $o->update();       
+        }
     }
    
 }

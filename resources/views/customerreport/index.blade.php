@@ -152,9 +152,9 @@
 								<td align="center">{{ $summary->perfect_stores }}</td>
 								<td align="center">{{ $summary->ps_doors }}%</td>
 								<td align="center">{{ $summary->ave_perfect_stores }}%</td>
-								<td align="center">{{ $summary->osa }}</td>
-								<td align="center">{{ $summary->npi}}</td>
-								<td align="center">{{ $summary->planogram }}</td>
+								<td align="center">{{ $summary->osa }}%</td>
+								<td align="center">{{ $summary->npi}}%</td>
+								<td align="center">{{ $summary->planogram }}%</td>
 								<!-- <td class="right"></td>
 								<td class="right"></td> -->
 								<!-- <td class="right">{{ number_format($summary->osa_ave,2) }}%</td>
