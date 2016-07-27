@@ -25,13 +25,7 @@
 	                <label>Region</label>
 	                {!! Form::select('regions[]', $regions, null, array('class' => 'form-control select_form', 'id' => 'regions', 'multiple' => 'multiple')) !!}
 	            	</div>
-	            </div>
-	            <!-- <div class="col-md-3">
-	              	<div class="form-group">
-	                	<label>Audit Template</label>
-	                	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
-	              	</div>
-	            </div>	   -->          
+	            </div>	                   
 	            <div class="col-md-3">
 	              	<div class="form-group">
 	                	<label>Audit Month</label>
@@ -131,8 +125,7 @@
 						<thead>
 							<tr>
 								<th>Customer</th>
-								<th>Region</th>
-								<!-- <th>Audit Template</th> -->
+								<th>Region</th>								
 								<th>Audit Month</th>
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
@@ -152,8 +145,7 @@
 							@foreach($customer_summaries as $summary)
 							<tr>
 								<td>{{ $summary->customer }}</td>
-								<td>{{ $summary->region }}</td>
-								<!-- <td>{{ $summary->audit_tempalte }}</td> -->
+								<td>{{ $summary->region }}</td>								
 								<td>{{ $summary->audit_group }}</td>
 								<td align="center">{{ $summary->mapped_stores }}</td>
 								<td align="center">{{ $summary->visited_stores }}</td>
@@ -185,7 +177,7 @@
 @endsection
 
 @section('page-script')
-$('#customers,#audits, #templates, #regions, #pjps').multiselect({
+$('#audits').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -194,5 +186,63 @@ $('#customers,#audits, #templates, #regions, #pjps').multiselect({
 	buttonClass: 'form-control',
 
  });
+
+$('#customers').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../customerregionalreport/regionsfilter",
+		success: function(data){			
+			$('select#regions').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#regions'));
+			});
+		$('select#regions').multiselect('rebuild');
+		}
+	});
+});
+
+$('#regions').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+ }).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')),regions: GetSelectValues($('select#regions :selected'))},
+		url: "../customerregionalreport/monthfilterregional",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
 $('#dt-table').dataTable();
 @endsection

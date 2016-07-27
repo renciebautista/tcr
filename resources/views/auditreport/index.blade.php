@@ -278,7 +278,7 @@ $('#templates').multiselect({
 	$.ajax({
 		type:"POST",
 		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
-		url: "../auditreport/monthfilter",
+		url: "../customizedplanoreport/monthfilter",
 		success: function(data){			
 			$('select#audits').empty();
 			$.each(data, function(i, text) {

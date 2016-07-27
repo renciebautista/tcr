@@ -15,7 +15,8 @@
 				  		<div class="row">
 				  			<div class="form-group col-md-6">
 						   		{!! Form::label('name', 'Fullname'); !!}
-		                    	{!! Form::text('name',$user->name,['class' => 'form-control','placeholder' => 'Fullname','readonly']) !!}
+		                    	{!! Form::text('name',$user->name,['class' => 'form-control','placeholder' => 'Fullname']) !!}
+		                    	{!! Form::hidden('old_name',$user->name,['class' => 'form-control','placeholder' => 'Fullname']) !!}
 							</div>
 				  		</div>
 				  		<div class="row">

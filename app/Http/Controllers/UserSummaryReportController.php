@@ -9,6 +9,7 @@ use App\PostedAudit;
 use App\PostedAuditCategorySummary;
 use App\Audit;
 use App\User;
+use App\Role;
 use App\UserSummary;
 use Auth;
 use Box\Spout\Reader\ReaderFactory;
@@ -18,31 +19,81 @@ use Box\Spout\Writer\WriterFactory;
 class UserSummaryReportController extends Controller
 {
     public function index(){
-        $auth_user = Auth::id(); 
-    	$users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-        $use = PostedAudit::getUsers($auth_user);
-    	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$user_summaries = PostedAudit::getUserSummaryDefault($use);     
-        $posted_audits = $user_summaries;
+        
+        set_time_limit(0); 
+        
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);  
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+            $use = PostedAudit::getUsers($auth_user);            
+
+        }
+
+        if($role->role_id === 3){
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');            
+            $use = PostedAudit::getUsersMT($temp); 
+
+        }
+        $user_summaries = PostedAudit::getUserSummaryDefault($use);
+
+        $posted_audits = $user_summaries; 
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');
+
         $p_store_average =PostedAudit::getPerfectStoreAverageInUserReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+
     	return view('usersummaryreport.index', compact('user_summaries','users','audits','p_store_average','npi_average','osa_average','planogram_average'));
     }
 
     public function create(Request $request){
+        
         $auth_user = Auth::id(); 
-        $use = PostedAudit::getUsers($auth_user);
-        $user_summaries = PostedAudit::getUserSummary($request,$use);
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);
+               
+        }
+        if($role->role_id === 3){
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');            
+            $use = PostedAudit::getUsersMT($temp); 
+        }
+
+        $user_summaries = PostedAudit::getUserSummary($request,$use);    
         $posted_audits = $user_summaries;
         $p_store_average =PostedAudit::getPerfectStoreAverageInUserReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+
+
         if($request->submit == 'process'){
+            
             $request->flash();
-            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+
+            }
+            if($role->role_id === 3){
+
+                $temp = PostedAudit::getTemplatesMT($auth_user);
+                $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');     
+            }
+            
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             
             return view('usersummaryreport.index', compact('user_summaries','users','audits','p_store_average','npi_average','osa_average','planogram_average'));

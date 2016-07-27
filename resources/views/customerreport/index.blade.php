@@ -19,12 +19,6 @@
 	                {!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>	            
-	            <!-- <div class="col-md-3">
-	              	<div class="form-group">
-	                	<label>Audit Template</label>
-	                	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
-	              	</div>
-	            </div>	      -->       
 	            <div class="col-md-3">
 	              	<div class="form-group">
 	                	<label>Audit Month</label>
@@ -123,8 +117,7 @@
 					<table id="dt-table" class="table table-hover table-striped">
 						<thead>
 							<tr>
-								<th>Customer</th>								
-								<!-- <th>Audit Template</th> -->
+								<th>Customer</th>																
 								<th>Audit Month</th>
 								<th class="right">Stores Mapped</th>
 								<th class="right">Stores Visited</th>
@@ -144,8 +137,7 @@
 						<tbody>							
 							@foreach($customer_summaries as $summary)
 							<tr>
-								<td>{{ $summary->customer }}</td>								
-								<!-- <td>{{ $summary->audit_tempalte }}</td> -->
+								<td>{{ $summary->customer }}</td>																
 								<td>{{ $summary->audit_group }}</td>
 								<td align="center">{{ $summary->mapped_stores }}</td>
 								<td align="center">{{ $summary->visited_stores }}</td>
@@ -177,7 +169,7 @@
 @endsection
 
 @section('page-script')
-$('#customers,#audits, #templates, #regions, #pjps').multiselect({
+$('#audits').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -186,5 +178,27 @@ $('#customers,#audits, #templates, #regions, #pjps').multiselect({
 	buttonClass: 'form-control',
 
  });
+
+ $('#customers').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
 $('#dt-table').dataTable();
 @endsection

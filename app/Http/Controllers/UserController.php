@@ -46,7 +46,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|unique:users',
             'username' => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'same:password',
@@ -120,6 +120,19 @@ class UserController extends Controller
         $role = Role::findOrFail($request->role);
         $user->email = $request->email;        
 
+        $old_name = $request->get('old_name');
+        $name = $request->get('name');
+
+        if($name != $old_name){
+
+            $this->validate($request, [
+                'name' => 'required|unique:users'             
+            ]);
+            $user_name = User::findOrFail($id);
+            $user_name->name = $name;
+            $user_name->update();
+        }
+        
         $role_user = DB::table('role_user')->where('user_id',$id);
         $role_user->delete();        
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -128,7 +141,8 @@ class UserController extends Controller
 
         $user->update();
         
-
+        Session::flash('flash_message', 'User was successfully Updated.');
+        Session::flash('flash_class', 'alert-success');
         return redirect('users');
     }
 

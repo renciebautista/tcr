@@ -38,6 +38,8 @@ class RemapController extends Controller
             AuditStore::remapToNew($user_id,$new_user_id);
             
             PostedAudit::remapToNew($user_id, $new_user_id);                
+            
+            $user->delete();
 
     		Session::flash('flash_message', 'User Remapping Successful.');
 			Session::flash('flash_class', 'alert-success');

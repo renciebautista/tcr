@@ -15,28 +15,28 @@
         <div class="box-body">
           	<div class="row">
           		<div class="col-md-3">
-	              <div class="form-group">
-	                <label>Customers</label>
-	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
-	              </div>
+	              	<div class="form-group">
+	                	<label>Customers</label>
+	               		{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Month</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>	            
+	            	<div class="form-group">
+	                	<label>Audit Template</label>
+	               		{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	           	            	           
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Template</label>
-	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates_pla', 'multiple' => 'multiple')) !!}
-	              </div>
+		            <div class="form-group">
+		                <label>Categories</label>
+		               	{!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
-	             <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Categories</label>
-	               	{!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
-	              </div>
+             	<div class="col-md-3">
+	              	<div class="form-group">
+	                	<label>Audit Month</label>
+	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              	</div>
 	            </div>
           	</div>
         </div>
@@ -117,7 +117,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#templates_pla, #categories, #customers').multiselect({
+$('#audits,#categories').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -126,6 +126,109 @@ $('#audits,#templates_pla, #categories, #customers').multiselect({
 	buttonClass: 'form-control',
 
  });
+
+$('#customers').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/templatesfilter",
+		success: function(data){			
+			$('select#templates').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#templates'));
+			});
+		$('select#templates').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../customizedplanoreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#templates').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../customizedplanoreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../customizedplanoreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#categories').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+ }).on("change", function(){		
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')),categories: GetSelectValues($('select#categories :selected'))},
+		url: "../customizedplanoreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
 
  $('#dt-table').dataTable();
 @endsection

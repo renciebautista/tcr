@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use App\PostedAuditCategorySummary;
 use Auth;
+use App\Role;
+
 class PostedAudit extends Model
 {
     public function user(){
@@ -31,13 +33,16 @@ class PostedAudit extends Model
             ->select('role_id')
             ->where('user_id',$auth_user)
             ->first();
+
         if($role->role_id === 4){
             // fields na naka map sa user
             $myFields = DB::table('manager_fields')
                 ->select('manager_fields.*')
                 ->where('manager_fields.managers_id','=',$auth_user)
                 ->get();
+
             $data = [];
+
             foreach ($myFields as $value) {
                 $data[] =  $value->fields_id;
             } 
@@ -50,6 +55,7 @@ class PostedAudit extends Model
                 ->get();
         }
         else{
+
             return self::select('user_id', 'users.name')    
                 ->join('users','users.id', '=', 'posted_audits.user_id')                    
                 ->groupBy('user_id')
@@ -323,7 +329,7 @@ class PostedAudit extends Model
                 ->orderBy('customer')
                 ->get();
         }
-        else{
+        if($role->role_id === 1 || $role->role_id === 2){
             return self::select('customer_code', 'customer')                
                 ->groupBy('customer')
                 ->orderBy('customer')
@@ -352,34 +358,173 @@ class PostedAudit extends Model
             ->get();
     }
 
-    public static function getRegions($use){
+    public static function getRegions($use,$role){
+        
         $user = [];
-        foreach($use as $u){
-            $user[]=$u->user_id;
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            foreach($use as $u){
+                $user[]=$u->user_id;
+            }
+
+            return self::select('region_code', 'region')
+                ->whereIn('user_id',$user)
+                ->groupBy('region_code')
+                ->orderBy('region')
+                ->get();
         }
-        return self::select('region_code', 'region')
-            ->whereIn('user_id',$user)
-            ->groupBy('region_code')
-            ->orderBy('region')
-            ->get();
+        if($role->role_id === 3){
+
+            foreach($use as $u){
+                $user[]=$u->template;
+            }
+
+            return self::select('region_code', 'region')
+                ->whereIn('template',$user)
+                ->groupBy('region_code')
+                ->orderBy('region')
+                ->get();
+        }
+        
     }
 
-    public static function getRegionsfilter($use,$cus){
-        $user = [];
-        foreach($use as $u){
-            $user[]=$u->user_id;
-        }
+    public static function getRegionsfilter($use,$cus,$role){
+
+        $user = [];                    
         $custom = [];
+        if(!empty($cus)){
+
+            foreach($cus as $c){
+                $custom[]=$c;
+            }                
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                foreach($use as $u){
+                    $user[]=$u->user_id;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('user_id',$user)
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+                
+            }
+            if($role->role_id === 3){
+
+                foreach($use as $u){
+                    $user[]=$u->template;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('template',$user)
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+            }
+        }
+        if(empty($cus)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                foreach($use as $u){
+                    $user[]=$u->user_id;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('user_id',$user)                    
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+                
+            }
+            if($role->role_id === 3){
+
+                foreach($use as $u){
+                    $user[]=$u->template;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('template',$user)                    
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+            }
+        }
         
-        foreach($cus as $c){
-            $custom[]=$c;
-        }                
-        return self::select('region_code', 'region')
-            ->whereIn('user_id',$user)
-            ->whereIn('customer_code',$custom)
-            ->groupBy('region_code')
-            ->orderBy('region')
-            ->get();
+    }
+
+    public static function getRegionsfilterR($temp,$cus,$role){
+
+        $user = [];                    
+        $custom = [];
+        if(!empty($cus)){
+
+            foreach($cus as $c){
+                $custom[]=$c;
+            }                
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                foreach($use as $u){
+                    $user[]=$u->user_id;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('user_id',$user)
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+                
+            }
+            if($role->role_id === 3){
+
+                foreach($temp as $u){
+                    $user[]=$u->template;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('template',$user)
+                    ->whereIn('customer_code',$custom)
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+            }
+        }
+        if(empty($cus)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                foreach($temp as $u){
+                    $user[]=$u->user_id;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('user_id',$user)                    
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+                
+            }
+            if($role->role_id === 3){
+
+                foreach($use as $u){
+                    $user[]=$u->template;
+                }
+
+                return self::select('region_code', 'region')
+                    ->whereIn('template',$user)                    
+                    ->groupBy('region_code')
+                    ->orderBy('region')
+                    ->get();
+            }
+        }
+        
     }
 
     public static function getTemplates($use){
@@ -1316,9 +1461,180 @@ class PostedAudit extends Model
                 ->orderBy('audits.id')
                 ->get();
         }
+        if(empty($customer) && empty($template) && !empty($user) && empty($store)){
+            
+            $users=[];     
+
+            foreach($user as $u) {
+                $users[] = $u;
+            }                                 
+
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('user_id',$users)            
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
     
     }
     
+    public static function getauditfiltersAFRegion($customer,$region){
+        if(!empty($customer) && !empty($region)){
+            
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+
+            $region_code = [];
+
+            foreach($region as $r){
+                $region_code[] = $r;
+            }
+                       
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('region_code',$region_code)
+                ->whereIn('customer_code',$customer_code)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($region)){
+            
+            $customer_code = [];
+
+            foreach($customer as $c){
+                $customer_code[] = $c;
+            }
+           
+            
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('user_id',$users)
+                ->whereIn('customer_code',$customer_code)
+                ->whereIn('template',$templates)                    
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && empty($region)){
+
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')                                        
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();        
+        }       
+
+        if(empty($customer) && !empty($region)) {
+
+            $region_code = [];
+
+            foreach($region as $r){
+                $region_code[] = $r;
+            }
+                       
+            return self::select('audit_id', 'audits.description','posted_audits.*')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->whereIn('region_code',$region_code)                       
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+    
+    }
+
+    public static function getauditfiltersAFPlano($customer,$template,$category){
+        
+        if(!empty($customer) && !empty($template) && !empty($category)){
+                        
+           return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($template) && empty($category)){
+
+           return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')               
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && empty($template) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                        
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && !empty($template) && !empty($category)){
+                        
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                            
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && empty($template) && !empty($category)){
+                        
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($template) && !empty($category)){
+                        
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')           
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && !empty($template) && empty($category)){
+                        
+           return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+    
+    }
     public static function search($request,$usse){         
         $auth_user = Auth::id();
         $role = DB::table('role_user')
@@ -1688,15 +2004,15 @@ class PostedAudit extends Model
         return $data;
     }
 
-    public static function getCustomerSummary($request = null,$temp,$cust,$use){
+    public static function getCustomerSummary($request = null,$cust,$use){
         $customers = '';
         $regions = '';
         $templates = '';
         $audits = '';
         $pjps = '';        
-        $temps =[];
+        
         $custs = [];                
-        $temps_str = '';
+        // $temps_str = '';
         $custs_str = '';
         $uid = '';
         $user_id = [];
@@ -1704,16 +2020,13 @@ class PostedAudit extends Model
         foreach($use as $u){
             $user_id[]=$u->user_id;
         }
-
-        foreach($temp as $t) {
-            $temps[]=$t->template;
-        }  
+        
         foreach($cust as $c) {
             $custs[]=$c->customer_code;
         }          
-        if(!empty($temps)){
-            $temps_str = "and posted_audits.template in ('". implode("','", $temps) ."')";
-        }
+        // if(!empty($temps)){
+        //     $temps_str = "and posted_audits.template in ('". implode("','", $temps) ."')";
+        // }
         if(!empty($custs)){
             $custs_str = "and customer_code in ('". implode("','", $custs) ."')";
         }
@@ -1761,15 +2074,14 @@ class PostedAudit extends Model
                 audit_stores
                 group by audit_id, channel_code
             ) as tbl_mapped using(channel_code,audit_id)
-            where mapped_stores > 0
+            where mapped_stores > 0            
             %s
             %s
             %s
             %s
             %s
             %s
-            %s
-            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$temps_str,$custs_str,$uid);
+            group by audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$custs_str,$uid);
 
         $data = DB::select(DB::raw($query));        
         // dd($data);
@@ -2054,6 +2366,78 @@ class PostedAudit extends Model
             $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
         }
         // dd($plano_desc);
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "IMPLEMENTED"
+            %s
+            %s
+            %s
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers,$users_str);
+
+        return DB::select(DB::raw($query));
+    }
+    public static function getCustomizedPlanoSkuMT($request,$temp){
+        
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
+        }
+
+        $planos = '';
+        $plano_desc = [];
+        $formgroups = FormGroup::where('plano',1)->get();
+        foreach ($formgroups as $group) {
+            $plano_desc[] = $group->group_desc;
+        }
+
+        if(!empty($plano_desc)){
+            $planos = "and posted_audit_details.group in ('". implode("','", $plano_desc)  ."')";
+        }
+
+        $usser = [];
+
+        $users_str = '';
+
+        foreach($temp as $u)
+        {
+            $usser[]=$u->template;
+        }
+        if(!empty($usser)){            
+            $users_str = "and posted_audits.template in ('". implode("','", $usser) ."')";
+        }
+        
         
         $query = sprintf('
             select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
@@ -2441,81 +2825,99 @@ class PostedAudit extends Model
         return $data;
     }
 
-     public static function getUserSummaryDefault($use){
+     public static function getUserSummaryDefault($use){        
+        
         $users = '';
         $audits = '';
         $pjps = '';        
         $user=[];
-        foreach($use as $u) {
-            $user[]=$u->user_id;
-        }        
-        
-        $u = DB::table('posted_audits')
-            ->select('posted_audits.*')
-            ->whereIn('posted_audits.user_id',$user)            
-            ->groupBy('user_id')
-            ->get();            
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);  
 
-        $p = [];
+        if($role->role_id === 1 || $role->role_id === 2){
 
-        foreach($u as $pl){
-            $p[] =$pl->user_id; 
+            $query = sprintf('
+                select users.id as user_id, posted_audits.audit_id,users.name, audits.description,            
+                COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited,
+                (sum(osa) / count(*))  as osa_ave,
+                (sum(npi) / count(*)) as npi_ave,
+                (sum(planogram) / count(*)) as planogram_ave
+                from posted_audits
+                inner join users on users.id = posted_audits.user_id
+                inner join audits on audits.id = posted_audits.audit_id
+                left join (
+                    select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                    %s
+                    group by user_id, audit_id
+                ) as tbl_mapped using(user_id,audit_id)
+                left join (
+                    select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
+                    from `posted_audits`
+                    left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+                    %s
+                    group by posted_audits.user_id, posted_audits.audit_id
+                ) as tbl_posted using(user_id,audit_id)
+                where tbl_posted.store_visited > 0
+                %s
+                %s                 
+                group by posted_audits.user_id, posted_audits.audit_id
+                order by audits.description, users.name',$pjps ,$pjps, $users,$audits);
         }
 
-        $users_str = "";
-        if(!empty($p)){            
-            $users_str = " and posted_audits.user_id in (". implode(",",$p). ")";
-        }                
-        $query = sprintf('
-            select users.id as user_id, posted_audits.audit_id,users.name, audits.description,            
-            COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited,
-            (sum(osa) / count(*))  as osa_ave,
-            (sum(npi) / count(*)) as npi_ave,
-            (sum(planogram) / count(*)) as planogram_ave
-            from posted_audits
-            inner join users on users.id = posted_audits.user_id
-            inner join audits on audits.id = posted_audits.audit_id
-            left join (
-                select user_id, audit_id, count(*) as mapped_stores from audit_stores
+        if($role->role_id === 4 || $role->role_id === 3){
+
+            foreach($use as $u) {
+                $user[]=$u->user_id;
+            }        
+            
+            $u = DB::table('posted_audits')
+                ->select('posted_audits.*')
+                ->whereIn('posted_audits.user_id',$user)            
+                ->groupBy('user_id')
+                ->get();            
+
+            $p = [];
+
+            foreach($u as $pl){
+                $p[] =$pl->user_id; 
+            }
+
+            $users_str = "";
+
+            if(!empty($p)){            
+                $users_str = " and posted_audits.user_id in (". implode(",",$p). ")";
+            }                
+
+            $query = sprintf('
+                select users.id as user_id, posted_audits.audit_id,users.name, audits.description,            
+                COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited,
+                (sum(osa) / count(*))  as osa_ave,
+                (sum(npi) / count(*)) as npi_ave,
+                (sum(planogram) / count(*)) as planogram_ave
+                from posted_audits
+                inner join users on users.id = posted_audits.user_id
+                inner join audits on audits.id = posted_audits.audit_id
+                left join (
+                    select user_id, audit_id, count(*) as mapped_stores from audit_stores
+                    %s
+                    group by user_id, audit_id
+                ) as tbl_mapped using(user_id,audit_id)
+                left join (
+                    select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
+                    from `posted_audits`
+                    left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+                    %s
+                    group by posted_audits.user_id, posted_audits.audit_id
+                ) as tbl_posted using(user_id,audit_id)
+                where tbl_posted.store_visited > 0
                 %s
-                group by user_id, audit_id
-            ) as tbl_mapped using(user_id,audit_id)
-            left join (
-                select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
-                from `posted_audits`
-                left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
+                %s 
                 %s
                 group by posted_audits.user_id, posted_audits.audit_id
-            ) as tbl_posted using(user_id,audit_id)
-            where tbl_posted.store_visited > 0
-            %s
-            %s 
-            %s
-            group by posted_audits.user_id, posted_audits.audit_id
-            order by audits.description, users.name',$pjps ,$pjps, $users,$audits, $users_str);
-        // $query = sprintf('
-        //     select users.id as user_id, posted_audits.audit_id,users.name, audits.description,
-        //     COALESCE(tbl_mapped.mapped_stores,0) as mapped_stores, tbl_posted.store_visited
-        //     from posted_audits
-        //     %s            
-        //     inner join users on users.id = posted_audits.user_id
-        //     inner join audits on audits.id = posted_audits.audit_id
-        //     left join (
-        //         select user_id, audit_id, count(*) as mapped_stores from audit_stores
-        //         %s
-        //         group by user_id, audit_id
-        //     ) as tbl_mapped using(user_id,audit_id)
-        //     left join (
-        //         select posted_audits.user_id,posted_audits.audit_id,count(*) as store_visited 
-        //         from `posted_audits`
-        //         left join audit_stores on (audit_stores.audit_id = posted_audits.audit_id  and audit_stores.store_code = posted_audits.store_code)
-        //         %s
-        //         group by posted_audits.user_id, posted_audits.audit_id
-        //     ) as tbl_posted using(user_id,audit_id)
-        //     where tbl_posted.store_visited > 0
-        //     %s %s
-        //     group by posted_audits.user_id, posted_audits.audit_id
-        //     order by audits.description, users.name',$users_str,$pjps ,$pjps, $users,$audits);
+                order by audits.description, users.name',$pjps ,$pjps, $users,$audits, $users_str);
+
+        }        
         
     
         $data = DB::select(DB::raw($query));        
@@ -2555,48 +2957,28 @@ class PostedAudit extends Model
         }        
         return $data;
     }      
-     public static function getCustomerSummaryDefault($use){
-        $customers = '';
-        $regions = '';
-        $templates = '';
-        $audits = '';
-        $pjps = '';
-        if(!empty($request->customers)){
-            $customers = "and customer_code in ('". implode("','", $request->customers) ."')";
-        }
-        if(!empty($request->regions)){
-            $regions = "and region_code in ('". implode("','", $request->regions) ."')";
-        }
-        if(!empty($request->templates)){
-            $templates = "and channel_code in ('". implode("','", $request->templates) ."')";
-        }
-        if(!empty($request->audits)){
-            $audits = "and audit_id in ('". implode("','", $request->audits) ."')";
-        }
+    public static function getCustomerSummaryDefault($use){        
 
-        if(!empty($request->pjps)){
-            if(count($request->pjps) == 1){
-                if($request->pjps[0] == 1){
-                    $pjps = "and pjp = 1";
-                }else{
-                    $pjps = "and pjp = 0";
-                }
-                
-            }
-            
-        }
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+        
         $custom = '';
-        $c = [];        
-        foreach($use as $u){
-            $c[]=$u->user_id;
-        }        
+             
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+            
+            $c = [];        
 
-        if(!empty($c)){
-            $custom = "and posted_audits.user_id in (". implode(",",$c). ")";
-        }
-        // dd($pjps);
+            foreach($use as $u){
+                $c[]=$u->user_id;
+            }
 
-        $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
+            if(!empty($c)){
+                $custom = "and posted_audits.user_id in (". implode(",",$c). ")";
+            }    
+
+            $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
+            posted_audits.template,
             audits.description as audit_group,
             mapped_stores, count(*) as visited_stores,
             (sum(osa) / count(*))  as osa_ave,
@@ -2611,14 +2993,45 @@ class PostedAudit extends Model
             ) as tbl_mapped using(channel_code,audit_id)
             where mapped_stores > 0            
             %s
+            group by customer, audit_id, channel_code, region_code',$custom);
+        }
+        if($role->role_id === 3){
+
+            $temps_str= '';
+            $c = [];        
+            //akoako
+            foreach($use as $u){
+                $c[]=$u->channel_code;
+            }
+
+            if(!empty($c)){
+                $temps_str = "and posted_audits.channel_code in ('". implode("','", $c) ."')";
+            }
+
+            $query = sprintf('select customer_code,customer,region_code, region,channel_code,audit_id,audit_tempalte,
+            posted_audits.template,
+            audits.description as audit_group,
+            mapped_stores, count(*) as visited_stores,
+            (sum(osa) / count(*))  as osa_ave,
+            (sum(npi) / count(*)) as npi_ave,
+            (sum(planogram) / count(*)) as planogram_ave
+            from posted_audits
+            inner join audits on audits.id = posted_audits.audit_id
+            left join (
+                select audit_id, channel_code, template as audit_tempalte, count(*) as mapped_stores from
+                audit_stores
+                group by audit_id, channel_code
+            ) as tbl_mapped using(channel_code,audit_id)
+            where mapped_stores > 0            
             %s
-            %s
-            %s
-            %s
-            group by customer, audit_id, channel_code, region_code',$customers,$regions,$templates,$audits,$custom);
+            group by customer, audit_id, channel_code, region_code',$temps_str);
+
+        }
+        
+        // dd($pjps);        
         
         $data = DB::select(DB::raw($query));        
-        // dd($data);
+        
 
         foreach ($data as $key => $value) {
             $stores = self::getCustomerStores($value->audit_id,$value->channel_code,$value->region_code,$value->customer_code);
@@ -2641,7 +3054,7 @@ class PostedAudit extends Model
         return $data;
 
     }
-   
+
     public static function getsstorefilters($cus,$use){
         $users=[];
         foreach($use as $u) {

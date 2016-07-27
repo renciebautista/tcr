@@ -20,14 +20,14 @@ class AuditReportController extends Controller
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);        
-        if($role->role_id === 4){            
-            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-            $use = PostedAudit::getUsers($auth_user);
-            $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
-            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $posted_audits = PostedAudit::searchDefault($use);
-        }        
+        // if($role->role_id === 4){            
+        //     $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+        //     $use = PostedAudit::getUsers($auth_user);
+        //     $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
+        //     $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+        //     $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+        //     $posted_audits = PostedAudit::searchDefault($use);
+        // }        
         if($role->role_id === 3){            
             $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code'); 
             $temp = PostedAudit::getTemplatesMT($auth_user);
@@ -37,7 +37,7 @@ class AuditReportController extends Controller
             $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
             $posted_audits = PostedAudit::searchDefaultMT($temp);
         }
-        if($role->role_id === 1 || $role->role_id === 2){
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
 
             $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
             $use = PostedAudit::getUsers($auth_user);
@@ -66,7 +66,7 @@ class AuditReportController extends Controller
             $temp = PostedAudit::getTemplatesMT($auth_user);
             $posted_audits = PostedAudit::searchMT($request,$temp);
         }    
-        if($role->role_id != 4 || $role->role_id !=3){
+        if($role->role_id === 1 || $role->role_id === 2){
             $usse = PostedAudit::getUsers($auth_user);
             $posted_audits = PostedAudit::search($request,$usse);
         }    
@@ -85,20 +85,13 @@ class AuditReportController extends Controller
                 $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
                 $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
                 $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
-
-                // $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
-                // $use = PostedAudit::getUsers($auth_user);
-                // $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');
-                // $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+                
                 $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
             }
             if($role->role_id === 3){                
-
-                // $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code'); 
+                
                 $temp = PostedAudit::getTemplatesMT($auth_user);
-                // $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');
-                // $use = PostedAudit::getUsersMT($temp);   
-                // $stores = PostedAudit::getPostedStoresMT($use)->lists('store_name','store_code');
+                
                 $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
                 $customer = $request->get('customers');
                 $cus = $customer;
@@ -113,6 +106,7 @@ class AuditReportController extends Controller
                 $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
             }
             if($role->role_id == 1 || $role->role_id == 2){
+
                 $customer = $request->get('customers');
                 $cus = $customer;
                 $template = $request->get('templates');
@@ -125,9 +119,8 @@ class AuditReportController extends Controller
                 $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
                 $audits = PostedAudit::getauditfiltersAF($store,$customer,$template,$user)->lists('description','audit_id');
 
-                 $use = PostedAudit::getUsers($auth_user);
-                // $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
-                // $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
+                $use = PostedAudit::getUsers($auth_user);
+                
                 $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');               
             }
 

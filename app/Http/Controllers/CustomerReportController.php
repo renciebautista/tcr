@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\PostedAudit;
 use App\Audit;
+use App\Role;
 use Auth;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
@@ -15,43 +16,85 @@ use Box\Spout\Writer\WriterFactory;
 class CustomerReportController extends Controller
 {
     public function index(){
+        
         $auth_user = Auth::id();
-        $use = PostedAudit::getUsers($auth_user);  
-    	$customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $cust = PostedAudit::getCustomers($use);
-        // $regions = PostedAudit::getRegions()->lists('region','region_code');
-        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
-        $temp = PostedAudit::getTemplates($auth_user);
-        $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);        
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);  
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+            $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);            
+        }
+        
+        if($role->role_id === 3){
+            
+            $temp = PostedAudit::getTemplatesMT($auth_user);              
+            $use = PostedAudit::getTemplatesMT($auth_user);            
+            $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');            
+            $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
+
+        }
+        
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');        
         $posted_audits = $customer_summaries;
         $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
-        // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
-        // $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
-        // $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
-        // $total_perfect_store_ave = PostedAudit::getTotalPerfectStoreAverage($customer_summaries);    
+        
     	return view('customerreport.index', compact('customers','templates', 'audits', 'customer_summaries','osa_average','npi_average','planogram_average','p_store_average'));
     }
 
     public function create(Request $request){
+
         $auth_user = Auth::id();
-        $use = PostedAudit::getUsers($auth_user);
-        $cust = PostedAudit::getCustomers($use);  
-        $temp = PostedAudit::getTemplates($auth_user);
-        $customer_summaries = PostedAudit::getCustomerSummary($request,$temp,$cust,$use);
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);
+            $cust = PostedAudit::getCustomers($use);    
+            $customer_summaries = PostedAudit::getCustomerSummary($request,$cust,$use);
+
+        }
+        if($role->role_id === 3){
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $use = PostedAudit::getUsersMT($temp);  
+            $cust = PostedAudit::getCustomersMT($temp); 
+            $customer_summaries = PostedAudit::getCustomerSummary($request,$cust,$use);
+        }    
+        if($role->role_id === 1 || $role->role_id === 2){
+            
+            $use = PostedAudit::getUsers($auth_user);
+            $cust = PostedAudit::getCustomers($use);              
+            $customer_summaries = PostedAudit::getCustomerSummary($request,$cust,$use);
+        }    
+                
         $posted_audits = $customer_summaries;
+        
         $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+        
         if($request->submit == 'process'){
             $request->flash();
-            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            // $regions = PostedAudit::getRegions()->lists('region','region_code');
-            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                $use = PostedAudit::getUsers($auth_user);  
+                $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');                
+            }
+
+            if($role->role_id === 3){
+
+                $temp = PostedAudit::getTemplatesMT($auth_user);                
+                $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+            }
+                        
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
             return view('customerreport.index', compact('customers','templates', 'audits', 'customer_summaries','osa_average','npi_average','planogram_average','p_store_average'));
         }

@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\PostedAudit;
 use App\Audit;
 use Auth;
+use App\Role;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
@@ -17,43 +18,94 @@ use Response;
 class CustomerRegionalReportController extends Controller
 {
     public function index(){
+        
         $auth_user = Auth::id();
-        $use = PostedAudit::getUsers($auth_user);  
-    	$customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $regions = PostedAudit::getRegions($use)->lists('region','region_code');
-        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
-        $audits = PostedAudit::getAudits()->lists('description','audit_id');
-        $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);  
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+            $regions = PostedAudit::getRegions($use,$role)->lists('region','region_code'); 
+            $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
+                     
+        }
+
+        if($role->role_id === 3){
+            
+            $temp = PostedAudit::getTemplatesMT($auth_user);              
+            $use = PostedAudit::getTemplatesMT($auth_user);            
+            $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+            $regions = PostedAudit::getRegions($temp,$role)->lists('region','region_code');            
+            $customer_summaries = PostedAudit::getCustomerSummaryDefault($use);
+
+        }
+        
+        
+
+        $audits = PostedAudit::getAudits()->lists('description','audit_id');        
+
         $posted_audits = $customer_summaries;
         $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
-        // $stores_visited_ave = PostedAudit::getTotalStoresVisitedAve($customer_summaries);
-        // $perfect_stores = PostedAudit::getTotalPerfectStores($customer_summaries);
-        // $perfect_stores_percentage= PostedAudit::getTotalPerfectStoresPercentage($customer_summaries);
-        // $total_perfect_store_ave = PostedAudit::getTotalPerfectStoreAverage($customer_summaries);    
-    	return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','p_store_average','osa_average','npi_average','planogram_average'));
+       
+    	return view('customerregionalreport.index', compact('customers','regions', 'audits', 'customer_summaries','p_store_average','osa_average','npi_average','planogram_average'));
     }    
 
      public function create(Request $request){
+        
         $auth_user = Auth::id();
-        $use = PostedAudit::getUsers($auth_user);
-        $cust = PostedAudit::getCustomers($use);  
-        $temp = PostedAudit::getTemplates($auth_user);
-        $customer_summaries = PostedAudit::getCustomerSummary($request,$temp,$cust,$use);
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+            
+            $use = PostedAudit::getUsers($auth_user);
+            $cust = PostedAudit::getCustomers($use);              
+            $customer_summaries = PostedAudit::getCustomerSummary($request,$cust,$use);           
+        }    
+
+        if($role->role_id === 3){
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $use = PostedAudit::getUsersMT($temp);  
+            $cust = PostedAudit::getCustomersMT($temp); 
+            $customer_summaries = PostedAudit::getCustomerSummary($request,$cust,$use);
+            
+        }    
+                
         $posted_audits = $customer_summaries;
         $p_store_average = PostedAudit::getPerfectStoreAverageInCustomerReport($posted_audits);
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);
+
         if($request->submit == 'process'){
             $request->flash();
-            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $regions = PostedAudit::getRegions($use)->lists('region','region_code');
-            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
+            
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                $use = PostedAudit::getUsers($auth_user);  
+                $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+                $cus = $request->get('customers');
+                $regions = PostedAudit::getRegionsfilter($use,$cus,$role)->lists('region','region_code');
+
+            }
+
+            if($role->role_id === 3){
+
+                $temp = PostedAudit::getTemplatesMT($auth_user);                
+                $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+                $cus = $request->get('customers');
+                $regions = PostedAudit::getRegionsfilterR($temp,$cus,$role)->lists('region','region_code');
+                
+            }
+            
             $audits = PostedAudit::getAudits()->lists('description','audit_id');
-            return view('customerregionalreport.index', compact('customers','regions','templates', 'audits', 'customer_summaries','p_store_average','npi_average','osa_average','planogram_average'));
+            return view('customerregionalreport.index', compact('customers','regions', 'audits', 'customer_summaries','p_store_average','npi_average','osa_average','planogram_average'));
         }
         else{
             set_time_limit(0);
@@ -100,27 +152,38 @@ class CustomerRegionalReportController extends Controller
         return view('customerregionalreport.show',compact('posted_audits', 'customer', 'region', 'template', 'audit','p_store_average','osa_average','npi_average','planogram_average'));
 
     }
-    public function allregionsfilter(){
-            $auth_user = Auth::id();      
-            $id = $auth_user;
-            $role = Role::myroleid($id);     
-            if($role->role_id === 4){
-                $use = PostedAudit::getUsers($auth_user);  
-                $regions = PostedAudit::getRegions($use)->lists('region','region_code');
-                return Response::json($regions);                    
-            }            
-    }    
     public function regionsfilter(){
+
         $auth_user = Auth::id();
-        $cus = Input::all();        
+        $cus = Input::get('customers');
         $id = $auth_user;
-        $role = Role::myroleid($id);     
-        if(is_array($cus)){           
-            if($role->role_id === 4){
-                $use = PostedAudit::getUsers($auth_user);         
-                $stores = PostedAudit::getRegionsfilter($use,$cus)->lists('region','region_code');
-                return Response::json($stores);
-            }            
-        }                    
+        $role = Role::myroleid($id);
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);
+        }
+        if($role->role_id === 3){
+
+            $use = PostedAudit::getTemplatesMT($auth_user);            
+        }
+        
+        $regions = PostedAudit::getRegionsfilter($use,$cus,$role)->lists('region','region_code');
+        
+        return Response::json($regions);        
+     
+    }
+
+    public function monthfilterregional(){
+
+        $auth_user = Auth::id();
+        $customer = Input::get('customers');
+        $region = Input::get('regions');
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        $audits = PostedAudit::getauditfiltersAFRegion($customer,$region)->lists('description','audit_id');
+
+        return Response::json($audits);
     }    
 }
