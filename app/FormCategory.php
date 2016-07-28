@@ -88,34 +88,29 @@ class FormCategory extends Model
             ->orderBy('category')
             ->get();
     }
-    public static function SosCatFilter($use,$tem){
+    public static function getSOSCategoriesMT($temp){
         $user_id =[];
-        foreach($use as $c){
-            $user_id[]=$c->user_id;
+        foreach($temp as $c){
+            $user_id[]=$c->template;
         }
-        $category_id = [];                
-
-        $channel = DB::table('posted_audits')
-            ->select('posted_audits.id')
-            ->whereIn('channel_code',$tem)
-            ->whereIn('user_id',$user_id)
-            ->get();    
-        $audid = [];    
-        foreach($channel as $ch)
-        {
-            $audid[] = $ch->id;
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('template',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
         }        
         $catid = DB::table('posted_audit_details')
             ->select('posted_audit_details.*')
-            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
             ->groupBy('category')
             ->get();
-        $cat =[];
-
+        $cat =[];        
         foreach($catid as $cid){
             $cat[]= $cid->category;
-        }
-
+        }        
         return self::select('category', 'category')
             ->where('sos', 1)
             ->whereIn('category',$cat)
@@ -155,40 +150,222 @@ class FormCategory extends Model
             ->get();
     }
 
-    public static function OsaCatFilter($use,$tem){
+    public static function OsaCatFilter($customer,$template,$use){
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
         $user_id =[];
-        foreach($use as $c){
-            $user_id[]=$c->user_id;
+        $customer_code = [];
+        $template_code = [];
+        
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+        
+            foreach($use as $c){
+
+                $user_id[]=$c->user_id;
+            }
+
         }
-        $category_id = [];                
+        if($role->role_id === 3){
 
-        $channel = DB::table('posted_audits')
-            ->select('posted_audits.id')
-            ->whereIn('channel_code',$tem)
-            ->whereIn('user_id',$user_id)
-            ->get();    
-        $audid = [];    
-        foreach($channel as $ch)
-        {
-            $audid[] = $ch->id;
-        }        
-        $catid = DB::table('posted_audit_details')
-            ->select('posted_audit_details.*')
-            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
-            ->groupBy('category')
-            ->get();
-        $cat =[];
+            foreach($use as $c){
+                
+                $template_code[]=$c->template;
+            }
 
-        foreach($catid as $cid){
-            $cat[]= $cid->category;
+        }
+        
+        if(!empty($customer) && !empty($template)){       
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){                       
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)
+                        ->whereIn('posted_audits.customer_code',$customer)
+                        ->whereIn('posted_audits.user_id',$user_id)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();     
+            }
+            if($role->role_id === 3){
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)
+                        ->whereIn('posted_audits.customer_code',$customer)
+                        ->whereIn('posted_audits.template',$template_code)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();    
+            }
         }
 
-        return self::select('category', 'category')
-            ->where('osa', 1)
-            ->whereIn('category',$cat)
-            ->groupBy('category')
-            ->orderBy('category')
-            ->get();
+        if(!empty($customer) && empty($template)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.user_id',$user_id)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')                
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)                
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+            }
+            if($role->role_id === 3){
+
+                $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.template',$template_code)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')                
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)                
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+            }
+        }
+
+        if(empty($customer) && !empty($template)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){                        
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)                    
+                        ->whereIn('posted_audits.user_id',$user_id)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+            }
+
+            if($role->role_id === 3){                    
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)                    
+                        ->whereIn('posted_audits.template',$template_code)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('osa', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+            }
+
+
+        }
+
+        if(empty($customer) && empty($template)){
+
+            $category_id = [];                
+
+            $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.user_id',$user_id)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+            $cat =[];
+
+            foreach($chan as $cid){
+
+                $cat[]= $cid->category;
+            }         
+
+            return self::select('category', 'category')
+                ->where('osa', 1)
+                ->whereIn('category',$cat)
+                ->groupBy('category')
+                ->orderBy('category')
+                ->get();
+
+        }
+
     }
     public static function getNPICategories($use){
         $user_id =[];
@@ -220,40 +397,221 @@ class FormCategory extends Model
             ->orderBy('category')
             ->get();
     }
-    public static function NpiCatFilter($use,$tem){
+    public static function NpiCatFilter($customer,$template,$use){
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
         $user_id =[];
-        foreach($use as $c){
-            $user_id[]=$c->user_id;
+        $customer_code = [];
+        $template_code = [];
+        
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+        
+            foreach($use as $c){
+
+                $user_id[]=$c->user_id;
+            }
+
         }
-        $category_id = [];                
+        if($role->role_id === 3){
 
-        $channel = DB::table('posted_audits')
-            ->select('posted_audits.id')
-            ->whereIn('channel_code',$tem)
-            ->whereIn('user_id',$user_id)
-            ->get();    
-        $audid = [];    
-        foreach($channel as $ch)
-        {
-            $audid[] = $ch->id;
-        }        
-        $catid = DB::table('posted_audit_details')
-            ->select('posted_audit_details.*')
-            ->whereIn('posted_audit_details.posted_audit_id',$audid)            
-            ->groupBy('category')
-            ->get();
-        $cat =[];
+            foreach($use as $c){
+                
+                $template_code[]=$c->template;
+            }
 
-        foreach($catid as $cid){
-            $cat[]= $cid->category;
+        }
+        
+        if(!empty($customer) && !empty($template)){       
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){                       
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)
+                        ->whereIn('posted_audits.customer_code',$customer)
+                        ->whereIn('posted_audits.user_id',$user_id)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();     
+            }
+            if($role->role_id === 3){
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)
+                        ->whereIn('posted_audits.customer_code',$customer)
+                        ->whereIn('posted_audits.template',$template_code)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();    
+            }
         }
 
-        return self::select('category', 'category')
-            ->where('npi', 1)
-            ->whereIn('category',$cat)
-            ->groupBy('category')
-            ->orderBy('category')
-            ->get();
+        if(!empty($customer) && empty($template)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+                $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.user_id',$user_id)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')                
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)                
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+            }
+            if($role->role_id === 3){
+
+                $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.template',$template_code)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')                
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)                
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+            }
+        }
+
+        if(empty($customer) && !empty($template)){
+
+            if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){                        
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)                    
+                        ->whereIn('posted_audits.user_id',$user_id)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+            }
+
+            if($role->role_id === 3){                    
+
+                $chan = DB::table('posted_audit_details')
+                        ->select('posted_audit_details.*','posted_audits.*')
+                        ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                        ->whereIn('posted_audits.channel_code',$template)                    
+                        ->whereIn('posted_audits.template',$template_code)
+                        ->groupBy('posted_audit_details.category')
+                        ->get();
+
+                $cat =[];
+
+                foreach($chan as $cid){
+
+                    $cat[]= $cid->category;
+                }         
+
+                return self::select('category', 'category')
+                    ->where('npi', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+            }
+
+
+        }
+
+        if(empty($customer) && empty($template)){
+
+            $category_id = [];                
+
+            $chan = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')                    
+                    ->whereIn('posted_audits.user_id',$user_id)
+                    ->groupBy('posted_audit_details.category')
+                    ->get();
+
+            $cat =[];
+
+            foreach($chan as $cid){
+
+                $cat[]= $cid->category;
+            }         
+
+            return self::select('category', 'category')
+                ->where('npi', 1)
+                ->whereIn('category',$cat)
+                ->groupBy('category')
+                ->orderBy('category')
+                ->get();
+
+        }
     }
 
     public static function getPlanoCategories($use){
@@ -311,6 +669,66 @@ class FormCategory extends Model
         }        
         return self::select('category', 'category')
             ->where('plano', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+    public static function getNpiCategoriesMT($temp){
+        $user_id =[];
+        foreach($temp as $c){
+            $user_id[]=$c->template;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('template',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
+        return self::select('category', 'category')
+            ->where('npi', 1)
+            ->whereIn('category',$cat)
+            ->groupBy('category')
+            ->orderBy('category')
+            ->get();
+    }
+     public static function getOSACategoriesMT($temp){
+        $user_id =[];
+        foreach($temp as $c){
+            $user_id[]=$c->template;
+        }
+        $category_id = [];        
+        $userd = DB::table('posted_audits')
+            ->select('posted_audits.*')
+            ->whereIn('template',$user_id)
+            ->get();
+        $audid = [];
+        foreach($userd as $ud){
+            $audid[]=$ud->id;
+        }        
+        $catid = DB::table('posted_audit_details')
+            ->select('posted_audit_details.*')
+            ->whereIn('posted_audit_details.posted_audit_id',$audid)
+            ->groupBy('category')
+            ->get();
+        $cat =[];        
+        foreach($catid as $cid){
+            $cat[]= $cid->category;
+        }        
+        return self::select('category', 'category')
+            ->where('osa', 1)
             ->whereIn('category',$cat)
             ->groupBy('category')
             ->orderBy('category')
@@ -531,21 +949,430 @@ class FormCategory extends Model
                 ->get();
 
         }
-
-
         
     }
 
-    public static function getCategoriesFilter($cus){
-        $custom = [];
-        foreach($cus as $c){
-            $custom[]=$c;
+    public static function SosCatFilter($customer,$template,$user,$store,$use){
+
+        $auth_user = Auth::id();
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        $user_id =[];
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            foreach($use as $c){
+                $user_id[]=$c->user_id;
+            }        
+
+            $userd = DB::table('posted_audits')
+                ->select('posted_audits.*')
+                ->whereIn('user_id',$user_id)
+                ->get();
+
+            $audid = [];
+
+            foreach($userd as $ud){
+                $audid[]=$ud->id;
+            }      
+
+        }
+
+        if($role->role_id === 3){
+
+            foreach($use as $c){
+                $user_id[]=$c->template;
+            }        
+
+            $userd = DB::table('posted_audits')
+                ->select('posted_audits.*')
+                ->whereIn('template',$user_id)
+                ->get();
+
+            $audid = [];
+
+            foreach($userd as $ud){
+                $audid[]=$ud->id;
+            }      
+
+        }
+
+        if(!empty($customer) && !empty($template) && !empty($user) && !empty($store)){
+        
+                $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.channel_code',$template)
+                    ->whereIn('posted_audits.user_id',$user)
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+                       
+        }
+        if(!empty($customer) && !empty($template) && !empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.channel_code',$template)
+                    ->whereIn('posted_audits.user_id',$user)                    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
         }        
-        return self::select('category', 'category')
-            ->where('osa', 1)
-            ->whereIn('customer_code',$custom)
-            ->groupBy('category')
-            ->orderBy('category')
-            ->get();
+        if(!empty($customer) && !empty($template) && empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.channel_code',$template)                                    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(!empty($customer) && empty($template) && empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)              
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && empty($template) && empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && !empty($template) && !empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)                    
+                    ->whereIn('posted_audits.channel_code',$template)
+                    ->whereIn('posted_audits.user_id',$user)
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && empty($template) && !empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.user_id',$user)
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && empty($template) && empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+
+        if(empty($customer) && !empty($template) && empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.channel_code',$template)                    
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(!empty($customer) && empty($template) && empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && !empty($template) && !empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)                    
+                    ->whereIn('posted_audits.channel_code',$template)
+                    ->whereIn('posted_audits.user_id',$user)                    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(empty($customer) && !empty($template) && empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.channel_code',$template)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }        
+        if(empty($customer) && empty($template) && !empty($user) && empty($store)){
+
+             $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.user_id',$user)    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+        }
+        if(!empty($customer) && empty($template) && !empty($user) && empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.user_id',$user)    
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        if(!empty($customer) && empty($template) && !empty($user) && !empty($store)){
+
+            $catid = DB::table('posted_audit_details')
+                    ->select('posted_audit_details.*','posted_audits.*')
+                    ->join('posted_audits','posted_audits.id','=','posted_audit_details.posted_audit_id')
+                    ->whereIn('posted_audit_details.posted_audit_id',$audid)
+                    ->whereIn('posted_audits.customer_code',$customer)
+                    ->whereIn('posted_audits.user_id',$user)    
+                    ->whereIn('posted_audits.store_code',$store)
+                    ->groupBy('category')
+                    ->get();
+
+                $cat =[];        
+
+                foreach($catid as $cid){
+                    $cat[]= $cid->category;
+                }        
+
+                return self::select('category', 'category')
+                    ->where('sos', 1)
+                    ->whereIn('category',$cat)
+                    ->groupBy('category')
+                    ->orderBy('category')
+                    ->get();
+
+        }
+        
     }
+
 }   

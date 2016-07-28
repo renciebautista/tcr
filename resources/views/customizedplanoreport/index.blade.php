@@ -90,20 +90,7 @@
 								<td>{!! link_to_action('CustomizedPlanogramReportController@getstoresinPLANO', 'View Stores', ['customer' => $sku->customer, 'template' => $sku->template,'category' => $sku->category,'prompt' => $sku->prompt,'description'=>$sku->description], ['class' => 'btn btn-xs btn btn-primary']) !!}</td>
 							</tr>
 							<?php $cnt++; ?>
-							@endforeach
-							@else
-							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
+							@endforeach							
 							@endif
 							
 						</tbody>
@@ -117,7 +104,7 @@
 @endsection
 
 @section('page-script')
-$('#audits,#categories').multiselect({
+$('#audits').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -162,7 +149,7 @@ $('#customers').multiselect({
 	$.ajax({
 		type:"POST",
 		data: {customers: GetSelectValues($('select#customers :selected'))},
-		url: "../auditreport/monthfilter",
+		url: "../customizedplanoreport/monthfilter",
 		success: function(data){			
 			$('select#audits').empty();
 			$.each(data, function(i, text) {

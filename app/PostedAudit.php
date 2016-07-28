@@ -1633,6 +1633,319 @@ class PostedAudit extends Model
                 ->orderBy('audits.id')
                 ->get();
         }
+
+    
+    }
+    public static function getauditfiltersAFSos($customer,$template,$user,$store,$category){
+        
+        if(!empty($customer) && !empty($template) && !empty($user) && !empty($store) && !empty($category)){
+                        
+           return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audits.user_id',$user)                
+                ->whereIn('posted_audits.store_code',$store)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template) && !empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audits.user_id',$user)                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+
+        if(!empty($customer) && !empty($template) && !empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audits.user_id',$user)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+
+        if(!empty($customer) && !empty($template) && empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(!empty($customer) && empty($template) && empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && empty($template) && empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')            
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && !empty($template) && !empty($user) && !empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                        
+                ->whereIn('posted_audits.user_id',$user)                
+                ->whereIn('posted_audits.store_code',$store)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && empty($template) && !empty($user) && !empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audits.user_id',$user)                
+                ->whereIn('posted_audits.store_code',$store)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && empty($template) && empty($user) && !empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')               
+                ->whereIn('posted_audits.store_code',$store)                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && empty($template) && empty($user) && empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        
+        }
+        if(empty($customer) && empty($template) && empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && empty($template) && !empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                           
+                ->whereIn('posted_audits.user_id',$user)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && !empty($template) && empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($template) && !empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                            
+                ->whereIn('posted_audits.user_id',$user)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($template) && empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && empty($template) && empty($user) && empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                
+                ->whereIn('posted_audits.customer_code',$customer)                                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && !empty($template) && !empty($user) && empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                        
+                ->whereIn('posted_audits.user_id',$user)                  
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+
+        }
+        if(empty($customer) && !empty($template) && empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && !empty($template) && empty($user) && empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                                                      
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && empty($template) && !empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                        
+                ->whereIn('posted_audits.user_id',$user)                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($customer) && empty($template) && !empty($user) && empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                                
+                ->whereIn('posted_audits.user_id',$user)                                
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template) && empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)                
+                ->whereIn('posted_audits.store_code',$store)                                
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(!empty($customer) && !empty($template) && !empty($user) && empty($store) && !empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audits.user_id',$user)                                    
+                ->whereIn('posted_audit_details.category',$category)
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+
+        if(!empty($customer) && empty($template) && !empty($user) && !empty($store) && empty($category)){
+
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')                
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')
+                ->whereIn('posted_audits.channel_code',$template)
+                ->whereIn('posted_audits.customer_code',$customer)                
+                ->whereIn('posted_audits.user_id',$user)                                    
+                ->whereIn('posted_audits.store_code',$store)   
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+
+        
+    }
+    public static function getauditfiltersAFPjp($user){
+        
+        
+        if(!empty($user)){
+                        
+            return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')           
+                ->whereIn('posted_audits.user_id',$user)                                
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
+        if(empty($user)){
+                        
+           return self::select('posted_audit_details.*','posted_audits.*','audit_id', 'audits.description')
+                ->join('audits','audits.id', '=', 'posted_audits.audit_id')
+                ->join('posted_audit_details','posted_audit_details.posted_audit_id', '=', 'posted_audits.id')                         
+                ->groupBy('audit_id')
+                ->orderBy('audits.id')
+                ->get();
+        }
     
     }
     public static function search($request,$usse){         
@@ -2465,6 +2778,150 @@ class PostedAudit extends Model
 
         return DB::select(DB::raw($query));
     }
+    public static function getNpiSkuMT($request,$temp){
+        
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
+        }
+
+        $planos = '';
+        $plano_desc = [];
+        $formgroups = FormGroup::where('plano',1)->get();
+        foreach ($formgroups as $group) {
+            $plano_desc[] = $group->group_desc;
+        }
+
+        if(!empty($plano_desc)){
+            $planos = "and posted_audit_details.group in ('". implode("','", $plano_desc)  ."')";
+        }
+
+        $usser = [];
+
+        $users_str = '';
+
+        foreach($temp as $u)
+        {
+            $usser[]=$u->template;
+        }
+        if(!empty($usser)){            
+            $users_str = "and posted_audits.template in ('". implode("','", $usser) ."')";
+        }
+        
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "IMPLEMENTED"
+            %s
+            %s
+            %s
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers,$users_str);
+
+        return DB::select(DB::raw($query));
+    }
+    public static function getOSASkuMT($request,$temp){
+        
+        $audits = '';
+        if(!empty($request->audits)){
+            $audits = "and posted_audits.audit_id in (". implode(',', $request->get('audits')) .')';
+        }
+
+        $templates = '';
+        if(!empty($request->templates)){
+            $templates = "and posted_audits.channel_code in ('". implode("','", $request->get('templates')) ."')";
+        }
+
+        $customers = '';
+        if(!empty($request->customers)){
+            $customers = "and posted_audits.customer_code in ('". implode("','", $request->get('customers')) ."')";
+        }
+
+        $categories = '';
+        if(!empty($request->categories)){
+            $categories = "and posted_audit_details.category in ('". implode("','", $request->get('categories')) ."')";
+        }
+
+        $planos = '';
+        $plano_desc = [];
+        $formgroups = FormGroup::where('osa',1)->get();
+        foreach ($formgroups as $group) {
+            $plano_desc[] = $group->group_desc;
+        }
+
+        if(!empty($plano_desc)){
+            $planos = "and posted_audit_details.group in ('". implode("','", $plano_desc)  ."')";
+        }
+
+        $usser = [];
+
+        $users_str = '';
+
+        foreach($temp as $u)
+        {
+            $usser[]=$u->template;
+        }
+        if(!empty($usser)){            
+            $users_str = "and posted_audits.template in ('". implode("','", $usser) ."')";
+        }
+        
+        
+        $query = sprintf('
+            select tbl_stores.audit_id, description, posted_audits.channel_code, posted_audits.template, 
+            category, posted_audit_details.group, posted_audit_details.prompt, store_count,  
+            count(posted_audit_details.prompt)  as availability,
+            (count(posted_audit_details.prompt) / store_count) * 100 as osa_percent,
+            posted_audits.customer
+            from posted_audit_details
+            join posted_audits on posted_audits.id = posted_audit_details.posted_audit_id
+            join audits on audits.id = posted_audits.audit_id
+            join(
+                select audit_id,channel_code, count(*) as store_count from posted_audits
+                group by audit_id,channel_code
+            ) as tbl_stores on (tbl_stores.audit_id = posted_audits.audit_id and tbl_stores.channel_code = posted_audits.channel_code)
+            where posted_audit_details.type = "CONDITIONAL"
+            and posted_audit_details.answer = "AVAILABLE ON SHELF"
+            %s
+            %s
+            %s
+            %s
+            %s
+            %s
+            group by prompt,posted_audits.channel_code
+            order by osa_percent, audit_id, template',$planos,$audits,$templates, $categories, $customers,$users_str);
+
+        return DB::select(DB::raw($query));
+    }
     public static function PlanoStoresNotAvail($detail){                
         $cat_str = $detail['category'];
         $cust_str = $detail['customer'];    
@@ -2496,6 +2953,10 @@ class PostedAudit extends Model
     }
 
     public static function getSos($request = null,$use){
+
+        $auth_user = Auth::id();   
+        $id = $auth_user;
+        $role = Role::myroleid($id);
         // dd($request->all());
         $audits = '';
         if(!empty($request->audits)){
@@ -2541,13 +3002,29 @@ class PostedAudit extends Model
         }
         $usser = [];
         $users_str = '';
-        foreach($use as $u)
-        {
-            $usser[]=$u->user_id;
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+            foreach($use as $u)
+            {
+                $usser[]=$u->user_id;
+            }
+            if(!empty($usser)){            
+                $users_str = " and posted_audits.user_id in ('". implode("','", $usser) ."')";
+            }    
         }
-        if(!empty($usser)){            
-            $users_str = " and posted_audits.user_id in (". implode(",",$usser). ")";
+        if($role->role_id === 3){
+
+            foreach($use as $u)
+            {
+                $usser[]=$u->template;
+            }
+
+            if(!empty($usser)){            
+                $users_str = " and posted_audits.template in ('". implode("','", $usser) ."')";
+            }    
+
         }
+        
 
         $query = sprintf("
             select audit_id, audits.description, store_name, store_code, category, answer as sos_measurement,

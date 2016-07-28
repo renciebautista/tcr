@@ -15,31 +15,17 @@
         <div class="box-body">
           	<div class="row">
           		<div class="col-md-3">
-	              <div class="form-group">
-	                <label>Customer Name</label>
-	               	{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
+	              	<div class="form-group">
+	                	<label>Customer Name</label>
+	               		{!! Form::select('customers[]', $customers, null, array('class' => 'form-control select_form', 'id' => 'customers', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	                  
+	            <div class="col-md-3">
+	              	<div class="form-group">
+               	 		<label>Audit Template</label>
+	               		{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Name</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>	            
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Template</label>
-	               	{!! Form::select('templates[]', $templates, null, array('class' => 'form-control select_form', 'id' => 'templates_sos', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Category</label>
-	                {!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>	            
-          	</div>
-          	<div class="row">	            
 	            <div class="col-md-3">
 	             	<div class="form-group">
 	                	<label>User</label>
@@ -47,17 +33,25 @@
 	              	</div>
 	            </div>
 	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Store Name</label>
-	               	{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
-	              </div>
+	              	<div class="form-group">
+	                	<label>Store Name</label>
+	               		{!! Form::select('stores[]', $stores, null, array('class' => 'form-control select_form', 'id' => 'stores', 'multiple' => 'multiple')) !!}
+	             	 </div>
 	            </div>
+	        </div>
+          	<div class="row">	            	            
+	        	<div class="col-md-3">
+	              	<div class="form-group">
+	                	<label>Category</label>
+	                	{!! Form::select('categories[]', $categories, null, array('class' => 'form-control select_form', 'id' => 'categories', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	              
 	            <div class="col-md-3">
-	              
-	            </div>
-	            <div class="col-md-3">
-	              
-	            </div>
+	              	<div class="form-group">
+	                	<label>Audit Name</label>
+	                	{!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              	</div>
+	            </div>	      	            
           	</div>
         </div>
 
@@ -118,19 +112,7 @@
 								</td>
 							</tr>
 							<?php $cnt++; ?>
-							@endforeach
-							@else
-							<tr>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
+							@endforeach							
 							@endif
 							
 						</tbody>
@@ -144,7 +126,78 @@
 @endsection
 
 @section('page-script')
-$('#audits,#stores, #categories, #customers, #templates_sos, #users').multiselect({
+
+$('#customers').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+}).on("change", function(){
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/templatesfilter",
+		success: function(data){			
+			$('select#templates').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#templates'));
+			});
+		$('select#templates').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/filter",
+		success: function(data){			
+			$('select#users').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#users'));
+			});
+		$('select#users').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../sosreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected'))},
+		url: "../sosreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#templates').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -152,8 +205,172 @@ $('#audits,#stores, #categories, #customers, #templates_sos, #users').multiselec
     buttonWidth: '100%',
 	buttonClass: 'form-control',
 
- });
+}).on("change", function(){	
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../auditreport/filter",
+		success: function(data){			
+			$('select#users').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#users'));
+			});
+		$('select#users').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')),templates: GetSelectValues($('select#templates :selected'))},
+		url: "../sosreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
+		url: "../sosreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#users').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){		
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected'))},
+		url: "../auditreport/userstorefilter",
+		success: function(data){			
+			$('select#stores').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#stores'));
+			});
+		$('select#stores').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')),templates: GetSelectValues($('select#templates :selected')),users: GetSelectValues($('select#users :selected'))},
+		url: "../sosreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected'))},
+		url: "../sosreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
+
+$('#stores').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){			
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected')), stores: GetSelectValues($('select#stores :selected'))},
+		url: "../sosreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')),templates: GetSelectValues($('select#templates :selected')),users: GetSelectValues($('select#users :selected')),stores: GetSelectValues($('select#stores :selected'))},
+		url: "../sosreport/categoryfilter",
+		success: function(data){			
+			$('select#categories').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#categories'));
+			});
+		$('select#categories').multiselect('rebuild');
+		}
+	});
+});
+
+$('#categories').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){			
+	$.ajax({
+		type:"POST",
+		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected')), users: GetSelectValues($('select#users :selected')), stores: GetSelectValues($('select#stores :selected'))},
+		url: "../sosreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});	
+});
 
 
-$('#dt-table').dataTable();
+$('#audits').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+});
+
+ $('#dt-table').dataTable(); 
 @endsection

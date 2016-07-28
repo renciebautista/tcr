@@ -81,6 +81,7 @@ class AuditReportController extends Controller
                 $store = $request->get('stores');
                 $month = $request->get('audits');
 
+                $use = PostedAudit::getUsers($auth_user);
                 $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
                 $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
                 $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
@@ -200,20 +201,6 @@ class AuditReportController extends Controller
         $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
         return Response::json($users);                            
     }  
-    
-
-    // public function storefilter(){
-    //     $auth_user = Auth::id();
-    //     $id = $auth_user;
-    //     $role = Role::myroleid($id);   
-    //     $user = Input::get('users');        
-    //     $template = Input::get('templates');
-    //     $customer = Input::get('customers');
-
-    //     $use = PostedAudit::getUsers($auth_user);         
-    //     $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
-    //     return Response::json($stores);        
-    // }    
 
    
     public function userstorefilter(){

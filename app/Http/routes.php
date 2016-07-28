@@ -166,10 +166,9 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('storesummaryreport/{id}',['as' => 'storesummaryreport.show', 'uses' => 'StoreSummaryReportController@show']);
 
     Route::get('osareport',['as' => 'osareport.index', 'uses' => 'OsaReportController@index']);    
-    Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);
-    Route::get('osareport/categoriesfilter', 'OsaReportController@categoriesfilter');
-    Route::get('osareport/allcategoryfilter', 'OsaReportController@allcategoryfilter');
-    Route::get('osareport/categoryfilter', 'OsaReportController@categoryfilter');
+    Route::post('osareport',['as' => 'osareport.create', 'uses' => 'OsaReportController@create']);        
+    Route::post('osareport/categoryfilter', 'OsaReportController@categoryfilter');
+    Route::post('osareport/monthfilter', 'OsaReportController@monthfilter');
     Route::get('osareport/viewstores', ['as' => 'osareport/viewstores', 'uses'=>'OsaReportController@getstoresinOSA']);
     
     Route::post('customerregionalreport/regionsfilter', 'CustomerRegionalReportController@regionsfilter');
@@ -177,13 +176,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     Route::get('sosreport',['as' => 'sosreport.index', 'uses' => 'SosReportController@index']);
     Route::post('sosreport',['as' => 'sosreport.create', 'uses' => 'SosReportController@create']);
-    Route::get('sosreport/allcategoryfilter', 'SosReportController@allcategoryfilter');
-    Route::get('sosreport/categoryfilter', 'SosReportController@categoryfilter');
+   	Route::post('sosreport/categoryfilter', 'SosReportController@categoryfilter');
+   	Route::post('sosreport/monthfilter', 'SosReportController@monthfilter');
 
     Route::get('npireport',['as' => 'npireport.index', 'uses' => 'NpiReportController@index']);
     Route::post('npireport',['as' => 'npireport.create', 'uses' => 'NpiReportController@create']);
-    Route::get('npireport/allcategoryfilter', 'NpiReportController@allcategoryfilter');
-    Route::get('npireport/categoryfilter', 'NpiReportController@categoryfilter');
+    Route::post('npireport/categoryfilter', 'NpiReportController@categoryfilter');
+    Route::post('npireport/monthfilter', 'NpiReportController@monthfilter');
     Route::get('npireport/viewstores', ['as' => 'npireport/viewstores', 'uses'=>'NpiReportController@getstoresinNPI']);
 
     Route::get('customizedplanoreport',['as' => 'customizedplanoreport.index', 'uses' => 'CustomizedPlanogramReportController@index']);
@@ -194,6 +193,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 
     Route::get('pjpreport',['as' => 'pjpreport.index', 'uses' => 'PjpReportController@index']);
     Route::post('pjpreport',['as' => 'pjpreport.create', 'uses' => 'PjpReportController@create']);
+    Route::post('pjpreport/monthfilter', 'PjpReportController@monthfilter');
 
     Route::get('customerreport',['as' => 'customerreport.index', 'uses' => 'CustomerReportController@index']);
     Route::post('customerreport',['as' => 'customerreport.create', 'uses' => 'CustomerReportController@create']);

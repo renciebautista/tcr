@@ -8,41 +8,115 @@ use App\Http\Requests;
 use App\PostedAudit;
 use App\FormCategory;
 use Auth;
-
+use App\Role;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Common\Type;
 use Box\Spout\Writer\WriterFactory;
 use Input;
 use Response;
 use Session;
+
 class SosReportController extends Controller
 {
     public function index(){
+
+        set_time_limit(0);
+
         $auth_user = Auth::id();
-        $use = PostedAudit::getUsers($auth_user); 
+        $id = $auth_user;
+        $role = Role::myroleid($id);   
+        
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);
+            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+            $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
+            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+            $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');            
+            $categories = FormCategory::getSOSCategories($use)->lists('category','category');                
+            
+        }    
+       
+        if($role->role_id === 3){  
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+            $templates = PostedAudit::getTemplatesMT($auth_user)->lists('template','channel_code'); 
+            $users = PostedAudit::getUsersMT($temp)->lists('name','user_id');                    
+            $stores = PostedAudit::getPostedStoresMT($temp)->lists('store_name','store_code');
+            $categories = FormCategory::getSOSCategoriesMT($temp)->lists('category','category'); 
+        }
+        
     	$audits = PostedAudit::getAudits()->lists('description','audit_id');
-    	$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-        $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-        $categories = FormCategory::getSOSCategories($use)->lists('category','category');
-        $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
-        $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
     	$soss = [];
+
     	return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates','users'));
     }
 
     public function create(Request $request){
-        $auth_user = Auth::id(); 
-        $use = PostedAudit::getUsers($auth_user); 
+        
+        $auth_user = Auth::id();   
+        $id = $auth_user;
+        $role = Role::myroleid($id);   
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+            
+            $use = PostedAudit::getUsers($auth_user);             
+        }  
+
+        if($role->role_id === 3){
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);
+            $use = $temp;            
+        }      
         $soss = PostedAudit::getSos($request,$use);
+        
+        
         if($request->submit == 'process'){
             $request->flash();
-            $audits = PostedAudit::getAudits()->lists('description','audit_id');
-    		$stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
-            $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
-            $categories = FormCategory::getSOSCategories($use)->lists('category','category');
-            $templates = PostedAudit::getTemplates($auth_user)->lists('template','channel_code');
-            $users = PostedAudit::getUsers($auth_user)->lists('name','user_id');
+
+            if($role->role_id == 1 || $role->role_id == 2 || $role->role_id === 4){
+
+                $customer = $request->get('customers');
+                $cus = $customer;
+                $template = $request->get('templates');
+                $user = $request->get('users');
+                $store = $request->get('stores');
+                $category = $request->get('categories');
+                $month = $request->get('audits');
+
+                $use = PostedAudit::getUsers($auth_user);
+
+                $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');               
+                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+                $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+                $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+                $categories = FormCategory::SosCatFilter($customer,$template,$user,$store,$use)->lists('category','category');
+                $audits = PostedAudit::getauditfiltersAFSos($customer,$template,$user,$store,$category)->lists('description','audit_id');
             
+            }
+
+            if($role->role_id === 3){                                            
+                            
+                $customer = $request->get('customers');
+                $cus = $customer;
+                $template = $request->get('templates');
+                $user = $request->get('users');
+                $store = $request->get('stores');
+                $month = $request->get('audits');
+                $category = $request->get('categories');
+
+                $temp = PostedAudit::getTemplatesMT($auth_user);            
+                $use = $temp; 
+
+                $customers = PostedAudit::getCustomersMT($temp)->lists('customer','customer_code');
+                $templates = PostedAudit::getstemplatefilters($auth_user,$cus)->lists('template','channel_code');
+                $users = PostedAudit::getUserAF($auth_user,$template,$customer)->lists('name','user_id');
+                $stores = PostedAudit::getStoresfilterAF($customer,$template,$user)->lists('store_name','store_code');
+                $categories = FormCategory::SosCatFilter($customer,$template,$user,$store,$use)->lists('category','category');
+                $audits = PostedAudit::getauditfiltersAFSos($customer,$template,$user,$store,$category)->lists('description','audit_id');
+            }
+                       
             return view('sosreport.index', compact('soss', 'audits', 'stores', 'customers', 'categories', 'templates', 'users'));
         }else{
             set_time_limit(0);
@@ -75,25 +149,52 @@ class SosReportController extends Controller
             }   
             $writer->close();
         }
-        
     }
-    public function allcategoryfilter(){
-        $auth_user = Auth::id();
-        $tem = Input::all();
-
-        if(is_array($tem)){           
-            $use = PostedAudit::getUsers($auth_user);         
-            $categories = FormCategory::getSOSCategories($use)->lists('category','category');
-            return Response::json($categories);
-        }                    
-    }       
     public function categoryfilter(){
+
         $auth_user = Auth::id();
-        $tem = Input::all();                
-        if(is_array($tem)){           
-            $use = PostedAudit::getUsers($auth_user);         
-            $categories = FormCategory::SosCatFilter($use,$tem)->lists('category','category');
-            return Response::json($categories);
-        }                    
-    }       
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        $customer = Input::get('customers');
+        $template = Input::get('templates');
+        $user = Input::get('users');
+        $store = Input::get('stores');
+
+
+        if($role->role_id === 1 || $role->role_id === 2 || $role->role_id === 4){
+
+            $use = PostedAudit::getUsers($auth_user);             
+        }
+        
+        if($role->role_id === 3){
+
+            $temp = PostedAudit::getTemplatesMT($auth_user);            
+            $use = $temp;    
+        }
+
+        $categories = FormCategory::SosCatFilter($customer,$template,$user,$store,$use)->lists('category','category');
+
+        return Response::json($categories);        
+    }
+
+    public function monthfilter(){
+
+        $auth_user = Auth::id();
+        $customer = Input::get('customers');
+        $template = Input::get('templates');
+        $user = Input::get('users');
+        $store  = Input::get('stores');
+        $category = Input::get('categories');
+
+        $id = $auth_user;
+        $role = Role::myroleid($id);
+
+        $audits = PostedAudit::getauditfiltersAFSos($customer,$template,$user,$store,$category)->lists('description','audit_id');
+
+        return Response::json($audits);
+
+    }        
+            
+    
 }

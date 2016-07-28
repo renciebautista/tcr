@@ -227,7 +227,7 @@ $('#customers').multiselect({
 			});
 		$('select#stores').multiselect('rebuild');
 		}
-	});
+	});	
 	$.ajax({
 		type:"POST",
 		data: {customers: GetSelectValues($('select#customers :selected'))},
@@ -278,7 +278,7 @@ $('#templates').multiselect({
 	$.ajax({
 		type:"POST",
 		data: {customers: GetSelectValues($('select#customers :selected')), templates: GetSelectValues($('select#templates :selected'))},
-		url: "../customizedplanoreport/monthfilter",
+		url: "../auditreport/monthfilter",
 		success: function(data){			
 			$('select#audits').empty();
 			$.each(data, function(i, text) {

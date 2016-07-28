@@ -14,22 +14,18 @@
         </div>
         <div class="box-body">
           	<div class="row">
-	            <div class="col-md-3">
-	              <div class="form-group">
-	                <label>Audit Month</label>
-	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
-	              </div>
-	            </div>
-	            <div class="col-md-3">
+          		<div class="col-md-3">
 	            	<div class="form-group">
 	                <label>User</label>
 	               	{!! Form::select('users[]', $users, null, array('class' => 'form-control select_form', 'id' => 'users', 'multiple' => 'multiple')) !!}
 	              </div>
 	            </div>
 	            <div class="col-md-3">
-	              
-	            </div>
-	            
+	              <div class="form-group">
+	                <label>Audit Month</label>
+	                {!! Form::select('audits[]', $audits, null, array('class' => 'form-control select_form', 'id' => 'audits', 'multiple' => 'multiple')) !!}
+	              </div>
+	            </div>	            	            
           	</div>
         </div>
 
@@ -82,7 +78,7 @@
 @endsection
 
 @section('page-script')
-$('#users,#audits').multiselect({
+$('#audits').multiselect({
  	maxHeight: 200,
     includeSelectAllOption: true,
     enableCaseInsensitiveFiltering: true,
@@ -91,5 +87,27 @@ $('#users,#audits').multiselect({
 	buttonClass: 'form-control',
 
  });
+$('#users').multiselect({
+ 	maxHeight: 200,
+    includeSelectAllOption: true,
+    enableCaseInsensitiveFiltering: true,
+    enableFiltering: true,
+    buttonWidth: '100%',
+	buttonClass: 'form-control',
+
+}).on("change", function(){			
+	$.ajax({
+		type:"POST",
+		data: {users: GetSelectValues($('select#users :selected'))},
+		url: "../pjpreport/monthfilter",
+		success: function(data){			
+			$('select#audits').empty();
+			$.each(data, function(i, text) {
+				$('<option />',{value: i, text: text}).appendTo($('select#audits'));
+			});
+		$('select#audits').multiselect('rebuild');
+		}
+	});
+});
 $('#dt-table').dataTable();
 @endsection
