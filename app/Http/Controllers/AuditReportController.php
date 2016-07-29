@@ -17,6 +17,7 @@ use App\Role;
 class AuditReportController extends Controller
 {
     public function index(){
+         set_time_limit(0);
         $auth_user = Auth::id();
         $id = $auth_user;
         $role = Role::myroleid($id);        
@@ -48,7 +49,7 @@ class AuditReportController extends Controller
             $posted_audits = PostedAudit::searchDefault($use);
 
         }    
-        
+
         $audits = PostedAudit::getAudits()->lists('description','audit_id');                    	   
         $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
 
@@ -59,6 +60,7 @@ class AuditReportController extends Controller
     }
 
     public function create(Request $request){
+        set_time_limit(0);
         $auth_user = Auth::id();   
         $id = $auth_user;
         $role = Role::myroleid($id);        
