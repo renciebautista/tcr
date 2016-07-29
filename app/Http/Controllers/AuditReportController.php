@@ -44,10 +44,14 @@ class AuditReportController extends Controller
             $templates = PostedAudit::getTemplates($use)->lists('template','channel_code');            
             $stores = PostedAudit::getPostedStores($use)->lists('store_name','store_code');
             $customers = PostedAudit::getCustomers($use)->lists('customer','customer_code');
+
             $posted_audits = PostedAudit::searchDefault($use);
+
         }    
+        
         $audits = PostedAudit::getAudits()->lists('description','audit_id');                    	   
         $p_store_average = PostedAudit::getPerfectStoreAverage($posted_audits);
+
         $osa_average = PostedAudit::getOsaAverage($posted_audits);
         $npi_average = PostedAudit::getNpiAverage($posted_audits);
         $planogram_average = PostedAudit::getPlanogramAverage($posted_audits);

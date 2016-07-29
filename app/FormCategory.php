@@ -38,6 +38,7 @@ class FormCategory extends Model
     }
 
     public static function getTemplateCategory($id,$audit_id,$perfect_store = null){
+        
         $data = AuditTemplateCategory::select('form_category_id')
             ->where('audit_template_id',$id)
             ->groupBy('form_category_id')

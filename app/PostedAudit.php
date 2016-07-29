@@ -3180,7 +3180,7 @@ class PostedAudit extends Model
             ->where('user_id',$auth_user)
             ->first(); 
 
-        if($role->role_id === 4 || $role->role_id === 1 || $role->role_id === 2){
+        if($role->role_id === 4){
 
             foreach($use as $u) {
                 $users[]=$u->user_id;
@@ -3198,9 +3198,9 @@ class PostedAudit extends Model
             foreach ($data as $key => $value) {
 
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
-
+            
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
-
+            
             $data[$key]->total_category =  $perfect_store['total'];
 
             if($perfect_store['perfect_count'] == 0){
@@ -3219,19 +3219,21 @@ class PostedAudit extends Model
                 $join->on('audit_stores.store_code','=','posted_audits.store_code');
             })            
             ->orderBy('posted_audits.updated_at','desc')
-            ->paginate(100);
+            ->get();
+            
             foreach ($data as $key => $value) {
 
                 $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
                 $data[$key]->perfect_category =  $perfect_store['perfect_count'];
                 $data[$key]->total_category =  $perfect_store['total'];
+                
                 if($perfect_store['perfect_count'] == 0){
                      $data[$key]->perfect_percentage =  0.00 ;
                 }else{
                      $data[$key]->perfect_percentage =  number_format(($perfect_store['perfect_count'] / $perfect_store['total'] ) * 100,2) ;
                 }
            
-            }
+            }            
             return $data;   
         }
         
