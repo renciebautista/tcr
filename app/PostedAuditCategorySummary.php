@@ -67,12 +67,15 @@ class PostedAuditCategorySummary extends Model
             ->where('description',$posted_store->template)
             ->first();
 
+        
         // dd($template);
 
         $categories =  FormCategory::getTemplateCategory($template->id,$posted_store->audit_id,1);
+
         $groups = FormGroup::getTemplateGroup($template->id,$posted_store->audit_id,1);
 
         $posted_categories = PostedAuditCategorySummary::getCategorySummary($posted_store->id);
+
         foreach ($categories as $category) {
             if($category->perfect_store){
                 $lastvalue = 1;

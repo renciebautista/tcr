@@ -3170,17 +3170,22 @@ class PostedAudit extends Model
     }
 
     public static function searchDefault($use){
+
         $templates = '';
         $users=[];
         $auth_user = Auth::id();
+
         $role = DB::table('role_user')
             ->select('role_id')
             ->where('user_id',$auth_user)
             ->first(); 
-        if($role->role_id === 4){
+
+        if($role->role_id === 4 || $role->role_id === 1 || $role->role_id === 2){
+
             foreach($use as $u) {
                 $users[]=$u->user_id;
             }        
+
             $data = self::select(DB::raw('posted_audits.*, audit_stores.pjp, audit_stores.freq'))
                 ->whereIn('posted_audits.user_id',$users)
                 ->leftJoin('audit_stores', function($join){
@@ -3189,11 +3194,15 @@ class PostedAudit extends Model
                 })            
                 ->orderBy('posted_audits.updated_at','desc')
                 ->get();     
+
             foreach ($data as $key => $value) {
 
             $perfect_store = PostedAuditCategorySummary::getPerfectCategory($value);
+
             $data[$key]->perfect_category =  $perfect_store['perfect_count'];
+
             $data[$key]->total_category =  $perfect_store['total'];
+
             if($perfect_store['perfect_count'] == 0){
                  $data[$key]->perfect_percentage =  0.00 ;
             }else{
