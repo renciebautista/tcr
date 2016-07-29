@@ -302,7 +302,7 @@ class AuditTemplate extends Model
 
         return self::select('audit_templates.*','audits.id','audits.description as des')
             ->join('audits','audits.id','=','audit_templates.audit_id')
-            ->groupBy('channel_code')
+            ->groupBy('template')
             ->orderBy('audits.id')
             ->get();
     }

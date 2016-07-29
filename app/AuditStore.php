@@ -255,7 +255,7 @@ class AuditStore extends Model
 
     public static function getTemplateLists($audit){
     	return self::where('audit_id', $audit->id)
-    		->groupBy('channel_code')
+    		->groupBy('template')
     		->orderBy('template')
     		->lists('template','channel_code')
     		->all();

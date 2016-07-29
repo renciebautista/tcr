@@ -17,7 +17,7 @@ class ManagerTemplates extends Model
 
 		return DB::table('templates')
 			->select('templates.id')
-			->where('templates.code',$mapped_template)
+			->where('templates.description',$mapped_template)
 			->first();		
 	}
 }

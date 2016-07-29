@@ -553,63 +553,18 @@ class PostedAudit extends Model
 
                 return self::select('channel_code', 'template')
                     ->whereIn('template',$tagged)
-                    ->groupBy('channel_code')
+                    ->groupBy('template')
                     ->orderBy('template')
                     ->get();
         }
         else{
                 return self::select('channel_code', 'template')                    
-                    ->groupBy('channel_code')
+                    ->groupBy('template')
                     ->orderBy('template')
                     ->get();
         }
     }    
-
-        //-------------------------------->OLD FILTERING<--------------------------------------//
-        //get user templates
-        // $myTemplates = DB::table('manager_templates')
-        //     ->select('manager_templates.*')
-        //     ->where('manager_templates.managers_id','=',$auth_user)
-        //     ->get();
-
-        // $data = [];
-
-        // foreach ($myTemplates as $value) {
-        //     $data[] =  $value->templates_id;
-        // }
-        // //owa
-        // //get user fieldss        
-        // $myFields = DB::table('manager_fields')
-        //     ->select('manager_fields.*')
-        //     ->where('manager_fields.managers_id','=',$auth_user)
-        //     ->get();
-        // $datas = [];
-        // foreach ($myFields as $value) {
-        //     $datas[] =  $value->fields_id;
-        // }       
-
-        // $anotherTemplates = DB::table('posted_audits')
-        //     ->select('posted_audits.*')
-        //     ->whereIn('posted_audits.user_id',$datas)
-        //     ->get();        
-        // $tagged = [];
-        //     foreach($anotherTemplates as $at){
-        //         $tagged[] =  $at->template;
-        //     }                
-        // $temp = DB::table('templates')
-        //     ->select('templates.*')
-        //     ->whereIn('id',$data)
-        //     ->get();        
-        // foreach ($temp as $value) {
-        //     $tagged[] =  $value->description;
-        // }        
-
-        // return self::select('channel_code', 'template')
-        //     ->whereIn('template',$tagged)
-        //     ->groupBy('channel_code')
-        //     ->orderBy('template')
-        //     ->get();
-        //-------------------------------->END OF OLD FILTERING<--------------------------------------//    
+        
     public static function getTemplatesMT($auth_user){
         $auth_user = Auth::id();
         $role = DB::table('role_user')
@@ -639,7 +594,7 @@ class PostedAudit extends Model
                 } 
                 return self::select('channel_code', 'template')
                     ->whereIn('template',$tagged)
-                    ->groupBy('channel_code')
+                    ->groupBy('template')
                     ->orderBy('template')
                     ->get();
         }
@@ -2439,7 +2394,7 @@ class PostedAudit extends Model
     public static function getTemplate($channel_code, $audit_id){
         return self::where('channel_code', $channel_code)
             ->where('audit_id', $audit_id)
-            ->groupBy('channel_code')
+            ->groupBy('template')
             ->first();
     }
 

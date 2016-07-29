@@ -37,7 +37,7 @@ class DownloadController extends Controller
 
         if ($request->has('audit')) {
             $storelist = AuditStore::where('audit_id', $request->audit)
-                ->groupBy('channel_code')
+                ->groupBy('template')
                 ->get();
         }else{
             $user = User::find($user);
