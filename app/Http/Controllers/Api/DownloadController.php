@@ -32,6 +32,7 @@ use Box\Spout\Writer\WriterFactory;
 class DownloadController extends Controller
 {
   	public function index(Request $request){
+        set_time_limit(0);
         $user = $request->id;
         $type = $request->type;
 
